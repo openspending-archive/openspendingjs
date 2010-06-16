@@ -1,4 +1,11 @@
-function createTreeMap(json, elementId) {
+function debug(message) {
+  var console = window['console'];
+  if (console && console.log) {
+    console.log(message);
+  }
+}
+
+function createTreeMap(json, elementId, amountLabel) {
     var get = function(id){
         return document.getElementById(id);
     };
@@ -23,6 +30,21 @@ function createTreeMap(json, elementId) {
         //between the root node and the hovered node. This
         //is done by adding the 'in-path' CSS class to each node.
         selectPathOnHover: true,
+        
+        Color: {  
+            //Allow coloring  
+            allow: true,  
+            //Set min value and max value constraints  
+            //for the *$color* property value.  
+            //Default's to -100 and 100.  
+            minValue: 0,  
+            maxValue: 50,  
+            //Set color range. Default's to reddish and greenish.  
+            //It takes an array of three  
+            //integers as R, G and B values.  
+            minColorValue: [168, 69, 66],  
+            maxColorValue: [68, 68, 68]  
+        },  
                 
         //Allow tips
         Tips: {
@@ -41,9 +63,7 @@ function createTreeMap(json, elementId) {
           //Aux method: Build the tooltip inner html by using the data property
           makeHTMLFromData: function(data){
               var html = '';
-              html += "Spending (&pound;bn)" + ': ' + data.$area + '<br />';
-              if ("$color" in data) 
-                  html += "rank" + ': ' + data.$color + '<br />';
+              html += amountLabel + ': ' + data.$area + '<br />';
               return html;
           }
         },
