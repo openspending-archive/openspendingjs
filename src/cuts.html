@@ -32,7 +32,7 @@
           var color = "0"; 
           var increaseorcut = entry.gsx$increaseorcut.$t.toLowerCase();
           if (increaseorcut == "cut") {
-            color = "40"; 
+            color = "20"; 
           }
           var newnode = {
             "id": i,
@@ -40,10 +40,10 @@
             "data": { "$area": amount, "$color": color},
             "children": []
           };
-          total = total + amount;
           // ensure we never over-fill
-          if (total < deficit) {
+          if (total + amount < deficit) {
             _treedata.children.push(newnode);
+            total = total + amount;
           }
         });
         // add a child to represent the area not there ...
@@ -55,12 +55,12 @@
           "children": []
         };
         _treedata.children.push(newnode);
-        _treedata.data['$area'] = Math.max(deficit,total);
+        _treedata.data['$area'] = deficit;
         return $.toJSON(_treedata);
       }
 
       function makeTable(data) {
-        var _ourtable = $("#results");
+        var _ourtable = $('<table id="results"></table>');
         _ourtable.append($('<thead><tr><th>Description</th><th>Amount (&pound;bn)</th><th>Increase or Cut</th></tr></thead>'));
         _tbody = $('<tbody></tbody>');
 
@@ -73,9 +73,7 @@
         });
 
         _ourtable.append(_tbody);
-        _ourtable.tablesorter({
-          sortList: [[0,0],[1,0]]
-        });
+        $('#results').replaceWith(_ourtable);
       }
 
       function visualizeDeficit() {
@@ -98,8 +96,16 @@
     });
     </script>
     <style type="text/css">
+      h1, h2 {
+        text-align: center;
+      }
+      
       h2 { 
-        text-align: center
+        margin-top: 2em;
+      }
+
+      h2 span.small {
+        font-size: 60%;
       }
 
       form.deficit {
@@ -112,11 +118,13 @@
     <h1><a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/cuts/">Visualising the Cuts</a></h1>
 
     <h2>
-      Filling the Gap (<a href="https://spreadsheets.google.com/ccc?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE">Source Data</a>)
+      Plugging the Deficit Gap
+      <br />
+      <span class="small">(running live off <a href="https://spreadsheets.google.com/ccc?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE">source data</a>)</span>
     </h2>
     <form class="deficit">
       <label>Deficit Gap</label>
-      <input style="width: 30px;" type="text" name="deficit" value="40" class="deficit" />
+      <input style="width: 30px;" type="text" name="deficit" value="34" class="deficit" />
       <input type="submit" name="Update" />
     </form>
 
@@ -125,6 +133,9 @@
     <h2>Cuts: The Options</h2>
     <table id="results">
     </table>
+
+    <h2>About</h2>
+    <p style="width: 50%; text-align: center; margin: auto;">Researched by Lisa Evans and Tim Hubbard using many figures from the <a href="http://www.ifs.org.uk/">IFS</a>. Visualized by <a href="http://rufuspollock.org/">Rufus Pollock</a> using the <a href="http://thejit.org/">thejit</a> and jquery.</p>
   </body>
 </html>
 
