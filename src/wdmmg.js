@@ -43,7 +43,8 @@ function createTreeMap(json, elementId, amountLabel) {
             //It takes an array of three  
             //integers as R, G and B values.  
             minColorValue: [168, 69, 66],  
-            maxColorValue: [68, 68, 68]  
+            // maxColorValue: [68, 68, 68]  
+            maxColorValue: [0, 0, 0]  
         },  
                 
         //Allow tips
