@@ -16,19 +16,35 @@
     <script type="text/javascript">
     // global
     var spreadsheetData;
+    var last_total;
 
     $(document).ready(function(){
+      // update treemap
       function visualizeDeficit() {
         var deficit = parseFloat($('input.deficit')[0].value);
-        var cutsSelected = calculateSetChecked();
-        debug(cutsSelected);
-        var treedata = loadTreeData(spreadsheetData, deficit, cutsSelected); createTreeMap(treedata, 'infovis', 'Amount &pound;bn'); } $("form").bind("submit", function() {
+        var cutsSelected = {};
+        var result=calculateSetChecked(cutsSelected,deficit,last_total);
+        if(result>=0){
+          last_total=result;
+          var treedata = loadTreeData(spreadsheetData, deficit, cutsSelected, last_total);
+          createTreeMap(treedata, 'infovis', 'Amount &pound;bn');
+          return true;
+        }else{
+          last_total=-result;
+          return false;
+        }
+      }
+
+      // recalculate with new deficit
+      $("form").bind("submit", function() {
         visualizeDeficit();
         return false;
       })
 
-      // on startup
-      $('#results').tablesorter();
+      // on startup build table, setup sorter
+      $('#results').tablesorter({
+        headers: {0: {sorter: false}}
+      });
       var apiurl = 'http://spreadsheets.google.com/feeds/list/0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE/od6/public/values?alt=json-in-script&callback=?'
       // var apiurl = 'cuts-gdocs.js';
       $.getJSON(apiurl, function(data){
@@ -38,13 +54,20 @@
         $("#results").trigger("update");
         var sorting=[[2,1]];
         $("#results").trigger("sorton",[sorting]);
-        // have to bind after table is created
-        $('[type=checkbox]').bind("click", function() {
-         visualizeDeficit();
-        });
+
+       // have to bind after table is created
+       $('[type=checkbox]').bind("click", function() {
+         if(visualizeDeficit()){
+           return true;
+         }else{
+           return false;
+         }
+       });
+
         visualizeDeficit();
      });
-   });
+
+  });
     </script>
 
     <style type="text/css">

@@ -2,28 +2,42 @@ function testing() {
   return {};
 }
 
-function calculateSetChecked() {
-  var results = {};
+function calculateSetChecked(results,deficit,last_total) {
+  var total = 0;
   $.each($('[type=checkbox]'), function(index,item) {
       if ($(item).is(':checked')) {
-        debug('in here');
         results[$(item).attr('name')] = '';
+        total=total+parseFloat($(item).attr('number'));
       }
   });
-  return results;
+  //alert('total='+total+' llotal='+last_total);
+  if(total>deficit && total>last_total && last_total>deficit){
+    alert('Deficit already filled');
+    return -last_total;
+  }else{
+    return total;
+  }
 }
 
 // create the json node data for treemap
-function loadTreeData(data, deficit, selectedCuts) {
+function loadTreeData(data, deficit, selectedCuts, last_total) {
   function make_label(name, amount) {
       return name + " (&pound;" + amount + "bn)";
   }
-
+  var name=make_label("Total Deficit to Fill", deficit);
+  // setting color on id: root has no effect - BUG
+  var color="15";
+  if(last_total>deficit){
+    var excess=last_total-deficit;
+    var name2=make_label(", EXCESS CUT", excess.toFixed(1));
+    name=name+name2;
+    color="90";
+  }
   var total = 0;
   var _treedata = {
     "id": "root",
-    "name": make_label("Total Deficit to Fill", deficit),
-    "data": { "$area": 0 },
+    "name": name,
+    "data": { "$area": 0, "$color": color },
     "children": []
   };
   $.each(data.feed.entry, function(i,entry) {
@@ -43,11 +57,12 @@ function loadTreeData(data, deficit, selectedCuts) {
         "children": []
       };
       // ensure we never over-fill
+      // (should no longer be needed)
       if (total < deficit) {
         _treedata.children.push(newnode);
         total = total + amount;
       } else {
-        alert('Deficit already filled');
+        alert('Deficit already filled: bug');
       }
     }
   });
@@ -61,7 +76,7 @@ function loadTreeData(data, deficit, selectedCuts) {
     "children": []
   };
   _treedata.children.push(newnode);
-  _treedata.data['$area'] = Math.max(deficit, total);
+  _treedata.data['$area'] = Math.max(deficit, total.toFixed(1));
   return $.toJSON(_treedata);
 }
 
@@ -69,7 +84,7 @@ function makeTable(data) {
   var _tbody = $('<tbody></tbody>');
   $.each(data.feed.entry, function(i,entry){
     var _newrow = $("<tr></tr>");
-    _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" />'));
+    _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" />'));
     _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
       var amount = parseFloat(entry.gsx$amountbn.$t);
       _newrow.append($('<td class="amount"></td>').append('' + amount.toFixed(1)));

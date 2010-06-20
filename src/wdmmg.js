@@ -30,6 +30,8 @@ function createTreeMap(json, elementId, amountLabel) {
         //between the root node and the hovered node. This
         //is done by adding the 'in-path' CSS class to each node.
         selectPathOnHover: true,
+
+        titleHeight: 20,
         
         Color: {  
             //Allow coloring  
