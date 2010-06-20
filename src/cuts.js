@@ -16,7 +16,7 @@ function calculateSetChecked() {
 // create the json node data for treemap
 function loadTreeData(data, deficit, selectedCuts) {
   function make_label(name, amount) {
-    return name + " (&pound;" + amount + "bn)";
+      return name + " (&pound;" + amount + "bn)";
   }
 
   var total = 0;
@@ -52,7 +52,8 @@ function loadTreeData(data, deficit, selectedCuts) {
     }
   });
   // add a child to represent the area not there ...
-  var notyetfilled = Math.max(deficit-total,0);
+    var notyetfilled1 = Math.max(deficit-total,0);
+    var notyetfilled = notyetfilled1.toFixed(1);
   var newnode = {
     "id": 'thehole',
     "name": make_label('Yet to be filled...', notyetfilled),
@@ -65,19 +66,14 @@ function loadTreeData(data, deficit, selectedCuts) {
 }
 
 function makeTable(data) {
-  var _ourtable = $('<table></table>');
-  _ourtable.append($('<thead><tr><th></th><th>Description</th><th>Amount (&pound;bn)</th><th>Type</th></tr></thead>'));
-  _tbody = $('<tbody></tbody>');
-
-  $.each(data.feed.entry, function(i,item){
+  var _tbody = $('<tbody></tbody>');
+  $.each(data.feed.entry, function(i,entry){
     var _newrow = $("<tr></tr>");
-    _newrow.append($('<td></td>').append('<input type="checkbox" name="' + item.gsx$description.$t + '" />'));
-    _newrow.append($('<td></td>').append('' + item.gsx$description.$t));
-    _newrow.append($('<td class="amount"></td>').append('' + item.gsx$amountbn.$t));
-    _newrow.append($('<td></td>').append('' + item.gsx$increaseorcut.$t));
+    _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" />'));
+    _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
+      _newrow.append($('<td class="amount"></td>').append('' + entry.gsx$amountbn.$t));
+    _newrow.append($('<td></td>').append('' + entry.gsx$increaseorcut.$t));
     _tbody.append(_newrow);
   });
-
-  _ourtable.append(_tbody);
-  return _ourtable;
+  return _tbody;
 }

@@ -28,20 +28,23 @@
       })
 
       // on startup
+      $('#results').tablesorter();
       var apiurl = 'http://spreadsheets.google.com/feeds/list/0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE/od6/public/values?alt=json-in-script&callback=?'
       // var apiurl = 'cuts-gdocs.js';
       $.getJSON(apiurl, function(data){
         spreadsheetData = data;
         var newTable = makeTable(data);
-        newTable.id = 'results';
-        $('#results').replaceWith(newTable);
-        // have to bind after table is creaeted
+        $("#results tbody").replaceWith(newTable);
+        $("#results").trigger("update");
+        var sorting=[[2,1]];
+        $("#results").trigger("sorton",[sorting]);
+        // have to bind after table is created
         $('[type=checkbox]').bind("click", function() {
-          visualizeDeficit();
+         visualizeDeficit();
         });
         visualizeDeficit();
-      });
-    });
+     });
+   });
     </script>
 
     <style type="text/css">
@@ -121,6 +124,15 @@
     <div id="options">
       <form>
         <table id="results">
+          <thead>
+	    <tr>
+	      <th></th>
+	      <th>Description</th>
+	      <th style="width:80px;">Amount (&pound;bn)</th>
+	      <th>Type</th>
+	    </tr>
+	  </thead>
+          <tbody></tbody>
         </table>
       </form>
     </div>
