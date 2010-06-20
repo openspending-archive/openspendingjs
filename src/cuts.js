@@ -71,7 +71,8 @@ function makeTable(data) {
     var _newrow = $("<tr></tr>");
     _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" />'));
     _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
-      _newrow.append($('<td class="amount"></td>').append('' + entry.gsx$amountbn.$t));
+      var amount = parseFloat(entry.gsx$amountbn.$t);
+      _newrow.append($('<td class="amount"></td>').append('' + amount.toFixed(1)));
     _newrow.append($('<td></td>').append('' + entry.gsx$increaseorcut.$t));
     _tbody.append(_newrow);
   });
