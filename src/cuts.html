@@ -36,10 +36,18 @@
       }
 
       // recalculate with new deficit
-      $("form").bind("submit", function() {
+      $("#deficit").click(function() {
         visualizeDeficit();
         return false;
-      })
+      });
+
+      $("#reset_selection").click(function() {
+         $.each($('[type=checkbox]'), function(index,item) {
+            if ($(item).is(':checked')) {
+              $(item).attr('checked')='';
+            }
+         });
+      });
 
       // on startup build table, setup sorter
       $('#results').tablesorter({
@@ -138,11 +146,12 @@
       <br />
       <span class="small">(running live off <a href="https://spreadsheets.google.com/ccc?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE">source data</a>)</span>
     </h2>
-    <form class="deficit">
+    <form id="deficit" class="deficit">
       <label>Deficit Gap</label>
       <input style="width: 30px;" type="text" name="deficit" value="34" class="deficit" />
-      <input type="submit" name="Update" />
+      <input type="submit" name="Update" value="Update" />
     </form>
+    
 
     <div id="infovis-container">
       <div id="infovis"></div>
@@ -150,7 +159,10 @@
 
     <div id="options">
       <form>
-        <table id="results">
+        <input type="submit" name="reset" value="Reset Selection" />
+      </form>
+      <form id="cuts_table">
+       <table id="results">
           <thead>
 	    <tr>
 	      <th></th>
