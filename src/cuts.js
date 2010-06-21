@@ -66,6 +66,10 @@ function loadTreeData(data, deficit, selectedCuts, last_total) {
       }
     }
   });
+  if (last_total < deficit) {
+    var name2=make_label(", TOTAL CUT", total.toFixed(1));
+    _treedata['name'] = _treedata['name'] + name2;
+  }
   // add a child to represent the area not there ...
     var notyetfilled1 = Math.max(deficit-total,0);
     var notyetfilled = notyetfilled1.toFixed(1);

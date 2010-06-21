@@ -29,7 +29,7 @@
           var treedata = loadTreeData(spreadsheetData, deficit, cutsSelected, last_total);
           createTreeMap(treedata, 'infovis', 'Amount &pound;bn');
           return true;
-        }else{
+        } else{
           last_total=-result;
           return false;
         }
@@ -59,23 +59,22 @@
         spreadsheetData = data;
         var tbody = $('<tbody></tbody>');
         var deficit = makeTable(tbody,data);
-	if(deficit>0){
-	  $('input.deficit')[0].value=deficit;
-	}
+        if(deficit>0) {
+          $('input.deficit')[0].value=deficit;
+        }
         $("#results tbody").replaceWith(tbody);
         $("#results").trigger("update");
         var sorting=[[2,1]];
         $("#results").trigger("sorton",[sorting]);
 
-       // have to bind after table is created
-       $('[type=checkbox]').bind("click", function() {
-         if(visualizeDeficit()){
+        // have to bind after table is created
+        $('[type=checkbox]').bind("click", function() {
+          if(visualizeDeficit()){
            return true;
-         }else{
+          } else {
            return false;
-         }
-       });
-
+          }
+        });
         visualizeDeficit();
      });
 
@@ -83,12 +82,20 @@
     </script>
 
     <style type="text/css">
+      body {
+        background-image: none;
+      }
+
+      h1 {
+        display: none;
+      }
+
       h1, h2 {
         text-align: center;
       }
       
       h2 { 
-        margin-top: 2em;
+        margin-top: 10px;
       }
 
       h2 span.small {
@@ -96,7 +103,7 @@
       }
 
       #content {
-        padding: 2em;
+        padding: 15px;
         padding-top: 0;
       }
 
@@ -147,20 +154,19 @@
       <span class="small">(running live off <a href="https://spreadsheets.google.com/ccc?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE">source data</a>)</span>
     </h2>
     <form id="deficit" class="deficit">
-      <label>Deficit Gap</label>
+      <label>Deficit Gap (&pound;bn)</label>
       <input style="width: 30px;" type="text" name="deficit" value="34" class="deficit" />
-      <input type="submit" name="Update" value="Update" />
+      <input type="submit" name="Update" value="Change" />
+      <!--
+      <input type="submit" name="reset" value="Reset Selection" />
+      -->
     </form>
-    
 
     <div id="infovis-container">
       <div id="infovis"></div>
     </div>
 
     <div id="options">
-      <form>
-        <input type="submit" name="reset" value="Reset Selection" />
-      </form>
       <form id="cuts_table">
        <table id="results">
           <thead>
@@ -177,9 +183,20 @@
     </div>
 
     <h2 id="about">About</h2>
-    <p style="width: 50%; text-align: center; margin: auto;">Researched by Lisa Evans and Tim Hubbard using many figures from the <a href="http://www.ifs.org.uk/">IFS</a>. Visualized by <a href="http://rufuspollock.org/">Rufus Pollock</a> using the <a href="http://thejit.org/">thejit</a> and jquery.</p>
+    <p style="width: 50%; text-align: center; margin: auto;">
+    A creation of the <a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> team. Researched by Lisa Evans and Tim Hubbard using many figures from the <a href="http://www.ifs.org.uk/">IFS</a>. Visualized by <a href="http://rufuspollock.org/">Rufus Pollock</a> using the <a href="http://thejit.org/">thejit</a> and jquery.</p>
 
   </div><!-- /content -->
+
+<script type="text/javascript"> 
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script> 
+<script type="text/javascript"> 
+try {
+var pageTracker = _gat._getTracker("UA-8271754-8");
+pageTracker._trackPageview();
+} catch(err) {}</script> 
   </body>
 </html>
 
