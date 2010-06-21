@@ -80,16 +80,20 @@ function loadTreeData(data, deficit, selectedCuts, last_total) {
   return $.toJSON(_treedata);
 }
 
-function makeTable(data) {
-  var _tbody = $('<tbody></tbody>');
+function makeTable(_tbody,data) {
+  var deficit=0;
   $.each(data.feed.entry, function(i,entry){
-    var _newrow = $("<tr></tr>");
-    _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" />'));
-    _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
+    if(entry.gsx$increaseorcut.$t == 'Deficit'){
+      deficit=parseFloat(entry.gsx$amountbn.$t);
+    }else{
+      var _newrow = $("<tr></tr>");
+      _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" />'));
+      _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
       var amount = parseFloat(entry.gsx$amountbn.$t);
       _newrow.append($('<td class="amount"></td>').append('' + amount.toFixed(1)));
-    _newrow.append($('<td></td>').append('' + entry.gsx$increaseorcut.$t));
-    _tbody.append(_newrow);
+      _newrow.append($('<td></td>').append('' + entry.gsx$increaseorcut.$t));
+      _tbody.append(_newrow);
+    }
   });
-  return _tbody;
+  return deficit;
 }
