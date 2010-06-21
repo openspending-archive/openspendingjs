@@ -89,6 +89,7 @@ function makeTable(_tbody,data) {
   $.each(data.feed.entry, function(i,entry){
     if(entry.gsx$increaseorcut.$t == 'Deficit'){
       deficit=parseFloat(entry.gsx$amountbn.$t);
+    }else if(entry.gsx$use.$t == 'FALSE'){
     }else{
       var _newrow = $("<tr></tr>");
       _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" />'));
