@@ -43,7 +43,7 @@
 
       // on startup build table, setup sorter
       $('#results').tablesorter({
-        headers: {0: {sorter: false}}
+        headers: {0: {sorter: false},2: {sorter: 'digit'}}
       });
       var apiurl = 'http://spreadsheets.google.com/feeds/list/0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE/od6/public/values?alt=json-in-script&callback=?'
       // var apiurl = 'cuts-gdocs.js';
