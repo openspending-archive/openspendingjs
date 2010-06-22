@@ -50,6 +50,9 @@ function loadTreeData(data, deficit, selectedCuts, last_total) {
       if (increaseorcut == "cut") {
         color = "20"; 
       }
+      if (entry.gsx$use.$t.toLowerCase() == 'planned') {
+        color = "25";
+      }
       var newnode = {
         "id": i,
         "name": make_label(entry.gsx$description.$t, amount),
@@ -91,8 +94,15 @@ function makeTable(_tbody,data) {
       deficit=parseFloat(entry.gsx$amountbn.$t);
     }else if(entry.gsx$use.$t == 'FALSE'){
     }else{
-      var _newrow = $("<tr></tr>");
-      _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" />'));
+      var checked='';
+      var _newrow;
+      if(entry.gsx$use.$t == 'PLANNED'){
+        checked='checked';
+        _newrow = $('<tr class="darkrow"></tr>');
+      }else{
+        _newrow = $('<tr></tr>');
+      }
+      _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" ' + checked + '/>'));
       _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
       var amount = parseFloat(entry.gsx$amountbn.$t);
       _newrow.append($('<td class="amount"></td>').append('' + amount.toFixed(1)));
