@@ -51,7 +51,7 @@ function loadTreeData(data, deficit, selectedCuts, last_total) {
         color = "20"; 
       }
       if (entry.gsx$use.$t.toLowerCase() == 'planned') {
-        color = "25";
+        color = "-17";
       }
       var newnode = {
         "id": i,
@@ -99,8 +99,10 @@ function makeTable(_tbody,data) {
       if(entry.gsx$use.$t == 'PLANNED'){
         checked='checked';
         _newrow = $('<tr class="darkrow"></tr>');
+      }else if(entry.gsx$increaseorcut.$t.toLowerCase() == 'cut'){
+        _newrow = $('<tr class="cutrow"></tr>');
       }else{
-        _newrow = $('<tr></tr>');
+        _newrow = $('<tr class="increaserow"></tr>');
       }
       _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" ' + checked + '/>'));
       _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
