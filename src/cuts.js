@@ -50,9 +50,9 @@ function loadTreeData(data, deficit, selectedCuts, last_total) {
       if (increaseorcut == "cut") {
         color = "20"; 
       }
-      if (entry.gsx$use.$t.toLowerCase() == 'planned') {
-        color = "-17";
-      }
+      // if (entry.gsx$use.$t.toLowerCase() == 'planned') {
+      //  color = "30";
+      // }
       var newnode = {
         "id": i,
         "name": make_label(entry.gsx$description.$t, amount),
@@ -95,14 +95,15 @@ function makeTable(_tbody,data) {
     }else if(entry.gsx$use.$t == 'FALSE'){
     }else{
       var checked='';
-      var _newrow;
-      if(entry.gsx$use.$t == 'PLANNED'){
+      var _newrow = $('<tr></tr>');
+      if (entry.gsx$use.$t == 'PLANNED') {
         checked='checked';
-        _newrow = $('<tr class="darkrow"></tr>');
-      }else if(entry.gsx$increaseorcut.$t.toLowerCase() == 'cut'){
-        _newrow = $('<tr class="cutrow"></tr>');
-      }else{
-        _newrow = $('<tr class="increaserow"></tr>');
+        _newrow.addClass('darkrow');
+      }
+      if (entry.gsx$increaseorcut.$t.toLowerCase() == 'cut') {
+        _newrow.addClass('cutrow');
+      } else {
+        _newrow.addClass('increaserow');
       }
       _newrow.append($('<td></td>').append('<input type="checkbox" name="' + entry.gsx$description.$t + '" number="' + entry.gsx$amountbn.$t + '" ' + checked + '/>'));
       _newrow.append($('<td></td>').append('' + entry.gsx$description.$t));
