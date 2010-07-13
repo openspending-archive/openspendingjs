@@ -6,6 +6,10 @@ h1, h2 {
   text-align: center;
 }
 
+#content {
+  padding: 15px;
+  padding-top: 0;
+}
 
 /* thejit */
 #infovis {
