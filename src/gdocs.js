@@ -1,5 +1,6 @@
 function gdocsToJavascript(gdocsSpreadsheet) {
 	/*
+	:return: tabular data object (hash with keys: header and data).
 
 	Issues: seems google docs return columns in rows in random order and not even sure whether consistent across rows.
 	*/
@@ -28,3 +29,20 @@ function gdocsToJavascript(gdocsSpreadsheet) {
 	});
 	return results;
 }
+
+function writeTabularAsHtml(tabular) {
+	var _thead = $('<thead></thead>');
+	$.each(tabular.header, function(i,col) {
+		_thead.append($('<th></th>').append(col));
+	});
+	var _tbody = $('<tbody></tbody>');
+	$.each(tabular.data, function(i,row) {
+		var _newrow = $('<tr></tr>');
+		$.each(row, function(j, cell) {
+		  _newrow.append($('<td></td>').append(cell));
+		});
+		_tbody.append(_newrow);
+	});
+	return {'thead': _thead, 'tbody': _tbody};
+}
+
