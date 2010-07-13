@@ -1,10 +1,3 @@
-function debug(message) {
-  var console = window['console'];
-  if (console && console.log) {
-    console.log(message);
-  }
-}
-
 function createTreeMap(json, elementId, amountLabel) {
     var get = function(id){
         return document.getElementById(id);

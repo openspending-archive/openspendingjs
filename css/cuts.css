@@ -1,13 +1,5 @@
-body {
-  background-image: none;
-}
-
 h1 {
   display: none;
-}
-
-h1, h2 {
-  text-align: center;
 }
 
 h2 { 
