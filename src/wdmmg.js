@@ -131,7 +131,7 @@ function setupFlot(all_datasets, chartControls) {
 		seriesList.append(all_datasets[datasetKey].label);
 	}
 
-	chartControls.find("input").live('click', function() {
+	chartControls.find('.chart-type').find('input').live('click', function() {
 		doFlotPlot(all_datasets, chartControls);
 	});
 
