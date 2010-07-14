@@ -22,12 +22,11 @@
     <script type="text/javascript" src="debug.js"></script>
     <script type="text/javascript" src="wdmmg.js"></script>
     <script type="text/javascript" src="gdocs.js"></script>
+    <script type="text/javascript" src="budgetizer-config.js"></script>
 
     <script type="text/javascript">
     $(document).ready(function(){
-      // on startup build table, setup sorter
-      var apiurl = 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od6/public/values?alt=json-in-script&callback=?'
-      // var apiurl = 'budgetizer-sample.json'
+      var apiurl = BudgetConfig.models[0].spreadsheet_url;
       $.getJSON(apiurl, function(data) {
         var tabular = gdocsToJavascript(data);
         var filterFunc = function(row) {
@@ -82,7 +81,7 @@
       <div id="chart" style="width: 80%; margin: auto; height: 300px;"></div>
       <div id="chart-controls">
         <div class="chart-type">
-          <input type="checkbox" name="lines" /> lines
+          <input type="checkbox" value="lines" name="lines" /> Lines
         </div>
         <div class="select-series">
           <div id="series-list">
