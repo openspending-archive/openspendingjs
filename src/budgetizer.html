@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Where Does My Money Go? - Closing the Deficit Gap</title>
+    <link rel="stylesheet" href="http://assets.okfn.org/kforge/css/master.css" type="text/css" />
+    <link rel="stylesheet" href="http://assets.okfn.org/ext/jquery.tablesorter/style.css" type="text/css">
+    <link rel="stylesheet" href="../css/wdmmg.css" type="text/css">
+
+    <!--
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://assets.okfn.org/ext/jquery.tablesorter/2.0.3/jquery.tablesorter.js"></script>
+    <script type="text/javascript" src="http://assets.okfn.org/ext/flot/0.6/excanvas.min.js"></script>
+    <script type="text/javascript" src="http://assets.okfn.org/ext/flot/0.6/jquery.flot.min.js"></script>
+    -->
+    <!--[if IE]><script language="javascript" type="text/javascript" 
+       src="vendor/flot-0.6/excanvas.min.js"></script><![endif]-->
+    <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="vendor/jquery.tablesorter-2.0.3.js"></script>
+    <script type="text/javascript" src="vendor/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="vendor/flot-0.6/jquery.flot.js"></script>
+
+    <script type="text/javascript" src="debug.js"></script>
+    <script type="text/javascript" src="wdmmg.js"></script>
+    <script type="text/javascript" src="gdocs.js"></script>
+
+    <script type="text/javascript">
+    $(document).ready(function(){
+      // on startup build table, setup sorter
+      var apiurl = 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od6/public/values?alt=json-in-script&callback=?'
+      // var apiurl = 'budgetizer-sample.json'
+      $.getJSON(apiurl, function(data) {
+        var tabular = gdocsToJavascript(data);
+        var filterFunc = function(row) {
+          return row[0] != 'NOTES';
+        }
+        tabular.data = tabular.data.filter(filterFunc);
+        var tabularHtml = writeTabularAsHtml(tabular);
+        var resultsTable = $('#results');
+        resultsTable.append(tabularHtml['thead']);
+        resultsTable.append(tabularHtml['tbody']);
+        resultsTable.tablesorter();
+        flotDatasets = {
+          gdp: {
+            label: 'GDP',
+            data: makeSeries(tabular, 'period', 'gdp')
+          },
+          // deficitgdp: {
+          //   label: 'Deficit (%tage GDP)',
+          //   data: makeSeries(tabular, 'period', 'deficitgdp')
+          // },
+          deficit: {
+            label: 'deficit',
+            data: makeSeries(tabular, 'period', 'deficit')
+          }
+        }
+        var chartControls = $("#chart-controls");
+        setupFlot(flotDatasets, chartControls);
+        doFlotPlot(flotDatasets, chartControls);
+      });
+    });
+    </script>
+
+    <style type="text/css">
+      table#results {
+        font-size: 60%;
+      }
+    </style>
+  </head>
+  <body>
+  <h1><a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/budget/">Budgetiser</a></h1>
+
+  <div id="content">
+    <!--
+    <form id="deficit" class="deficit">
+      <label>Source Spreadsheet</label>
+      <input type="text" name="model_url" value="tFggM4NNja9rSzUd_qQTv9w" class="deficit" />
+      <input type="submit" name="Update" value="Update" />
+    </form>
+    -->
+
+    <div class="chart-container">
+      <div id="chart" style="width: 80%; margin: auto; height: 300px;"></div>
+      <div id="chart-controls">
+        <div class="chart-type">
+          <input type="checkbox" name="lines" /> lines
+        </div>
+        <div class="select-series">
+          <div id="series-list">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table id="results" class="tablesorter">
+    </table>
+
+    <h2 id="about">About</h2>
+    <p style="width: 50%; text-align: center; margin: auto;">
+    A creation of the <a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> team. Researched by Tim Hubbard. Visualized by <a href="http://rufuspollock.org/">Rufus Pollock</a>.</p>
+  </div><!-- /content -->
+  </body>
+</html>
+
+

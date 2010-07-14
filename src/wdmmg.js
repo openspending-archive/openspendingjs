@@ -87,3 +87,79 @@ function createTreeMap(json, elementId, amountLabel) {
     tm.loadJSON(pjson);
     //end
 }
+
+function makeSeries(tabular, firstColumnName, secondColumnName) {
+	var idx1 = tabular.header.indexOf(firstColumnName);
+	var idx2 = tabular.header.indexOf(secondColumnName);
+	var series = [];
+	$.each(tabular.data, function(i,row) {
+		series.push([ row[idx1], row[idx2] ]);
+	});
+	return series;
+}
+
+function setupFlot(all_datasets, chartControls) {
+	/*
+	Plot a set of datasets using flot.
+
+	:param all_datasets: list of datasets. Should look like:
+
+		"series-1": {
+			label: "Label 1",
+			data: [[1988, 483994], [1989, 479060]]
+			},        
+		"series-2": {
+			label: "Label 2",
+			data: [[1988, 218000], [1989, 203000]]
+		}
+	*/
+	// hard-code color indices to prevent them from shifting as
+	// series are turned on/off
+	var i = 0;
+	$.each(all_datasets, function(key, val) {
+		  val.color = i;
+		  ++i;
+	});
+	
+	// setup checkboxes 
+	var seriesList = $("#series-list");
+	for (var datasetKey in all_datasets) {
+		var input = $('<input type="checkbox"></input>');
+		input.attr('name', datasetKey);
+		input.attr('checked', 'checked');
+		seriesList.append(input);
+		seriesList.append(all_datasets[datasetKey].label);
+	}
+
+	chartControls.find("input").live('click', function() {
+		doFlotPlot(all_datasets, chartControls);
+	});
+
+	// setup charttype
+	var chartType = "lines";
+	var x = chartControls.find(".chart-type").find("input[value="+chartType+"]");
+	x.attr("checked", true);
+}
+
+function doFlotPlot(all_datasets, chartControls, options) {
+	/*
+	:param options: optional set of options to be passed to flot plot.
+	*/
+	if (!options) {
+		var options = {};
+	}
+	var datasets_to_plot = []
+	chartControls.find(".select-series").find("input:checked").each(function () {
+	  var key = $(this).attr("name");
+	  if (key) {
+		if (all_datasets[key]) {
+		  datasets_to_plot.push(all_datasets[key]);
+		}
+	  }
+	});
+	chartControls.find(".chart-type").find("input:checked").each(function() {
+	  var value = $(this).attr("value");
+	  options[value] = { show: true };
+	});
+	$.plot($("#chart"), datasets_to_plot, options);
+}

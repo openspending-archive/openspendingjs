@@ -27,3 +27,9 @@ h1, h2 {
 label {
   display: inline;
 }
+
+table {
+  margin-top: 1em;
+  overflow: auto;
+}
+
