@@ -98,7 +98,7 @@ function makeSeries(tabular, firstColumnName, secondColumnName) {
 	return series;
 }
 
-function setupFlot(all_datasets, chartControls) {
+function setupFlot(all_datasets, flotChart) {
 	/*
 	Plot a set of datasets using flot.
 
@@ -122,7 +122,7 @@ function setupFlot(all_datasets, chartControls) {
 	});
 	
 	// setup checkboxes 
-	var seriesList = $("#series-list");
+	var seriesList = flotChart.find(".flot-select-series");
 	for (var datasetKey in all_datasets) {
 		var input = $('<input type="checkbox"></input>');
 		input.attr('name', datasetKey);
@@ -131,17 +131,17 @@ function setupFlot(all_datasets, chartControls) {
 		seriesList.append(all_datasets[datasetKey].label);
 	}
 
-	chartControls.find('.chart-type').find('input').live('click', function() {
-		doFlotPlot(all_datasets, chartControls);
+	flotChart.find('.flot-chart-controls').find('input').live('click', function() {
+		doFlotPlot(all_datasets, flotChart);
 	});
 
 	// setup charttype
 	var chartType = "lines";
-	var x = chartControls.find(".chart-type").find("input[value="+chartType+"]");
+	var x = flotChart.find(".flot-chart-type").find("input[value="+chartType+"]");
 	x.attr("checked", true);
 }
 
-function doFlotPlot(all_datasets, chartControls, options) {
+function doFlotPlot(all_datasets, flotChart, options) {
 	/*
 	:param options: optional set of options to be passed to flot plot.
 	*/
@@ -149,7 +149,7 @@ function doFlotPlot(all_datasets, chartControls, options) {
 		var options = {};
 	}
 	var datasets_to_plot = []
-	chartControls.find(".select-series").find("input:checked").each(function () {
+	flotChart.find(".flot-select-series").find("input:checked").each(function () {
 	  var key = $(this).attr("name");
 	  if (key) {
 		if (all_datasets[key]) {
@@ -157,9 +157,10 @@ function doFlotPlot(all_datasets, chartControls, options) {
 		}
 	  }
 	});
-	chartControls.find(".chart-type").find("input:checked").each(function() {
+	flotChart.find(".flot-chart-type").find("input:checked").each(function() {
 	  var value = $(this).attr("value");
 	  options[value] = { show: true };
 	});
-	$.plot($("#chart"), datasets_to_plot, options);
+	var chartDiv = flotChart.find('.flot-chart')[0]; 
+	$.plot(chartDiv, datasets_to_plot, options);
 }

@@ -1,4 +1,8 @@
-var DEBUG = true;
+// TODO: run this off a query param so you can do ?debug=1
+// suggest copying this plugin code into debug.js
+// http://ajaxcssblog.com/jquery/url-read-request-variables/ 
+// Then we can do: var DEBUG = getQueryParams['debug'] || false
+var DEBUG = false;
 var BudgetConfig = {
 	models: [
 		{

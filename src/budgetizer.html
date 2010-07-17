@@ -52,9 +52,9 @@
             data: makeSeries(tabular, 'period', 'deficit')
           }
         }
-        var chartControls = $("#chart-controls");
-        setupFlot(flotDatasets, chartControls);
-        doFlotPlot(flotDatasets, chartControls);
+        var flotChart1 = $("#flot-chart-1");
+        setupFlot(flotDatasets, flotChart1);
+        doFlotPlot(flotDatasets, flotChart1);
       });
     });
     </script>
@@ -69,27 +69,19 @@
   <h1><a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/budget/">Budgetiser</a></h1>
 
   <div id="content">
-    <!--
-    <form id="deficit" class="deficit">
-      <label>Source Spreadsheet</label>
-      <input type="text" name="model_url" value="tFggM4NNja9rSzUd_qQTv9w" class="deficit" />
-      <input type="submit" name="Update" value="Update" />
-    </form>
-    -->
 
-    <div class="chart-container">
-      <div id="chart" style="width: 80%; margin: auto; height: 300px;"></div>
-      <div id="chart-controls">
-        <div class="chart-type">
+    <div id="flot-chart-1">
+      <h2 class="flot-title"></h2>
+      <div class="flot-chart" style="width: 80%; margin: auto; height: 300px;"></div>
+      <div class="flot-chart-controls">
+        <div class="flot-chart-type">
           Chart type:
           <input type="checkbox" value="lines" name="lines" /> Lines
           <input type="checkbox" value="points" name="points" /> Points
           <input type="checkbox" value="bars" name="bars" /> Bars
         </div>
-        <div class="select-series">
-          <div id="series-list">
+        <div class="flot-select-series">
             Series:
-          </div>
         </div>
       </div>
     </div>
