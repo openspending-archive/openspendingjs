@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="http://assets.okfn.org/kforge/css/master.css" type="text/css" />
     <link rel="stylesheet" href="http://assets.okfn.org/ext/jquery.tablesorter/style.css" type="text/css">
     <link rel="stylesheet" href="../css/wdmmg.css" type="text/css">
+    <link rel="stylesheet" href="../css/budgetizer.css" type="text/css">
 
     <!--
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -23,56 +24,32 @@
     <script type="text/javascript" src="wdmmg.js"></script>
     <script type="text/javascript" src="gdocs.js"></script>
     <script type="text/javascript" src="budgetizer-config.js"></script>
+    <script type="text/javascript" src="budgetizer.js"></script>
 
     <script type="text/javascript">
     $(document).ready(function(){
-      var apiurl = BudgetConfig.models[0].spreadsheet_url;
-      $.getJSON(apiurl, function(data) {
-        var tabular = gdocsToJavascript(data);
-        var filterFunc = function(row) {
-          return row[0] != 'NOTES';
-        }
-        tabular.data = tabular.data.filter(filterFunc);
-        var tabularHtml = writeTabularAsHtml(tabular);
-        var resultsTable = $('#results');
-        resultsTable.append(tabularHtml['thead']);
-        resultsTable.append(tabularHtml['tbody']);
-        resultsTable.tablesorter();
-        flotDatasets = {
-          gdp: {
-            label: 'GDP',
-            data: makeSeries(tabular, 'period', 'gdp')
-          },
-          // deficitgdp: {
-          //   label: 'Deficit (%tage GDP)',
-          //   data: makeSeries(tabular, 'period', 'deficitgdp')
-          // },
-          deficit: {
-            label: 'deficit',
-            data: makeSeries(tabular, 'period', 'deficit')
-          }
-        }
-        var flotChart1 = $("#flot-chart-1");
-        setupFlot(flotDatasets, flotChart1);
-        doFlotPlot(flotDatasets, flotChart1);
+      $.each(BudgetConfig.models, function(i, model) {
+        var j = i+1;
+        var htmlTable = $('#results-' + j);
+        var flotChart = $('#flot-chart-' + j);
+        displayModel(model, htmlTable, flotChart);
+        $('#model-title-' + j).append(model.title).append(' (<a href="' + model.spreadsheet_url + '">source</a>)');
+        $('#model-notes-' + j).append(model.notes);
       });
     });
     </script>
 
     <style type="text/css">
-      table#results {
-        font-size: 60%;
-      }
     </style>
   </head>
   <body>
-  <h1><a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/budget/">Budgetiser</a></h1>
+  <h1><a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/budget/">Budgetizer</a></h1>
 
   <div id="content">
-
-    <div id="flot-chart-1">
-      <h2 class="flot-title"></h2>
-      <div class="flot-chart" style="width: 80%; margin: auto; height: 300px;"></div>
+    <h2 class="model-title" id="model-title-1"></h2>
+    <div class="model-notes" id="model-notes-1"></div>
+    <div id="flot-chart-1" class="flot">
+      <div class="flot-chart"></div>
       <div class="flot-chart-controls">
         <div class="flot-chart-type">
           Chart type:
@@ -86,7 +63,28 @@
       </div>
     </div>
 
-    <table id="results" class="tablesorter">
+    <table id="results-1" class="model-results tablesorter">
+    </table>
+
+  
+    <h2 class="model-title" id="model-title-2"></h2>
+    <div class="model-notes" id="model-notes-2"></div>
+    <div id="flot-chart-2" class="flot">
+      <div class="flot-chart"></div>
+      <div class="flot-chart-controls">
+        <div class="flot-chart-type">
+          Chart type:
+          <input type="checkbox" value="lines" name="lines" /> Lines
+          <input type="checkbox" value="points" name="points" /> Points
+          <input type="checkbox" value="bars" name="bars" /> Bars
+        </div>
+        <div class="flot-select-series">
+            Series:
+        </div>
+      </div>
+    </div>
+
+    <table id="results-2" class="model-results tablesorter">
     </table>
 
     <h2 id="about">About</h2>

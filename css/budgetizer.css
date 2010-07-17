@@ -1,0 +1,34 @@
+table.model-results {
+  font-size: 60%;
+  float: right;
+  max-width: 35%;
+}
+
+div.flot {
+  float: left;
+  width: 60%;
+}
+
+.flot-chart {
+  height: 250px;
+  width: 100%;
+}
+
+.flot-chart-controls {
+  font-size: 80%;
+}
+
+.model-notes {
+  text-align: center;
+  text-decoration: italic;
+  margin-bottom: 1em;
+}
+
+.model-title {
+  clear: both;
+}
+
+#about {
+  clear: both;
+}
+

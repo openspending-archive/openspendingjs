@@ -3,15 +3,22 @@
 // http://ajaxcssblog.com/jquery/url-read-request-variables/ 
 // Then we can do: var DEBUG = getQueryParams['debug'] || false
 var DEBUG = false;
+var _COLS = [ 'period', 'label', 'gdp', 'inflation', 'growth', 'receipts', 'expenditure', 'deficit' ];
 var BudgetConfig = {
 	models: [
 		{
-			'title': 'Default setup',
-			'spreadsheet_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od6/public/values?alt=json-in-script&callback=?',
+			'title': 'Model 1',
+			'notes': 'The basic model.',
+			'columns': _COLS,
+			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od6/public/values?alt=json-in-script&callback=?',
+			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=0'
 		},
 		{
-			'title': 'Sheet 2',
-			'spreadsheet_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od7/public/values?alt=json-in-script&callback=?',
+			'title': 'Model 2',
+			'notes': 'A more complex model.',
+			'columns': _COLS,
+			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od7/public/values?alt=json-in-script&callback=?',
+			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=1'
 		}
 	]
 };
