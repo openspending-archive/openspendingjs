@@ -8,14 +8,14 @@ var BudgetConfig = {
 	models: [
 		{
 			'title': 'Model 1',
-			'notes': 'The basic model.',
+			'notes': 'pre-budget 2010',
 			'columns': _COLS,
 			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od6/public/values?alt=json-in-script&callback=?',
 			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=0'
 		},
 		{
 			'title': 'Model 2',
-			'notes': 'A more complex model.',
+			'notes': 'post-budget 2010',
 			'columns': _COLS,
 			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od7/public/values?alt=json-in-script&callback=?',
 			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=1'
