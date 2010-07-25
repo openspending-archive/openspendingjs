@@ -17,8 +17,8 @@
     </style>
   </head>
   <body>
-    <h1>National Deficit and Debts Around the World (as of 2009)</h1>
-    <p>Figures are shown as a percentage of GDP. Deficit (first figure, black) is excess of government expenditure over income (in 2009). Debt (second figure, gray) is total national debt (the impact of accumulated deficits/surpluses to date). Black ring shows 100% GDP. (<a href="https://spreadsheets.google.com/pub?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE&gid=5">Source data</a>).</p>
+    <h1>National Deficit and Debts Around the World in 2009</h1>
+    <p>Figures are shown as a percentage of GDP. Deficit (first figure, black) is excess of government expenditure over income (in 2009). Debt (second figure, gray) is total national debt (the impact of accumulated deficits/surpluses to date). Black ring shows 100% GDP. (<a target="_blank" href="https://spreadsheets.google.com/pub?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE&gid=5">Source data</a>).</p>
 
     <div id="center"><div id="fig">
 
@@ -72,10 +72,16 @@ vis.add(pv.Panel)
   .anchor('top')
     .add(pv.Label)
     .left(function(d) (d[0]+1)*100+d[0]*50)
-    .top(50)
+    .top(40)
     .text(function(d) {
         return d[1] + ' (' + d[2] + '%, ' + d[3] + '%)';
         });
+
+vis.add(pv.Label)
+    .left(0)
+    .bottom(b)
+    .text('2009');
+
 
 vis.render();
     </script>
