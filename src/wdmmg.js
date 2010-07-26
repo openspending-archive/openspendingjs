@@ -98,7 +98,7 @@ function makeSeries(tabular, firstColumnName, secondColumnName) {
 	return series;
 }
 
-function setupFlot(all_datasets, flotChart) {
+function setupFlot(all_datasets, flotChart, options, flotGroup0) {
 	/*
 	Plot a set of datasets using flot.
 
@@ -113,63 +113,94 @@ function setupFlot(all_datasets, flotChart) {
 			data: [[1988, 218000], [1989, 203000]]
 		}
 	*/
-	// hard-code color indices to prevent them from shifting as
-	// series are turned on/off
-	var i = 0;
-	$.each(all_datasets, function(key, val) {
-		  val.color = i;
-		  ++i;
-	});
+    // hard-code color indices to prevent them from shifting as
+    // series are turned on/off
+    var i = 0;
+    $.each(all_datasets, function(key, val) {
+	val.color = i;
+	++i;
+    });
 	
-	// setup checkboxes 
-	var seriesList = flotChart.find(".flot-select-series");
+    // setup checkboxes 
+    var seriesList = flotChart.find(".flot-select-series");
+    if(flotGroup0){
+	var groups=[];
 	for (var datasetKey in all_datasets) {
-		var input = $('<input type="checkbox"></input>');
-		input.attr('name', datasetKey);
+	    var group=all_datasets[datasetKey].group;
+	    if(!groups[group]){
+		groups[group]=1;
+		var input = $('<input type="radio"></input>');
+		input.attr('name', 'flot-radio');
+		input.attr('value', group);
 		input.attr('checked', 'checked');
 		seriesList.append(input);
-		seriesList.append(all_datasets[datasetKey].label);
+		seriesList.append(group);
+	    }
 	}
+    }else{
+	for (var datasetKey in all_datasets) {
+	    var input = $('<input type="checkbox"></input>');
+	    input.attr('name', datasetKey);
+	    input.attr('value', datasetKey);
+	    input.attr('checked', 'checked');
+	    seriesList.append(input);
+	    seriesList.append(all_datasets[datasetKey].label);
+	}
+    }
 
-	flotChart.find('.flot-chart-controls').find('input').live('click', function() {
-		doFlotPlot(all_datasets, flotChart);
-	});
-
-	// setup charttype
-	var chartType = "lines";
-	var x = flotChart.find(".flot-chart-type").find("input[value="+chartType+"]");
-	x.attr("checked", true);
+    flotChart.find('.flot-chart-controls').find('input').live('click', function() {
+	doFlotPlot(all_datasets, flotChart, options, flotGroup0);
+    });
+    
+    // setup charttype
+    var chartType = "lines";
+    var x = flotChart.find(".flot-chart-type").find("input[value="+chartType+"]");
+    x.attr("checked", true);
 }
 
-function doFlotPlot(all_datasets, flotChart, options) {
-	/*
-	:param options: optional set of options to be passed to flot plot.
-	*/
-	if (!options) {
-	    options = {};
-	}
-        // select datesets according to current state
-	var datasets_to_plot = []
-	flotChart.find(".flot-select-series").find("input:checked").each(function () {
-	  var key = $(this).attr("name");
-	  if (key) {
+function doFlotPlot(all_datasets, flotChart, options, flotGroup0) {
+    /*
+      :param options: optional set of options to be passed to flot plot.
+    */
+    if (!options) {
+	options = {};
+    }
+
+    // select datesets according to current state
+    var datasets_to_plot = []
+    flotChart.find(".flot-select-series").find("input:checked").each(function () {
+	var key = $(this).attr("value");
+	if (key) {
+	    if(flotGroup0){
+		var flotSet=flotGroup0[key];
+		$.each(flotSet, function(i, keys) {
+		    if (all_datasets[keys]) {
+			datasets_to_plot.push(all_datasets[keys]);
+		    }
+		});
+	    }else{
 		if (all_datasets[key]) {
-		  datasets_to_plot.push(all_datasets[key]);
+		    datasets_to_plot.push(all_datasets[key]);
 		}
-	  }
-	});
-        // select plot type according to current state
-	flotChart.find(".flot-chart-type").find("input:checked").each(function() {
-	  var value = $(this).attr("value");
-	  options[value] = { show: true };
-	});
-        // select range according to current state
-	flotChart.find(".flot-select-range").find("input:checked").each(function() {
-            var key=$(this).attr("value");
-            if(key=='plusminusfive'){
-              options['xaxis'] = { min: 2005, max: 2015 };
-            }
-	});
-	var chartDiv = flotChart.find('.flot-chart')[0]; 
-	$.plot(chartDiv, datasets_to_plot, options);
+	    }
+	}
+    });
+
+    // select plot type according to current state
+    flotChart.find(".flot-chart-type").find("input:checked").each(function() {
+	var value = $(this).attr("value");
+	options[value] = { show: true };
+    });
+
+    // select range according to current state
+    flotChart.find(".flot-select-range").find("input:checked").each(function() {
+        var key=$(this).attr("value");
+        if(key=='plusminusfive'){
+            options['xaxis'] = { min: 2005, max: 2015 };
+        }else{
+	    options['xaxis'] = {};
+	}
+    });
+    var chartDiv = flotChart.find('.flot-chart')[0]; 
+    $.plot(chartDiv, datasets_to_plot, options);
 }

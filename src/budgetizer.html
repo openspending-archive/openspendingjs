@@ -29,11 +29,15 @@
     <script type="text/javascript">
     $(document).ready(function(){
     var flotDatasets0 = {};
+    var flotGroup0 = [];
+    $.each(ColDisplay, function(i,col) {
+       flotGroup0[col] = [];
+    });
     $.each(BudgetConfig.models, function(i, model) {
         var j = i+1;
         var htmlTable = $('#results-' + j);
         var flotChart = $('#flot-chart-' + j);
-        displayModel(model, htmlTable, flotChart, ColDisplay, j, flotDatasets0);
+        displayModel(model, htmlTable, flotChart, ColDisplay, j, flotDatasets0, flotGroup0);
         $('#model-title-' + j).append(model.title).append(' (<a href="' + model.spreadsheet_url + '">source</a>)');
         $('#model-notes-' + j).append(model.notes);
       });
@@ -67,7 +71,7 @@
         </div>
       </div>
    </div>
-
+   <div id="flot-legend" class="flot-legend"></div>
     
     <h2 class="model-title" id="model-title-1"></h2>
     <div class="model-notes" id="model-notes-1"></div>

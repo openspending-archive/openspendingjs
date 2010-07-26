@@ -18,21 +18,21 @@ var BudgetConfig = {
 	models: [
 		{
 			'title': 'Model 3',
-			'notes': '2010 June post-budget projection',
+			'notes': '2010 June post-budget',
 			'columns': _COLS,
 			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od7/public/values?alt=json-in-script&callback=?',
 			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=1'
 		},
 		{
 			'title': 'Model 2',
-			'notes': '2010 June pre-budget projection',
+			'notes': '2010 June pre-budget',
 			'columns': _COLS,
 			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od6/public/values?alt=json-in-script&callback=?',
 			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=0'
 		},
 		{
 			'title': 'Model 1',
-			'notes': '2008 August projection',
+			'notes': '2008 August',
 			'columns': _COLS,
 			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od5/public/values?alt=json-in-script&callback=?',
 			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=2'
