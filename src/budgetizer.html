@@ -37,7 +37,7 @@
         var j = i+1;
         var htmlTable = $('#results-' + j);
         var flotChart = $('#flot-chart-' + j);
-        displayModel(model, htmlTable, flotChart, ColDisplay, j, flotDatasets0, flotGroup0);
+        displayModel(model, htmlTable, flotChart, ColDisplay, i, flotDatasets0, flotGroup0);
         $('#model-title-' + j).append(model.title).append(' (<a href="' + model.spreadsheet_url + '">source</a>)');
         $('#model-notes-' + j).append(model.notes);
       });

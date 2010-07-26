@@ -117,8 +117,12 @@ function setupFlot(all_datasets, flotChart, options, flotGroup0) {
     // series are turned on/off
     var i = 0;
     $.each(all_datasets, function(key, val) {
-	val.color = i;
-	++i;
+	if(val.setid){
+	    val.color=(val.setid-1);
+	}else{
+	    val.color = i;
+	    ++i;
+	}
     });
 	
     // setup checkboxes 

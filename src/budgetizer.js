@@ -22,12 +22,14 @@ function displayModel(modelConfig, htmlTable, flotChartDiv, ColDisplay, index, f
 		data: makeSeries(tabular, 'period', col)
 	    };
 	    var col1=col+index;
+	    var index1=index+1;
 	    flotDatasets0[col1] = {
 		'label': col+':'+modelConfig.notes,
 		'group': col,
+		'setid': index1,
 		data: makeSeries(tabular, 'period', col)
 	    };
-	    flotGroup0[col].push(col1);
+	    flotGroup0[col][index]=col1;
 	});
 	
 	setupFlot(flotDatasets, flotChartDiv);
