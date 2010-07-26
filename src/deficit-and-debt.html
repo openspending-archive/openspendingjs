@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>Deficit and Debt</title>
+    <script type="text/javascript" src="debug.js"></script>
+    <script type="text/javascript" src="vendor/protovis-3.2/protovis-d3.2.js"></script>
+    <style type="text/css">
+      body {
+        font: oblique 16px baskerville;
+        padding: 2em;
+      }
+
+      h1 {
+        text-align: center;
+        font: normal 28px baskerville;
+        font-weight: normal;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>National Deficit and Debts Around the World in 2009</h1>
+    <p>Figures are shown as a percentage of GDP. Deficit (first figure, black) is excess of government expenditure over income (in 2009). Debt (second figure, gray) is total national debt (the impact of accumulated deficits/surpluses to date). Black ring shows 100% GDP. (<a target="_blank" href="https://spreadsheets.google.com/pub?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE&gid=5">Source data</a>).</p>
+
+    <div id="center"><div id="fig">
+
+    <script type="text/javascript+protovis">
+var tabular = { 
+  'header': ['Index', 'Country', '2009 Deficit', '2009 Debt'],
+  'data': [
+    [0, 'Greece', 13.5, 115.1 ],
+    [1, 'UK', 11.3, 68.1],
+    [2, 'US', 9.9, 83.4],
+    [3, 'Germany', 3.3, 73.2],
+    [4, 'Sweden', 0.8, 42.3]
+  ]
+};
+var h = 200,
+    w = 4*h;
+var r = (0.3*h)*(0.3*h),
+    b = 0.4*h;
+
+var vis = new pv.Panel()
+    .width(w)
+    .height(h)
+    .fillStyle(null)
+    .strokeStyle(null);
+
+function proportion(percentage) {
+  return (percentage/100)*r;
+}
+
+vis.add(pv.Panel)
+  .data(tabular.data)
+  .add(pv.Dot)
+    .fillStyle("#c2c2c2")
+    // .fillStyle("rgba(150,150,150,0.4)")
+    .strokeStyle("#c2c2c2")
+    .left(function(d) (d[0]+1)*100+d[0]*50)
+    .bottom(function() b)
+    .size(function(d) proportion(d[3]))
+  .add(pv.Dot)
+    .fillStyle("#555")
+    .strokeStyle(null)
+    .left(function(d) (d[0]+1)*100+d[0]*50)
+    .bottom(function() b)
+    .size(function(d) proportion(d[2]))
+  .add(pv.Dot)
+    .fillStyle(null)
+    .strokeStyle("#000")
+    .left(function(d) (d[0]+1)*100+d[0]*50)
+    .bottom(function() b)
+    .size(function(d) r)
+  .anchor('top')
+    .add(pv.Label)
+    .left(function(d) (d[0]+1)*100+d[0]*50)
+    .top(40)
+    .text(function(d) {
+        return d[1] + ' (' + d[2] + '%, ' + d[3] + '%)';
+        });
+
+vis.add(pv.Label)
+    .left(0)
+    .bottom(b)
+    .text('2009');
+
+
+vis.render();
+    </script>
+  </div></div></body>
+</html>
