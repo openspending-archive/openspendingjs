@@ -28,11 +28,12 @@
 
     <script type="text/javascript">
     $(document).ready(function(){
-      $.each(BudgetConfig.models, function(i, model) {
+    var flotDatasets0 = {};
+    $.each(BudgetConfig.models, function(i, model) {
         var j = i+1;
         var htmlTable = $('#results-' + j);
         var flotChart = $('#flot-chart-' + j);
-        displayModel(model, htmlTable, flotChart);
+        displayModel(model, htmlTable, flotChart, ColDisplay, j, flotDatasets0);
         $('#model-title-' + j).append(model.title).append(' (<a href="' + model.spreadsheet_url + '">source</a>)');
         $('#model-notes-' + j).append(model.notes);
       });
@@ -46,6 +47,28 @@
   <h1><a href="http://www.wheredoesmymoneygo.org/">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/budget/">The Budgetizer</a></h1>
 
   <div id="content">
+
+    <div id="flot-chart" class="flot">
+      <div class="flot-chart"></div>
+      <div class="flot-chart-controls">
+        <div class="flot-chart-type">
+          Chart type:
+          <input type="checkbox" value="lines" name="lines" /> Lines
+          <input type="checkbox" value="points" name="points" /> Points
+          <input type="checkbox" value="bars" name="bars" /> Bars
+        </div>
+        <div class="flot-select-series">
+            Series:
+        </div>
+        <div class="flot-select-range">
+            Range:
+  	  <input type="radio" name="range" value="whole" />Whole period
+ 	  <input type="radio" name="range" value="plusminusfive" checked />2005-2015
+        </div>
+      </div>
+   </div>
+
+    
     <h2 class="model-title" id="model-title-1"></h2>
     <div class="model-notes" id="model-notes-1"></div>
     <div id="flot-chart-1" class="flot">
@@ -60,8 +83,13 @@
         <div class="flot-select-series">
             Series:
         </div>
+        <div class="flot-select-range">
+            Range:
+  	  <input type="radio" name="range-1" value="whole" />Whole period
+ 	  <input type="radio" name="range-1" value="plusminusfive" checked />2005-2015
+        </div>
       </div>
-    </div>
+   </div>
 
     <table id="results-1" class="model-results tablesorter">
     </table>
@@ -81,10 +109,40 @@
         <div class="flot-select-series">
             Series:
         </div>
+        <div class="flot-select-range">
+            Range:
+  	  <input type="radio" name="range-2" value="whole" />Whole period
+ 	  <input type="radio" name="range-2" value="plusminusfive" checked />2005-2015
+        </div>
       </div>
     </div>
 
     <table id="results-2" class="model-results tablesorter">
+    </table>
+
+    <h2 class="model-title" id="model-title-3"></h2>
+    <div class="model-notes" id="model-notes-3"></div>
+    <div id="flot-chart-3" class="flot">
+      <div class="flot-chart"></div>
+      <div class="flot-chart-controls">
+        <div class="flot-chart-type">
+          Chart type:
+          <input type="checkbox" value="lines" name="lines" /> Lines
+          <input type="checkbox" value="points" name="points" /> Points
+          <input type="checkbox" value="bars" name="bars" /> Bars
+        </div>
+        <div class="flot-select-series">
+            Series:
+        </div>
+        <div class="flot-select-range">
+            Range:
+  	  <input type="radio" name="range-3" value="whole" />Whole period
+ 	  <input type="radio" name="range-3" value="plusminusfive" checked />2005-2015
+        </div>
+      </div>
+    </div>
+
+    <table id="results-3" class="model-results tablesorter">
     </table>
 
     <h2 id="about">About</h2>

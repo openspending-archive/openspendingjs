@@ -32,3 +32,7 @@ div.flot {
   clear: both;
 }
 
+.amount {
+  text-align: right;
+}
+

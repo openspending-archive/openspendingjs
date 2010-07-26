@@ -146,8 +146,9 @@ function doFlotPlot(all_datasets, flotChart, options) {
 	:param options: optional set of options to be passed to flot plot.
 	*/
 	if (!options) {
-		var options = {};
+	    options = {};
 	}
+        // select datesets according to current state
 	var datasets_to_plot = []
 	flotChart.find(".flot-select-series").find("input:checked").each(function () {
 	  var key = $(this).attr("name");
@@ -157,9 +158,17 @@ function doFlotPlot(all_datasets, flotChart, options) {
 		}
 	  }
 	});
+        // select plot type according to current state
 	flotChart.find(".flot-chart-type").find("input:checked").each(function() {
 	  var value = $(this).attr("value");
 	  options[value] = { show: true };
+	});
+        // select range according to current state
+	flotChart.find(".flot-select-range").find("input:checked").each(function() {
+            var key=$(this).attr("value");
+            if(key=='plusminusfive'){
+              options['xaxis'] = { min: 2005, max: 2015 };
+            }
 	});
 	var chartDiv = flotChart.find('.flot-chart')[0]; 
 	$.plot(chartDiv, datasets_to_plot, options);
