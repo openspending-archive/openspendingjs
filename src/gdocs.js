@@ -52,7 +52,7 @@ function writeTabularAsHtml(tabular) {
     var _ColType=[];
     var _thead = $('<thead></thead>');
     $.each(tabular.header, function(i,col) {
-	_thead.append($('<th></th>').append(col));
+	_thead.append($('<th></th>').append(DisplayNames[col]));
 	if(ColTypes[col]){
 	    _ColType[i]=ColTypes[col];
 	}

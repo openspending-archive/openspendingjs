@@ -14,13 +14,15 @@ ColTypes['deficitpgdp']='percent';
 // timeseries to be plotted
 var ColDisplay = ['gdp', 'receipts', 'expenditure', 'deficit', 'growth', 'inflation','deficitpgdp'];
 var DisplayNames=[];
+DisplayNames['period']='Period';
+DisplayNames['label']='Status';
 DisplayNames['gdp']='GDP';
-DisplayNames['receipts']='Tax receipts';
+DisplayNames['receipts']='Receipts';
 DisplayNames['expenditure']='Expenditure';
 DisplayNames['deficit']='Deficit';
 DisplayNames['growth']='Growth';
 DisplayNames['inflation']='Inflation';
-DisplayNames['deficitpgdp']='Deficit as % GDP';
+DisplayNames['deficitpgdp']='Deficit %GDP';
 var ColDisplayTypes=[];
 ColDisplayTypes['growth']=2;
 ColDisplayTypes['inflation']=2;
