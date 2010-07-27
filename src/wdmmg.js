@@ -138,7 +138,7 @@ function setupFlot(all_datasets, flotChart, options, flotGroup0) {
 		input.attr('value', group);
 		input.attr('checked', 'checked');
 		seriesList.append(input);
-		seriesList.append(group);
+		seriesList.append(DisplayNames[group]);
 	    }
 	}
     }else{
@@ -170,12 +170,18 @@ function doFlotPlot(all_datasets, flotChart, options, flotGroup0) {
 	options = {};
     }
 
+
     // select datesets according to current state
     var datasets_to_plot = []
+    var percent_flag=0;
     flotChart.find(".flot-select-series").find("input:checked").each(function () {
 	var key = $(this).attr("value");
 	if (key) {
 	    if(flotGroup0){
+		// percentage on yaxis1
+                if(ColDisplayTypes[key]){
+	     	    percent_flag=1;
+		}
 		var flotSet=flotGroup0[key];
 		$.each(flotSet, function(i, keys) {
 		    if (all_datasets[keys]) {
@@ -183,12 +189,33 @@ function doFlotPlot(all_datasets, flotChart, options, flotGroup0) {
 		    }
 		});
 	    }else{
+		// percentage on yaxis2
+                if(ColDisplayTypes[key]){
+	     	    percent_flag=2;
+		}
 		if (all_datasets[key]) {
 		    datasets_to_plot.push(all_datasets[key]);
 		}
 	    }
 	}
     });
+
+    // yaxis percentage options
+    if(percent_flag==1){
+	options['yaxis'] = {
+	    tickFormatter: percentFormatter
+	};
+	options['y2axis'] = {};
+    }else if(percent_flag==2){
+	options['yaxis'] = {};
+	options['y2axis'] = {
+	    tickFormatter: percentFormatter
+	};
+    }else{
+	options['yaxis'] = {};
+	options['y2axis'] = {};
+    }
+
 
     // select plot type according to current state
     flotChart.find(".flot-chart-type").find("input:checked").each(function() {
@@ -208,3 +235,7 @@ function doFlotPlot(all_datasets, flotChart, options, flotGroup0) {
     var chartDiv = flotChart.find('.flot-chart')[0]; 
     $.plot(chartDiv, datasets_to_plot, options);
 }
+
+  function percentFormatter(val, axis) {
+      return (val * 100).toFixed(1) + " %";
+  }

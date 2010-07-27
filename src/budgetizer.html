@@ -37,7 +37,8 @@
         var j = i+1;
         var htmlTable = $('#results-' + j);
         var flotChart = $('#flot-chart-' + j);
-        displayModel(model, htmlTable, flotChart, ColDisplay, i, flotDatasets0, flotGroup0);
+        var flotLegend = $('#flot-legend-' + j);
+        displayModel(model, htmlTable, flotChart, flotLegend, ColDisplay, i, flotDatasets0, flotGroup0);
         $('#model-title-' + j).append(model.title).append(' (<a href="' + model.spreadsheet_url + '">source</a>)');
         $('#model-notes-' + j).append(model.notes);
       });
@@ -52,6 +53,8 @@
 
   <div id="content">
 
+    <h2 class="model-title" id="model-title">Combined view of all models</h2>
+    <div class="model-notes" id="model-notes">Economic data and projections made at different times</div>
     <div id="flot-chart" class="flot">
       <div class="flot-chart"></div>
       <div class="flot-chart-controls">
@@ -94,6 +97,7 @@
         </div>
       </div>
    </div>
+   <div id="flot-legend-1" class="flot-legend-1"></div>
 
     <table id="results-1" class="model-results tablesorter">
     </table>
@@ -120,6 +124,7 @@
         </div>
       </div>
     </div>
+   <div id="flot-legend-2" class="flot-legend-2"></div>
 
     <table id="results-2" class="model-results tablesorter">
     </table>
@@ -145,6 +150,7 @@
         </div>
       </div>
     </div>
+   <div id="flot-legend-3" class="flot-legend-3"></div>
 
     <table id="results-3" class="model-results tablesorter">
     </table>

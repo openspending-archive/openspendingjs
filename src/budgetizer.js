@@ -1,4 +1,4 @@
-function displayModel(modelConfig, htmlTable, flotChartDiv, ColDisplay, index, flotDatasets0, flotGroup0) {
+function displayModel(modelConfig, htmlTable, flotChartDiv, flotLegendDiv, ColDisplay, index, flotDatasets0, flotGroup0) {
     /**
        Display a budget 'model'.
        
@@ -17,14 +17,18 @@ function displayModel(modelConfig, htmlTable, flotChartDiv, ColDisplay, index, f
 	htmlTable.tablesorter();
 	flotDatasets = {};
 	$.each(ColDisplay, function(i,col) {
+	    var yaxis=1;
+	    if(ColDisplayTypes[col]){yaxis=2;}
+	    var DisplayLabel=DisplayNames[col];
 	    flotDatasets[col] = {
-		'label': col,
+		'label': DisplayLabel,
+		'yaxis': yaxis,
 		data: makeSeries(tabular, 'period', col)
 	    };
 	    var col1=col+index;
 	    var index1=index+1;
 	    flotDatasets0[col1] = {
-		'label': col+':'+modelConfig.notes,
+		'label': DisplayLabel+':'+modelConfig.notes,
 		'group': col,
 		'setid': index1,
 		data: makeSeries(tabular, 'period', col)
@@ -32,8 +36,15 @@ function displayModel(modelConfig, htmlTable, flotChartDiv, ColDisplay, index, f
 	    flotGroup0[col][index]=col1;
 	});
 	
-	setupFlot(flotDatasets, flotChartDiv);
-	doFlotPlot(flotDatasets, flotChartDiv);
+	var options = {
+	    'legend': {
+		'container': flotLegendDiv,
+		'noColumns': 3,
+	    }
+	};
+
+	setupFlot(flotDatasets, flotChartDiv, options);
+	doFlotPlot(flotDatasets, flotChartDiv, options);
 
 	// do post processing once all datasets loaded
 	if(--ExpectedResponses == 0){

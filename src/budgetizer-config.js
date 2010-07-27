@@ -4,14 +4,27 @@
 // Then we can do: var DEBUG = getQueryParams['debug'] || false
 var DEBUG = false;
 // timeseries to load from google and display in tables
-var _COLS = [ 'period', 'label', 'gdp', 'inflation', 'growth', 'receipts', 'expenditure', 'deficit' ];
+var _COLS = [ 'period', 'label', 'gdp', 'inflation', 'growth', 'receipts', 'expenditure', 'deficit', 'deficitpgdp'];
 // data types of timeseries (this information does not seem to be passed from google)
 var ColTypes=[];
 ColTypes['period']='range';
 ColTypes['inflation']='percent';
 ColTypes['growth']='percent';
+ColTypes['deficitpgdp']='percent';
 // timeseries to be plotted
-var ColDisplay = ['gdp', 'receipts', 'expenditure', 'deficit'];
+var ColDisplay = ['gdp', 'receipts', 'expenditure', 'deficit', 'growth', 'inflation','deficitpgdp'];
+var DisplayNames=[];
+DisplayNames['gdp']='GDP';
+DisplayNames['receipts']='Tax receipts';
+DisplayNames['expenditure']='Expenditure';
+DisplayNames['deficit']='Deficit';
+DisplayNames['growth']='Growth';
+DisplayNames['inflation']='Inflation';
+DisplayNames['deficitpgdp']='Deficit as % GDP';
+var ColDisplayTypes=[];
+ColDisplayTypes['growth']=2;
+ColDisplayTypes['inflation']=2;
+ColDisplayTypes['deficitpgdp']=2;
 // number of alternative models to be loaded
 var ExpectedResponses=3;
 var BudgetConfig = {
