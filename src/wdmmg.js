@@ -89,30 +89,34 @@ function createTreeMap(json, elementId, amountLabel) {
 }
 
 function makeSeries(tabular, firstColumnName, secondColumnName) {
-	var idx1 = tabular.header.indexOf(firstColumnName);
-	var idx2 = tabular.header.indexOf(secondColumnName);
-	var series = [];
-	$.each(tabular.data, function(i,row) {
-		series.push([ row[idx1], row[idx2] ]);
-	});
-	return series;
+    var idx1 = tabular.header.indexOf(firstColumnName);
+    var idx2 = tabular.header.indexOf(secondColumnName);
+    var series = [];
+    var rep = /^([\d\.\-]+)$/;
+    $.each(tabular.data, function(i,row) {
+	var value=row[idx2];
+	if(rep.test(value)){
+	    series.push([ row[idx1], value]);
+	}
+    });
+    return series;
 }
 
 function setupFlot(all_datasets, flotChart, options, flotGroup0) {
-	/*
-	Plot a set of datasets using flot.
-
-	:param all_datasets: list of datasets. Should look like:
-
-		"series-1": {
-			label: "Label 1",
-			data: [[1988, 483994], [1989, 479060]]
-			},        
-		"series-2": {
-			label: "Label 2",
-			data: [[1988, 218000], [1989, 203000]]
-		}
-	*/
+    /*
+      Plot a set of datasets using flot.
+      
+      :param all_datasets: list of datasets. Should look like:
+      
+      "series-1": {
+      label: "Label 1",
+      data: [[1988, 483994], [1989, 479060]]
+      },        
+      "series-2": {
+      label: "Label 2",
+      data: [[1988, 218000], [1989, 203000]]
+      }
+    */
     // hard-code color indices to prevent them from shifting as
     // series are turned on/off
     var i = 0;

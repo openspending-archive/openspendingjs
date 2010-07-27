@@ -39,7 +39,7 @@ function displayModel(modelConfig, htmlTable, flotChartDiv, flotLegendDiv, ColDi
 	var options = {
 	    'legend': {
 		'container': flotLegendDiv,
-		'noColumns': 4,
+		'noColumns': 1,
 	    }
 	};
 
