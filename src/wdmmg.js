@@ -88,15 +88,54 @@ function createTreeMap(json, elementId, amountLabel) {
     //end
 }
 
-function makeSeries(tabular, firstColumnName, secondColumnName) {
+// 
+function makeSeries(tabular, firstColumnName, secondColumnName, thirdColumnName, dashedValue) {
     var idx1 = tabular.header.indexOf(firstColumnName);
     var idx2 = tabular.header.indexOf(secondColumnName);
+    var idx3;
+    if(thirdColumnName && dashedValue){
+	// special handling of values that should be drawn dashed
+	// assumption is that series of values always take form normal...dashed
+	// hence n--n--n--n- d- d- d
+	// issue: last value is not drawn, only mid point between last and last but 1 point
+	idx3 = tabular.header.indexOf(thirdColumnName);
+    }
     var series = [];
     var rep = /^([\d\.\-]+)$/;
+    var last_r;
+    var last_v;
     $.each(tabular.data, function(i,row) {
-	var value=row[idx2];
-	if(rep.test(value)){
-	    series.push([ row[idx1], value]);
+	var v=row[idx2];
+	if(rep.test(v)){
+	    var r=row[idx1];
+	    if(idx3){
+		// dashed marking mode
+		if(row[idx3] == dashedValue){
+		    // this is a dashed value
+		    if(rep.test(last_v)){
+			// there was a last value
+			var r1=parseFloat(r)*1/4+parseFloat(last_r)*3/4;
+			var r2=parseFloat(r)*1/2+parseFloat(last_r)*1/2;
+			var r3=parseFloat(r)*3/4+parseFloat(last_r)*1/4;
+			var v1=parseFloat(v)*1/4+parseFloat(last_v)*3/4;
+			var v2=parseFloat(v)*1/2+parseFloat(last_v)*1/2;
+			var v3=parseFloat(v)*3/4+parseFloat(last_v)*1/4;
+			debug('dashed:'+r2+','+v2);
+			series.push([r1,v1]);
+			series.push(null);
+			series.push([r2,v2]);
+			series.push([r3,v3]);
+			series.push(null);
+		    }
+		}
+		last_r=r;
+		last_v=v;
+	    }
+	    debug('normal:'+r+','+v+' l:'+last_r+','+last_v);
+	    series.push([r, v]);
+	}else{
+	    last_r='';
+	    last_v='';
 	}
     });
     return series;

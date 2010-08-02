@@ -17,21 +17,23 @@ function displayModel(modelConfig, htmlTable, flotChartDiv, flotLegendDiv, ColDi
 	htmlTable.tablesorter();
 	flotDatasets = {};
 	$.each(ColDisplay, function(i,col) {
+	    // this is timeseries specific plot (potentially dual axis)
 	    var yaxis=1;
 	    if(ColDisplayTypes[col]){yaxis=2;}
 	    var DisplayLabel=DisplayNames[col];
 	    flotDatasets[col] = {
 		'label': DisplayLabel,
 		'yaxis': yaxis,
-		data: makeSeries(tabular, 'period', col)
+		data: makeSeries(tabular, 'period', col, 'label', 'Forcast')
 	    };
+	    // this is plot that combines all time series
 	    var col1=col+index;
 	    var index1=index+1;
 	    flotDatasets0[col1] = {
 		'label': DisplayLabel+':'+modelConfig.notes,
 		'group': col,
 		'setid': index1,
-		data: makeSeries(tabular, 'period', col)
+		data: makeSeries(tabular, 'period', col, 'label', 'Forcast')
 	    };
 	    flotGroup0[col][index]=col1;
 	});
