@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Sunburst</title>
+    <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="vendor/protovis-3.2/protovis-d3.2.js"></script>
+    <script type="text/javascript" src="datacache/dept-region.json"></script>
+    <script type="text/javascript" src="sunburst.js"></script>
+
+    <link rel="stylesheet" href="http://m.okfn.org/kforge/css/master.css" type="text/css" />
+    <link rel="stylesheet" href="../css/wdmmg.css" type="text/css">
+    <style type="text/css">
+
+#fig {
+  width: 900px;
+  margin-top: 5px;
+  height: 600px;
+  text-align: center;
+}
+
+#visualize {
+  display: none;
+}
+    </style>
+  </head>
+  <body>
+  <div id="content">
+    <h1>Where Does My Money Go? Sunburst</h1>
+    <h2>Region and Department Spending Breakdown</h2>
+    <p id="visualize"><a href="#">Visualize</a></p>
+    <div id="center">
+      <div id="fig"></div>
+    </div>
+  </div>
+  </body>
+</html>
