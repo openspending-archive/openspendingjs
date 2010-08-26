@@ -1,0 +1,130 @@
+var key_region = {
+  "enumeration_values": {
+    "ENGLAND_North West": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_North West", 
+      "id": "689a1246-d8f8-4e16-8789-19e276838c40", 
+      "keyvalues": {
+        "population2006": "6853200"
+      }, 
+      "name": "ENGLAND_North West"
+    }, 
+    "NON-IDENTIFIABLE": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "NON-IDENTIFIABLE", 
+      "id": "6c3a7e53-4552-405f-b06a-edb505d7b8ae", 
+      "keyvalues": {}, 
+      "name": "NON-IDENTIFIABLE"
+    }, 
+    "ENGLAND_South East": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_South East", 
+      "id": "4c9f1246-4358-4ed6-9903-de77581b4dea", 
+      "keyvalues": {
+        "population2006": "8237800"
+      }, 
+      "name": "ENGLAND_South East"
+    }, 
+    "ENGLAND_South West": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_South West", 
+      "id": "95f076b3-a127-4b3e-9db9-ea86b306cdfc", 
+      "keyvalues": {
+        "population2006": "5124100"
+      }, 
+      "name": "ENGLAND_South West"
+    }, 
+    "ENGLAND_Yorkshire and The Humber": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_Yorkshire and The Humber", 
+      "id": "b10077a0-38be-4fde-a848-be8905fddb7a", 
+      "keyvalues": {
+        "population2006": "5142400"
+      }, 
+      "name": "ENGLAND_Yorkshire and The Humber"
+    }, 
+    "SCOTLAND": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "SCOTLAND", 
+      "id": "32666111-fccc-430d-87d9-e965f8032e22", 
+      "keyvalues": {
+        "population2006": "5116900"
+      }, 
+      "name": "SCOTLAND"
+    }, 
+    "ENGLAND_London": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_London", 
+      "id": "54cb460a-bae3-4a59-ba3f-188740f0b603", 
+      "keyvalues": {
+        "population2006": "7512400"
+      }, 
+      "name": "ENGLAND_London"
+    }, 
+    "ENGLAND_West Midlands": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_West Midlands", 
+      "id": "0bc33679-9f17-4097-83cc-a3fc4ec23ecc", 
+      "keyvalues": {
+        "population2006": "5366700"
+      }, 
+      "name": "ENGLAND_West Midlands"
+    }, 
+    "ENGLAND_North East": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_North East", 
+      "id": "3f6ca865-1e28-4e30-bf49-0bb5ae26d4b6", 
+      "keyvalues": {
+        "population2006": "2555700"
+      }, 
+      "name": "ENGLAND_North East"
+    }, 
+    "ENGLAND_East": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_East", 
+      "id": "5e68a5e5-3d22-4f29-a179-e086ecd96996", 
+      "keyvalues": {
+        "population2006": "5606600"
+      }, 
+      "name": "ENGLAND_East"
+    }, 
+    "OUTSIDE UK": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "OUTSIDE UK", 
+      "id": "bad118e9-3229-46a9-89fe-a9c30d44dc91", 
+      "keyvalues": {}, 
+      "name": "OUTSIDE UK"
+    }, 
+    "WALES": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "WALES", 
+      "id": "ab856a00-fc6f-4f12-8c5b-3e9767f77f93", 
+      "keyvalues": {
+        "population2006": "2965900"
+      }, 
+      "name": "WALES"
+    }, 
+    "NORTHERN IRELAND": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "NORTHERN IRELAND", 
+      "id": "f09d5c4c-71d5-4b40-8f04-b82a5d97739b", 
+      "keyvalues": {
+        "population2006": "1741600"
+      }, 
+      "name": "NORTHERN IRELAND"
+    }, 
+    "ENGLAND_East Midlands": {
+      "key_id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+      "code": "ENGLAND_East Midlands", 
+      "id": "892d2fbf-a707-4f5f-8e65-0f359c55bb82", 
+      "keyvalues": {
+        "population2006": "4364200"
+      }, 
+      "name": "ENGLAND_East Midlands"
+    }
+  }, 
+  "notes": "Geographical (NUTS) area for which money was spent", 
+  "id": "01d05641-0fb6-479f-b2ed-316b0ef3329f", 
+  "keyvalues": {}, 
+  "name": "region"
+};
