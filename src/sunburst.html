@@ -12,7 +12,8 @@
     <!-- our scripts -->
     <script type="text/javascript" src="debug.js"></script>
     <script type="text/javascript">
-var DEBUG = true;
+// var DEBUG = true;
+var DEBUG = false;
     </script>
     <script type="text/javascript" src="datacache/dept-region.json"></script>
     <script type="text/javascript" src="datacache/key_from.json"></script>
@@ -22,8 +23,15 @@ var DEBUG = true;
     <link rel="stylesheet" href="http://assets.okfn.org/kforge/css/master.css" type="text/css" />
     <link rel="stylesheet" href="../css/wdmmg.css" type="text/css">
     <style type="text/css">
+#center {
+  text-align: center;
+  margin: auto;
+  width: 700px;
+}
+
 #fig {
-  width: 900px;
+  width: 700px;
+  margin: auto;
   margin-top: 5px;
   height: 600px;
   text-align: center;
@@ -33,8 +41,9 @@ var DEBUG = true;
   display: none;
 }
 
-#slider {
+#slider-widget {
   width: 200px;
+  display: none;
 }
     </style>
 <script type="text/javascript">
@@ -55,10 +64,12 @@ var DEBUG = true;
   <body>
   <div id="content">
     <h1>Where Does My Money Go? Sunburst</h1>
-    <h2>Region and Department Spending Breakdown</h2>
+    <h2>Spending Breakdown by Department and Region</h2>
     <p id="visualize"><a href="#">Visualize</a></p>
-    <p>Year <span id="year"></span></p>
-    <div id="slider"></div>
+    <div id="slider-widget">
+      <p>Year <span id="year"></span></p>
+      <div id="slider"></div>
+    </div>
     <div id="center">
       <div id="fig"></div>
     </div>
