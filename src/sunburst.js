@@ -52,6 +52,8 @@ WDMMG.sunburst.render = function (breakdownIdentifier) {
 	// var dom = pv.dom(flare);
 	// var nodes = dom.root("flare").nodes();
     var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][breakdownIdentifier];
+    var yearIdx = 5;
+    var year = wdmmg_data.metadata.dates[yearIdx];
     var idxToKey = {};
     $.each(wdmmg_data.metadata.axes, function(idx, key){
         idxToKey[idx] = key;
@@ -67,10 +69,10 @@ WDMMG.sunburst.render = function (breakdownIdentifier) {
                 });
                 return labels.reverse();
             })
-		.value(function(d) {return d[1][d.length-1]})
+		.value(function(d) {return d[1][yearIdx]})
 		.map();
 	var dom = pv.dom(tree);
-	var nodes = dom.root("Total Spending").nodes();
+	var nodes = dom.root("Total Spending " + year).nodes();
 	WDMMG.sunburst.sunburst(nodes);
 }
 
