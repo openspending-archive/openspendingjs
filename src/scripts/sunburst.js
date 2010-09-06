@@ -112,16 +112,21 @@ WDMMG.sunburst.sunburst = function (data) {
 		.strokeStyle("#fff")
 		.lineWidth(.5)
 		.title(function(d) {
-            return d.nodeName + ' GBP ' + numberAsString(d.size);
+			var t = '';
+			// only 2nd layer ring
+			if (d.depth > 0.5 ) {
+				var t = d.parentNode.nodeName + ' - ';
+			}
+            var t = t + d.nodeName + ' GBP ' + numberAsString(d.size);
+			return t;
             })
-		.visible(function(d) {
-            return d.angle * d.outerRadius >= 3
-            })
+		.event("mouseover", pv.Behavior.tipsy({gravity: "w", fade: true}));
 		;
 
 	partition.label.add(pv.Label)
 		.visible(function(d) {
-            return d.angle * d.outerRadius >= 6
+			// depth 0 for root, 0.5 for first ring, 1 for 2nd ring
+            return d.angle * d.outerRadius >= 50 && d.depth <= 0.5
             })
         ;
 
