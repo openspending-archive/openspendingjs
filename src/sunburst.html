@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Sunburst</title>
+    <title>Where Does My Money Go? Explorer</title>
     <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
     <script type="text/javascript" src="vendor/jquery.tipsy-1.0.0.js"></script>
     <script type="text/javascript" src="vendor/jqueryui-1.8.4/jquery-ui.min.js"></script>
@@ -15,7 +15,7 @@
     <script type="text/javascript" src="scripts/debug.js"/></script>
     <script type="text/javascript">
 var DEBUG = true;
-// var DEBUG = false;
+var DEBUG = false;
     </script>
     <script type="text/javascript" src="datacache/dept-region.json"></script>
     <script type="text/javascript" src="datacache/key_from.json"></script>
@@ -37,10 +37,6 @@ var DEBUG = true;
   margin-top: 5px;
   height: 600px;
   text-align: center;
-}
-
-#visualize {
-  display: none;
 }
 
 #slider-widget {
@@ -65,12 +61,17 @@ var DEBUG = true;
   </head>
   <body>
   <div id="content">
-    <h1>Where Does My Money Go? Sunburst</h1>
+    <h1>Where Does My Money Go? Explorer</h1>
     <h2>Spending Breakdown by Department and Region</h2>
-    <p id="visualize"><a href="#">Visualize</a></p>
-    <div id="slider-widget">
-      <p>Year <span id="year"></span></p>
-      <div id="slider"></div>
+    <div id="controls">
+      <div class="vis-type">
+        <input type="radio" name="vis-type" value="sunburst" /> Sunburst
+        <input type="radio" name="vis-type" value="nodelink" checked="1" /> Node-Link
+      </div>
+      <div id="slider-widget">
+        <p>Year <span id="year"></span></p>
+        <div id="slider"></div>
+      </div>
     </div>
     <div id="center">
       <div id="fig"></div>
