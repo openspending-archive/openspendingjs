@@ -1,0 +1,19 @@
+#center {
+  text-align: center;
+  margin: auto;
+  width: 700px;
+}
+
+#fig {
+  width: 700px;
+  margin: auto;
+  margin-top: 5px;
+  height: 600px;
+  text-align: center;
+}
+
+#slider-widget {
+  width: 200px;
+  display: none;
+}
+
