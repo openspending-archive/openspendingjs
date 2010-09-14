@@ -4,7 +4,9 @@ WDMMG.CONFIG = {
     'dataStoreApi': 'http://data.wheredoesmymoneygo.org/api',
     'breakdownIdentifier': 'slice=cra&breakdown-from=yes&breakdown-region=yes',
 	// 'visualizationType': 'sunburst'
-	'visualizationType': 'nodelink'
+	'visualizationType': 'nodelink',
+	// ordered list of keys (used in displaying the spending)
+	'breakdownKeys': [ 'from', 'region' ]
 }
 
 WDMMG.DATA_CACHE = {
@@ -71,20 +73,22 @@ WDMMG.sunburst.getNodes = function (breakdownIdentifier) {
     var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
     var yearIdx = 5;
     var year = wdmmg_data.metadata.dates[yearIdx];
+	var hierarchy = WDMMG.CONFIG.breakdownKeys;
+	var keyToIdx = {} 
+    $.each(wdmmg_data.metadata.axes, function(idx, key){
+        keyToIdx[key] = idx;
+    });
     var idxToKey = {};
     $.each(wdmmg_data.metadata.axes, function(idx, key){
         idxToKey[idx] = key;
     });
 	var tree = pv.tree(wdmmg_data.results)
-		// reverse array so we get dept then region
-		// TODO: make this more robust (read out metadata and use that)
 		.keys(function(d) {
-                var labels = $.map(d[0], function(code,idx) {
-                    var k = idxToKey[idx];
-
+                var labels = $.map(hierarchy, function(k,idx) {
+					var code = d[0][keyToIdx[k]];
                     return WDMMG.DATA_CACHE.keys[k][code]['name'];
                 });
-                return labels.reverse();
+				return labels;
             })
 		.value(function(d) {return d[1][yearIdx]})
 		.map();
