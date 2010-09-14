@@ -6,7 +6,8 @@ WDMMG.CONFIG = {
 	// 'visualizationType': 'sunburst'
 	'visualizationType': 'nodelink',
 	// ordered list of keys (used in displaying the spending)
-	'breakdownKeys': [ 'from', 'region' ]
+	// 'breakdownKeys': [ 'from', 'region' ]
+	'breakdownKeys': [ 'region', 'from' ]
 }
 
 WDMMG.DATA_CACHE = {
@@ -178,6 +179,12 @@ WDMMG.sunburst.nodelink = function (nodes) {
 		return selfval + pv.sum(node.childNodes, nodeval);
 	}
 
+	function dotSize(node) {
+		var selfval = nodeval(node);
+		// divide by 0.5 billion
+		return selfval / (0.5 * 1000000 * 1000);
+	}
+
 	tree.node.add(pv.Dot)
 		.fillStyle(function(n) {
 			return n.firstChild ? "#aec7e8" : "#ff7f0e"
@@ -192,14 +199,20 @@ WDMMG.sunburst.nodelink = function (nodes) {
             var t = t + d.nodeName + ' GBP ' + numberAsString(selfval);
 			return t;
             })
+		.size(function(d) {
+			return dotSize(d);
+			})
 		.visible(function(d) {
+				// remove all leaf nodes
 				// return d.childNodes.length > 0;
+				// return dotSize(d) > 5;
 				return true;
 			})
-		.size(function(d) {
-			var selfval = nodeval(d);
-			// divide by 0.5 billion
-			return selfval / (0.5 * 1000000 * 1000);
+		;
+	
+	tree.label.add(pv.Label)
+		.visible(function(d) {
+			return d.parentNode == null;
 			})
 		;
 
