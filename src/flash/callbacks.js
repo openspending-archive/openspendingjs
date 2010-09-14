@@ -1,9 +1,34 @@
-var disqus_identifier;
-var disqus_developer = true;
+var page_load = true;
 
-// Called by the dashboard after basic initialisation is done.
+// GET PARAMETER FUNCTIONS
+function getViewName() {
+    var sPath = window.location.pathname;
+    var sPage = sPath.substring(sPath.lastIndexOf('/')+1);
+    sPage = sPage.split(".")[0];
+    if (sPage=="index") {
+        sPage="uk-bubble-chart";
+    }
+    return sPage;
+}
+
+function getViewParameters() {
+	var hash_url = window.location.hash;
+	var get_params = {};
+	if (hash_url) {
+		hash_url = hash_url.substr(1);
+		var params = hash_url.split("&");
+		for (var i=0, len=params.length; i<len; ++i ){
+			var p = params[i].split("=");
+			get_params[p[0]] = p[1];
+		}
+	}
+	return get_params;
+}
+
+// Called by the dashboard after basic initialisation is done
 // 
 function wdmmgInit() {
+	//alert('wdmmgInit');
     var m = swfobject.getObjectById("wdmmg");
     m.removeHeader();
     m.removeFooter();
@@ -13,32 +38,28 @@ function wdmmgInit() {
 // Called by the dashboard when the user makes changes within the visualisation
 // 
 function wdmmgCallback(page, params) {
-	alert('wdmmgCallback');
-    var txt = 'Page:' + page + "\n";
-    var p;
+	//alert('wdmmgCallback');
+    var uid = '';
     for (p in params) {
-        txt = txt + "param:" + p + ", " + params[p] + "\n";
+        uid = uid + p + "=" + params[p] + "&";
     }
-    var uid = page + "/";
-    for (p in params) {
-        uid = uid + "&" + p + "=" + params[p];
-    }    
-    var disqus_thread = document.getElementById('disqus_thread');
-    disqus_thread.innerHTML = '';
-    disqus_identifier = uid;
-	(function() {
-	   var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-	   dsq.src = 'http://wdmmg-phase2.disqus.com/embed.js';
-	   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-	  })();
-    //alert("ID = " + disqus_identifier);
-    window.location.hash = "/" + uid;
+    if (uid.charAt(uid.length-1)=="&") {
+        uid = uid.slice(0, -1);
+    }
+    //alert(uid);
+    if (page_load) {
+        page_load = false;
+        var m = swfobject.getObjectById("wdmmg");
+	    m.changeView(getViewName(), getViewParameters());
+    } else {
+        window.location.hash = uid;
+    }
 }
-
 
 // Changes the current dashboard view
 //
 function changeView(viewName, params) {
+	//alert('changeView');
     var m = swfobject.getObjectById("wdmmg");
     m.changeView(viewName, params);
 }
