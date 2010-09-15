@@ -6,8 +6,9 @@ WDMMG.CONFIG = {
 	// 'visualizationType': 'sunburst'
 	'visualizationType': 'nodelink',
 	// ordered list of keys (used in displaying the spending)
-	// 'breakdownKeys': [ 'from', 'region' ]
-	'breakdownKeys': [ 'region', 'from' ]
+	'breakdownKeys': [ 'from', 'region' ],
+	// 'breakdownKeys': [ 'region', 'from' ],
+	'year': 2008,
 }
 
 WDMMG.DATA_CACHE = {
@@ -30,6 +31,19 @@ $(document).ready(function() {
 		WDMMG.CONFIG.visualizationType = vistype;
 		WDMMG.sunburst.render();
 	});
+
+    $("#slider").slider({
+      value: WDMMG.CONFIG.year,
+      min: 2004,
+      max: 2010,
+      step: 1,
+      slide: function(event, ui) {
+        $("#year").text(ui.value);
+		WDMMG.CONFIG.year = ui.value;
+		WDMMG.sunburst.render();
+      }
+    });
+    $("#year").text($("#slider").slider("value"));
 });
 
 WDMMG.sunburst.loadData = function(callback) {
@@ -72,7 +86,10 @@ WDMMG.sunburst.render = function () {
 
 WDMMG.sunburst.getNodes = function (breakdownIdentifier) {
 	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
-	var yearIdx = 5;
+	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
+			return year.substring(0,4);
+	});
+	var yearIdx = years.indexOf(String(WDMMG.CONFIG.year));
 	var year = wdmmg_data.metadata.dates[yearIdx];
 	var hierarchy = WDMMG.CONFIG.breakdownKeys;
 	var keyToIdx = {} 

@@ -1,7 +1,4 @@
-#center {
-  text-align: center;
-  margin: auto;
-  width: 700px;
+#vis {
 }
 
 #fig {
@@ -12,8 +9,20 @@
   text-align: center;
 }
 
-#slider-widget {
+div#controls {
+  float: right;
   width: 200px;
-  display: none;
+  margin-top: 10px;
 }
 
+#slider-widget {
+  width: 200px;
+}
+
+.ui-slider-horizontal {
+  height: 5px;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  height: 13px;
+}

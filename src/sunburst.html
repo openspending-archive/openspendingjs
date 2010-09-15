@@ -15,7 +15,7 @@
     <script type="text/javascript" src="scripts/debug.js"/></script>
     <script type="text/javascript">
 var DEBUG = true;
-var DEBUG = false;
+// var DEBUG = false;
     </script>
     <script type="text/javascript" src="datacache/dept-region.json"></script>
     <script type="text/javascript" src="datacache/key_from.json"></script>
@@ -27,34 +27,24 @@ var DEBUG = false;
     <link rel="stylesheet" href="css/sunburst.css" type="text/css">
 <script type="text/javascript">
   $(function() {
-    $("#slider").slider({
-      value: 2004,
-      min: 2004,
-      max: 2010,
-      step: 1,
-      slide: function(event, ui) {
-        $("#year").text(ui.value);
-      }
-    });
-    $("#year").text($("#slider").slider("value"));
   });
 </script>
   </head>
   <body>
-  <div id="content">
+  <div id="vis">
     <h1>Where Does My Money Go? UK Spending Explorer</h1>
+    <div id="content">
     <div id="controls">
       <div class="vis-type">
         <input type="radio" name="vis-type" value="sunburst" /> Sunburst
         <input type="radio" name="vis-type" value="nodelink" checked="1" /> Node-Link
       </div>
       <div id="slider-widget">
-        <p>Year <span id="year"></span></p>
+        <p>Year: <span id="year"></span></p>
         <div id="slider"></div>
       </div>
     </div>
-    <div id="center">
-      <div id="fig"></div>
+    <div id="fig"></div>
     </div>
   </div>
   </body>
