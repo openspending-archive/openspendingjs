@@ -20,9 +20,10 @@ div#controls {
 }
 
 .ui-slider-horizontal {
-  height: 5px;
+  height: 3px;
 }
 
 .ui-slider-horizontal .ui-slider-handle {
-  height: 13px;
+  height: 12px;
+  width: 4px;
 }
