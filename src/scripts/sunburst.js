@@ -115,24 +115,6 @@ WDMMG.sunburst.getNodes = function (breakdownIdentifier) {
 	return nodes;
 }
 
-// TODO: put this in utils
-function numberAsString(num) {
-	var billion = 1000000000;
-	var million = 1000000;
-	var thousand = 1000; 
-	if (num > billion) {
-		return num / billion + 'bn';
-	}
-	if (num > (million/2)) {
-		return num/million + 'm';
-	}
-	if (num > thousand) {
-		return num/thousand + 'k';
-	} else {
-		return num; 
-	}
-}
-
 WDMMG.sunburst.sunburst = function (data) {
 	var vis = new pv.Panel()
 		.width(700)
