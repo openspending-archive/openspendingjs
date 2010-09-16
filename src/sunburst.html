@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Where Does My Money Go? Explorer</title>
+    <title>Where Does My Money Go? UK Spending Explorer</title>
     <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
     <script type="text/javascript" src="vendor/jquery.tipsy-1.0.0.js"></script>
     <script type="text/javascript" src="vendor/jqueryui-1.8.4/jquery-ui.min.js"></script>
@@ -28,10 +28,16 @@
 </script>
   </head>
   <body>
-  <div id="vis">
     <h1>Where Does My Money Go? UK Spending Explorer</h1>
-    <div id="content">
+    <div id="vis">
     <div id="controls">
+      <div class="breakdown">
+        Breakdown by:
+        <ul>
+          <li>Department, then</li>
+          <li>Region</li>
+        </ul>
+      </div>
       <div class="vis-type">
         <input type="radio" name="vis-type" value="sunburst" /> Sunburst
         <input type="radio" name="vis-type" value="nodelink" checked="1" /> Node-Link
@@ -43,6 +49,5 @@
     </div>
     <div id="fig"></div>
     </div>
-  </div>
   </body>
 </html>

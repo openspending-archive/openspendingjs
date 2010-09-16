@@ -11,12 +11,15 @@
 
 div#controls {
   float: right;
-  width: 200px;
+  width: 220px;
   margin-top: 10px;
 }
 
+.breakdown ul {
+}
+
 #slider-widget {
-  width: 200px;
+  width: 80%;
 }
 
 .ui-slider-horizontal {
