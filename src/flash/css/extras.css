@@ -67,18 +67,18 @@ ul.flash-menu li a {
     background-position: 100% -60px;
 }
 
-/* active menu items 
+/* active menu items */
 
 .minibutton.active > span {
    background-position: 100% -60px;
    color: #FFFFFF;
    text-decoration: none;
    text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
-}*/
+}
 
 /* icons for Flash screen menu buttons */
 
-.btn-daily-bread .icon, .btn-compareotron .icon, .btn-regional .icon, .btn-long-term .icon {
+.btn-index .icon, .btn-daily-bread .icon, .btn-regional .icon, .btn-long-term .icon {
 	background:url("/images/minibutton_icons.png?v20100306") no-repeat scroll 0 0 transparent;
 	float:left;
 	height:22px;
@@ -90,7 +90,7 @@ ul.flash-menu li a {
 	background-position:-40px 0;
 }
 
-.btn-compareotron {
+.btn-index .icon {
 	background-position:-80px 0;
 }
 
@@ -98,7 +98,7 @@ ul.flash-menu li a {
 	background-position:-20px 0;
 }
 
-.btn-regional .icon {
+.btn-long-term .icon {
 	background-position:-60px 0;
 }
 
