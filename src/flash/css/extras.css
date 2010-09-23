@@ -1,0 +1,107 @@
+
+
+/* remove default black border from Flash wrapper */
+#wrapper {
+    background: none;
+    /*border: solid 1px black; */
+    height: 600px;
+    margin: 0;
+    padding: 0;
+	width: 100%;
+}
+
+/* Flash screen menu buttons */
+
+ul.flash-menu  {
+	float: right;
+	margin:0 0 10px 0;
+	padding:5px 0 5px 20px;
+	list-style-type:none;
+	clear: both;
+}
+
+ul.flash-menu li {
+	color:#333333;
+	display:inline;
+	font-size:11px;
+	font-weight:bold;
+	list-style-type:none;
+	margin:0 0 0 10px;
+}
+
+ul.flash-menu li a {
+	outline: medium none;
+}
+
+.minibutton {
+	background:url("/images/minibutton_matrix.png") no-repeat scroll 0 0 transparent;
+	border:medium none;
+	color:#333333;
+	cursor:pointer;
+	display:inline-block;
+	font-size:11px;
+	font-weight:bold;
+	height:23px;
+	overflow:visible;
+	padding:0 0 0 3px;
+	text-shadow:1px 1px 0 #FFFFFF;
+	white-space:nowrap;
+}
+
+.minibutton:hover {
+   background-position: 0 -30px;
+   color: #FFFFFF;
+   text-decoration: none;
+   text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+}
+
+.minibutton > span {
+	background:url("/images/minibutton_matrix.png") no-repeat scroll 100% 0 transparent;
+	display:block;
+	height:23px;
+	line-height:23px;
+	padding:0 10px 0 8px;
+}
+
+.minibutton:hover > span {
+    background-position: 100% -60px;
+}
+
+/* active menu items 
+
+.minibutton.active > span {
+   background-position: 100% -60px;
+   color: #FFFFFF;
+   text-decoration: none;
+   text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+}*/
+
+/* icons for Flash screen menu buttons */
+
+.btn-daily-bread .icon, .btn-compareotron .icon, .btn-regional .icon, .btn-long-term .icon {
+	background:url("/images/minibutton_icons.png?v20100306") no-repeat scroll 0 0 transparent;
+	float:left;
+	height:22px;
+	margin-left:-4px;
+	width:18px; 
+}
+
+.btn-daily-bread .icon {
+	background-position:-40px 0;
+}
+
+.btn-compareotron {
+	background-position:-80px 0;
+}
+
+.btn-regional .icon {
+	background-position:-20px 0;
+}
+
+.btn-regional .icon {
+	background-position:-60px 0;
+}
+
+#disqus_thread {
+   padding-top: 15px;
+}
