@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Where Does My Money Go? Explorer</title>
+    <title>Where Does My Money Go? UK Spending Explorer</title>
     <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
     <script type="text/javascript" src="vendor/jquery.tipsy-1.0.0.js"></script>
     <script type="text/javascript" src="vendor/jqueryui-1.8.4/jquery-ui.min.js"></script>
@@ -12,11 +12,8 @@
     <script type="text/javascript" src="vendor/protovis-3.2/tipsy.js"></script>
 
     <!-- our scripts -->
-    <script type="text/javascript" src="scripts/debug.js"/></script>
-    <script type="text/javascript">
-var DEBUG = true;
-var DEBUG = false;
-    </script>
+    <script type="text/javascript" src="scripts/utils.js"/></script>
+    <script type="text/javascript" src="scripts/localconfig.js"></script>
     <script type="text/javascript" src="datacache/dept-region.json"></script>
     <script type="text/javascript" src="datacache/key_from.json"></script>
     <script type="text/javascript" src="datacache/key_region.json"></script>
@@ -24,58 +21,33 @@ var DEBUG = false;
 
     <link rel="stylesheet" href="http://assets.okfn.org/kforge/css/master.css" type="text/css" />
     <link rel="stylesheet" href="css/wdmmg.css" type="text/css">
-    <style type="text/css">
-#center {
-  text-align: center;
-  margin: auto;
-  width: 700px;
-}
-
-#fig {
-  width: 700px;
-  margin: auto;
-  margin-top: 5px;
-  height: 600px;
-  text-align: center;
-}
-
-#slider-widget {
-  width: 200px;
-  display: none;
-}
-    </style>
+    <link rel="stylesheet" href="css/sunburst.css" type="text/css">
 <script type="text/javascript">
   $(function() {
-    $("#slider").slider({
-      value: 2004,
-      min: 2004,
-      max: 2010,
-      step: 1,
-      slide: function(event, ui) {
-        $("#year").text(ui.value);
-      }
-    });
-    $("#year").text($("#slider").slider("value"));
   });
 </script>
   </head>
   <body>
-  <div id="content">
-    <h1>Where Does My Money Go? Explorer</h1>
-    <h2>Spending Breakdown by Department and Region</h2>
+    <h1>Where Does My Money Go? UK Spending Explorer</h1>
+    <div id="vis">
     <div id="controls">
+      <div class="breakdown">
+        Breakdown by:
+        <ul>
+          <li>Department, then</li>
+          <li>Region</li>
+        </ul>
+      </div>
       <div class="vis-type">
         <input type="radio" name="vis-type" value="sunburst" /> Sunburst
         <input type="radio" name="vis-type" value="nodelink" checked="1" /> Node-Link
       </div>
       <div id="slider-widget">
-        <p>Year <span id="year"></span></p>
+        <p>Year: <span id="year"></span></p>
         <div id="slider"></div>
       </div>
     </div>
-    <div id="center">
-      <div id="fig"></div>
+    <div id="fig"></div>
     </div>
-  </div>
   </body>
 </html>

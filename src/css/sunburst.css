@@ -1,0 +1,32 @@
+#vis {
+}
+
+#fig {
+  width: 700px;
+  margin: auto;
+  margin-top: 5px;
+  height: 600px;
+  text-align: center;
+}
+
+div#controls {
+  float: right;
+  width: 220px;
+  margin-top: 10px;
+}
+
+.breakdown ul {
+}
+
+#slider-widget {
+  width: 80%;
+}
+
+.ui-slider-horizontal {
+  height: 3px;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  height: 12px;
+  width: 4px;
+}
