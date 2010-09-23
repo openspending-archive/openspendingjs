@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Where Does My Money Go?</title>
+  <script type="text/javascript" src="swfobject.js"></script>
+  <script type="text/javascript" src="swfaddress.js"></script>
+  <script type="text/javascript">
+    swfobject.registerObject("wdmmg", "9.0.0");
+  </script>
+  <script type="text/javascript" src="callbacks.js"></script>
+  <script type="text/javascript" src="wdmmg-phase2.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/layout.css">
+  <link rel="stylesheet" type="text/css" href="css/typography.css">
+  <link rel="stylesheet" type="text/css" href="css/wdmmg.css">
+		</head>
+		<body>
+		<div id="comments"></div>
+		  <div id="airlock">
+		    <div id="header">
+		      <h1><a href="#">Where Does My Money Go?</a></h1>
+		      <h2>Visualising government spending</h2>
+		      <div id="login-and-search">
+		        <form action="#search"><a href="#login">Login</a> | <a href="#register">Register</a> <input type="search" placeholder="Search..."></form>
+		      </div>
+		      <div id="nav">
+		        <ul>
+		          <li><a href="index.html" class="active">Home</a></li>
+		          <li><a href="#blog">Blog</a></li>
+		          <li><a href="#datastore">Datastore</a></li>
+		          <li><a href="#about">About us</a></li>
+		        </ul>
+
+		      </div><!-- /#nav -->
+		    </div><!-- /#header -->
+
+		    <div id="main">
+			<ul class="flash-menu">
+			<li class="index"><a href="index.html" class="minibutton btn-index"><span><span class="icon"></span>UK spending</span></a></li>
+			<li class="daily-bread"><a href="daily-bread.html" class="minibutton btn-daily-bread"><span><span class="icon"></span>Daily Bread</span></a></li>
+			<li class="long-term"><a href="long-term.html" class="minibutton btn-long-term"><span><span class="icon"></span>Long-term spending</span></a></li>
+			<li class="regional"><a href="regional-overview.html" class="minibutton btn-regional active"><span><span class="icon"></span>Regional overview</span></a></li>
+			</ul>
+		      <div id="wrapper">
+		      <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
+			 <param name="movie" value="main.swf" />
+			        <!--[if !IE]>-->
+			        <object type="application/x-shockwave-flash" data="main.swf" width="100%" height="100%">
+			        <!--<![endif]-->
+			          <a href="http://www.adobe.com/go/getflashplayer">
+			            <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+			          </a>
+			        <!--[if !IE]>-->
+			        </object>
+			        <!--<![endif]-->
+			      </object>
+			      </div>
+
+			     <div class="layout-row layout-3col-33-33-33" style="margin-top: 15px;">
+			      <!-- <div class="layout-col layout-col-1"> -->
+			
+			    <div class="fill-box">
+				<div id="disqus_thread"></div>
+				<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=wdmmg">comments powered by Disqus.</a></noscript>
+	            </div>
+			
+		       <!-- </div> /.layout-col -->
+		       </div><!-- /.layout-row -->
+
+		    </div><!-- /#main -->
+		
+
+
+			<div id="footer">
+			  <div id="footer-content">
+			    <h3>About</h3>
+			    <ul>
+			      <li><a href="#">About Where Does My Money Go</a></li>
+			      <li><a href="#">Blog</a></li>
+
+			      <li><a href="#">Terms &amp; Conditions</a></li>
+			      <li><a href="#">Privacy</a></li>
+			      <li><a href="#">Legal</a></li>
+			    </ul>
+
+			    <h3>Data</h3>
+
+			    <ul>
+			      <li><a href="#">Browse Data</a></li>
+			      <li><a href="#">Request a Dataset</a></li>
+			      <li><a href="#">Create a Dataset</a></li>
+			      <li><a href="#">API</a></li>
+			    </ul>
+				        <h3>Help</h3>
+				        <ul>
+				          <li><a href="#">Contact Us</a></li>
+				          <li><a href="#"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
+				          <li><a href="#">Code Documentation</a></li>
+				          <li><a href="#">Developer's Discussion List</a></li>
+				        </ul>
+				        <p id="okfnattrib">An <a href="http://okfn.org">Open Knowledge Foundation</a> Project</p>
+				</div>
+				    </div><!-- /#footer -->
+				  </div><!-- /#airlock -->
+
+				<script type="text/javascript">
+				var disqus_shortname = 'wdmmg';
+				(function () {
+				  var s = document.createElement('script'); s.async = true;
+				  s.src = 'http://disqus.com/forums/wdmmg/count.js';
+				  (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+				}());
+				</script>
+
+				</body>
+				</html>
