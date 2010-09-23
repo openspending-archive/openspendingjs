@@ -3,13 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Where Does My Money Go?</title>
-  <link type="text/css" href="http://jqueryui.com/themes/base/jquery.ui.all.css" rel="stylesheet" /> 
-  <script type="text/javascript" src="http://jqueryui.com/jquery-1.4.2.js"></script> 
-  <script type="text/javascript" src="http://jqueryui.com/ui/jquery.ui.core.js"></script> 
-  <script type="text/javascript" src="http://jqueryui.com/ui/jquery.ui.widget.js"></script> 
-  <script type="text/javascript" src="http://jqueryui.com/ui/jquery.ui.mouse.js"></script> 
-  <script type="text/javascript" src="http://jqueryui.com/ui/jquery.ui.resizable.js"></script>
-
   <script type="text/javascript" src="swfobject.js"></script>
   <script type="text/javascript" src="swfaddress.js"></script>
   <script type="text/javascript">
@@ -18,26 +11,24 @@
   <script type="text/javascript" src="callbacks.js"></script>
   <script type="text/javascript" src="wdmmg-phase2.js"></script>
   <script type="text/javascript">
-    $(document).ready(function(){
-    $("#wrapper").resizable();
-    });
+    //$(document).ready(function(){
+    //$("#wrapper").resizable();
+    //});
   </script>
 
-  <link rel="stylesheet" type="text/css" href="css/layout.css">
-  <link rel="stylesheet" type="text/css" href="css/typography.css">
-  <link rel="stylesheet" type="text/css" href="css/wdmmg.css">
+  <link rel="stylesheet" type="text/css" href="http://wp.staging.wheredoesmymoneygo.org/wp-content/themes/wdmmg/style.css">
+  <link rel="stylesheet" type="text/css" href="css/extras.css">
 		</head>
 		<body>
 		<div id="comments"></div>
 		<script>
 		//alert('hello');
-		$.ajax({
-		  url: 'http://disqus.com/api/get_forum_posts/?user_api_key=WCYhV3QUG6TytrG8AnTUTaVLxAZZ66noDQgyfnT7nu4FU4XO6GcvP6Eyl1j2TZrV&forum_id=382503&api_version=1.1&api_response_format=jsonp:myFunction',
-		  dataType: 'jsonp'
-		});
-		function myFunction(data) {
-			//alert(data);
-		}
+		//$.ajax({
+		  //url: 'http://disqus.com/api/get_forum_posts/?user_api_key=WCYhV3QUG6TytrG8AnTUTaVLxAZZ66noDQgyfnT7nu4FU4XO6GcvP6Eyl1j2TZrV&forum_id=382503&api_version=1.1&api_response_format=jsonp:myFunction',
+		  //dataType: 'jsonp'
+		//});
+		//function myFunction(data) {
+		//}
 		</script>
 		  <div id="airlock">
 
@@ -62,9 +53,15 @@
 		    </div><!-- /#header -->
 
 		    <div id="main">
-		      <div id="wrapper">
+				<ul class="flash-menu">
+				<li class="daily-bread"><a href="daily-bread.html" class="minibutton btn-daily-bread active"><span><span class="icon"></span>Daily Bread</span></a></li>
+				<li class="compareotron"><a href="compareotron.html" class="minibutton btn-compareotron"><span><span class="icon"></span>Compare-O-Tron</span></a></li>
+				<li class="regional"><a href="regional.html" class="minibutton btn-regional"><span><span class="icon"></span>Regional Overview</span></a></li>
+				<li class="long-term"><a href="long-term.html" class="minibutton btn-long-term"><span><span class="icon"></span>Long-Term Spending</span></a></li>
+				</ul>
 
-		      <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
+		      <div id="wrapper">
+		       <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
 			 <param name="movie" value="main.swf" />
 			        <!--[if !IE]>-->
 			        <object type="application/x-shockwave-flash" data="main.swf" width="100%" height="100%">
@@ -76,27 +73,23 @@
 
 			        </object>
 			        <!--<![endif]-->
-			      </object>
+			      </object> 
 			      </div>
-
 			     <div class="layout-row layout-3col-33-33-33" style="margin-top: 15px;">
 			      <!-- <div class="layout-col layout-col-1"> -->
 			
 			    <div class="fill-box">
-            <div id="disqus_thread"></div>
-
+                <div id="disqus_thread"></div>
                         <script type="text/javascript">
-                                        var disqus_developer = true;
-                                                      (function() {
-                                                                            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                                                                                                dsq.src = 'http://wdmmg-phase2.disqus.com/embed.js';
-                                                                                                                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                                                                                                                                   })();
-                                                                                                                                                </script>
-
-				       <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=staging-wdmmg">comments powered by Disqus.</a></noscript>
-	          </div>
-			
+                          var disqus_developer = true;
+                          (function() {
+                           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                           dsq.src = 'http://wdmmg.disqus.com/embed.js';
+                           (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                         })();
+                       </script>
+				       <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript=wdmmg">comments powered by Disqus.</a></noscript>
+	            </div> 
 		       <!-- </div> /.layout-col -->
 		       </div><!-- /.layout-row -->
 
@@ -111,7 +104,6 @@
 		        <ul>
 		          <li><a href="#">About Where Does My Money Go</a></li>
 		          <li><a href="#">Blog</a></li>
-
 		          <li><a href="#">Terms &amp; Conditions</a></li>
 		          <li><a href="#">Privacy</a></li>
 		          <li><a href="#">Legal</a></li>
@@ -140,10 +132,10 @@
 				  </div><!-- /#airlock -->
 
 				<script type="text/javascript">
-				var disqus_shortname = 'wdmmg-phase2';
+				var disqus_shortname = 'wdmmg';
 				(function () {
 				  var s = document.createElement('script'); s.async = true;
-				  s.src = 'http://disqus.com/forums/wdmmg-phase2/count.js';
+				  s.src = 'http://disqus.com/forums/wdmmg/count.js';
 				  (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
 				}());
 				</script>
