@@ -79,6 +79,8 @@ WDMMG.sunburst.render = function () {
 		WDMMG.sunburst.sunburst(nodes);
 	} else if (vistype == 'nodelink') {
 		WDMMG.sunburst.nodelink(nodes);
+	} else if (vistype == 'dendogram') {
+		WDMMG.sunburst.dendogram(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
@@ -111,16 +113,26 @@ WDMMG.sunburst.getNodes = function (breakdownIdentifier) {
 		.value(function(d) {return d[1][yearIdx]})
 		.map();
 	var dom = pv.dom(tree);
-	var nodes = dom.root("Total Spending " + year).nodes();
+	var nodes =
+		dom.root("Total Spending " + year)
+			.sort(function(a, b) {
+				return pv.naturalOrder(a.nodeValue, b.nodeValue)
+			})
+			.nodes()
 	return nodes;
 }
 
-WDMMG.sunburst.sunburst = function (data) {
+WDMMG.sunburst.getPanel = function() {
 	var vis = new pv.Panel()
 		.width(700)
 		.height(600)
 		.canvas('fig')
 		;
+	return vis;
+}
+
+WDMMG.sunburst.sunburst = function (data) {
+	var vis = WDMMG.sunburst.getPanel();
 
 	var partition = vis.add(pv.Layout.Partition.Fill)
 		.nodes(data)
@@ -155,11 +167,7 @@ WDMMG.sunburst.sunburst = function (data) {
 }
 
 WDMMG.sunburst.nodelink = function (nodes) {
-	var vis = new pv.Panel()
-		.width(700)
-		.height(600)
-		.canvas('fig')
-		;
+	var vis = WDMMG.sunburst.getPanel();
 
 	var tree = vis.add(pv.Layout.Tree)
 		.nodes(nodes)
@@ -217,3 +225,28 @@ WDMMG.sunburst.nodelink = function (nodes) {
 
 	vis.render();
 }
+
+WDMMG.sunburst.dendogram = function (nodes) {
+	var vis = WDMMG.sunburst.getPanel();
+	vis.height(2000);
+
+	var layout = vis.add(pv.Layout.Cluster)
+		.nodes(nodes)
+		.group(true)
+		.orient("left");
+
+	layout.link.add(pv.Line)
+		.strokeStyle("#ccc")
+		.lineWidth(1)
+		.antialias(false);
+
+	layout.node.add(pv.Dot)
+		.fillStyle(function(n) {
+			return n.firstChild ? "#aec7e8" : "#ff7f0e"
+		});
+
+	layout.label.add(pv.Label);
+
+	vis.render();
+}
+

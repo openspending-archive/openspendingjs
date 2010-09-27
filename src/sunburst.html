@@ -32,18 +32,22 @@
     <div id="vis">
     <div id="controls">
       <div class="breakdown">
-        Breakdown by:
+        <h3>Breakdown By</h3>
         <ul>
           <li>Department, then</li>
           <li>Region</li>
         </ul>
       </div>
       <div class="vis-type">
-        <input type="radio" name="vis-type" value="sunburst" /> Sunburst
+        <h3>Visualization Type</h3>
         <input type="radio" name="vis-type" value="nodelink" checked="1" /> Node-Link
+        <br />
+        <input type="radio" name="vis-type" value="sunburst" /> Sunburst
+        <br />
+        <input type="radio" name="vis-type" value="dendogram" /> Dendrogram
       </div>
       <div id="slider-widget">
-        <p>Year: <span id="year"></span></p>
+        <h3>Year: <span id="year"></span></h3>
         <div id="slider"></div>
       </div>
     </div>
