@@ -175,7 +175,9 @@ test("gdocsToJavascript", function() {
 	equals(out[0][0], '1', 'check first row of output');
 	equals(out[0][1], 'A', 'check first row of output');
 
-	res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data, ['column-1', 'column-2']);
+	res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data,
+		{'columnsToUse': ['column-1', 'column-2']}
+		);
 	out = res1.data;
 	equals(res1.header[0], 'column-1', 'check header values');
 	equals(res1.header[1], 'column-2', 'check header values');
@@ -192,5 +194,10 @@ test("writeTabularAsHtml", function() {
 	equals(tbody[0].nodeName, 'TBODY');
 	equals(thead[0].nodeName, 'THEAD');
 	equals(thead[0].innerHTML.substr(0,12), '<th>column-2');
+
+	var res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data);
+	var out = writeTabularAsHtml(res1, {'displayNames': {'column-2': 'Column 2'}});
+	var thead = out['thead'];
+	equals(thead[0].innerHTML.substr(0,12), '<th>Column 2');
 });
 

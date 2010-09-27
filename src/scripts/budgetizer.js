@@ -6,12 +6,19 @@ function displayModel(modelConfig, htmlTable, flotChartDiv, flotLegendDiv, ColDi
     */
     var apiurl = modelConfig.spreadsheet_feed_url;
     $.getJSON(apiurl, function(data) {
-	var tabular=gdocsToJavascript(data, modelConfig.columns);
+	var tabular = gdocsToJavascript(data,
+		{
+			columnsToUse: modelConfig.columns,
+			colTypes: ColTypes
+		}
+	);
 	var filterFunc = function(row) {
 	    return row[0] != 'NOTES';
 	}
 	tabular.data = tabular.data.filter(filterFunc);
-	var tabularHtml = writeTabularAsHtml(tabular);
+	var tabularHtml = writeTabularAsHtml(tabular,
+		{colTypes: ColTypes, displayNames: DisplayNames}
+	);
 	htmlTable.append(tabularHtml['thead']);
 	htmlTable.append(tabularHtml['tbody']);
 	htmlTable.tablesorter();
