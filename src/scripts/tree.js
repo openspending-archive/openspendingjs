@@ -215,6 +215,33 @@ this.TreeUtil = {
 				}
 			});
 		}
+	},
+
+	/*
+		Method: addNodeWithAncestors
+
+		Add a node to the tree, creating all ancestor nodes as necessary.
+	*/
+	addNodeWithAncestors: function(tree, nodeIds, nodeDict) {
+		if (nodeIds.length > 1) {
+			parentNodeId = nodeIds[nodeIds.length-2];
+		} else {
+			parentNodeId = 'root';
+		}
+		var parentNode = this.getSubtree(tree, parentNodeId);
+		if (parentNode==null) {
+			parentNode = this.addNodeWithAncestors(tree, nodeIds.slice(0,-1), {});
+		}
+		// assume does not already exist
+		var newNode = {
+			'id': nodeIds[nodeIds.length-1],
+			'children': []
+		};
+		for (var k in nodeDict) {
+			newNode[k] = nodeDict[k];
+		}
+		parentNode.children.push(newNode);
+		return newNode;
 	}
 };
 
