@@ -78,7 +78,7 @@ WDMMG.sunburst.render = function () {
 		var nodes = WDMMG.sunburst.getNodes('root', 2)
 		WDMMG.sunburst.sunburst(nodes);
 	} else if (vistype == 'nodelink') {
-		var nodes = WDMMG.sunburst.getNodes('root', 2)
+		var nodes = WDMMG.sunburst.getNodes('root', 1)
 		WDMMG.sunburst.nodelink(nodes);
 	} else if (vistype == 'dendogram') {
 		var nodes = WDMMG.sunburst.getNodes('root', 1)
@@ -248,19 +248,15 @@ WDMMG.sunburst.nodelink = function (nodes) {
 	var vis = WDMMG.sunburst.getPanel();
 
 	var ourTreeDepth = treeDepth(nodes) - 1;
-	console.log(ourTreeDepth);
 	var tree = vis.add(pv.Layout.Tree)
 		.nodes(nodes)
-		.depth(290 / ourTreeDepth)
-		.breadth(Math.pow(30, 1/ourTreeDepth))
+		.depth(170 / ourTreeDepth)
+		.breadth(Math.pow(18, 1/ourTreeDepth))
 		.orient("radial")
 		;
 
-	tree.link.add(pv.Line);
-
 	function dotSize(node) {
 		var selfval = nodeval(node);
-		// divide by 0.1 billion
 		return selfval / (0.5 * 1000000 * 1000);
 	}
 
@@ -271,7 +267,6 @@ WDMMG.sunburst.nodelink = function (nodes) {
 		.title(function(d) {
 			var selfval = nodeval(d);
 			var t = '';
-			console.log(d.parentNode);
 			// only >= 2nd layer ring
 			if (d.parentNode && d.parentNode.parentNode) {
 				var t = d.parentNode.nodeName + ' - ';
@@ -285,8 +280,11 @@ WDMMG.sunburst.nodelink = function (nodes) {
 		;
 	
 	tree.label.add(pv.Label)
+		.text(function(d) {
+				return d.nodeName.length <= 25 ? d.nodeName : d.nodeName.substr(0,25) + '...';
+			})
 		.visible(function(d) {
-			return d.parentNode == null;
+			return (d.parentNode==null || d.parentNode.parentNode == null);
 			})
 		;
 
