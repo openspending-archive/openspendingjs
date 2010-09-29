@@ -242,6 +242,22 @@ this.TreeUtil = {
 		}
 		parentNode.children.push(newNode);
 		return newNode;
+	},
+
+	/*
+	   Calculate the 'value' attribute for this node (and implicitly all descendants). Value for this node is sum of values of child nodes. If node is a leaf node and value not defined value is set to 0.
+
+	   :return: node.value.
+	*/
+	calculateValues: function(node) {
+		if (!node.value) {
+			var total = 0;
+			for(var i=0; i<node.children.length; i++) {
+				total += this.calculateValues(node.children[i]);
+			}
+			node.value = total;
+		}
+		return node.value
 	}
 };
 

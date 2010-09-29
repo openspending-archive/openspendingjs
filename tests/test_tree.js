@@ -12,12 +12,14 @@ function sampleTree() {
 				children: [
 					{
 						id: 'c1c1',
+						value: 10,
 						children: []
 					}
 				]
 			},
 			{
 				id: 'c2',
+				value: 20,
 				children: []
 			}
 		]
@@ -44,5 +46,12 @@ test('addNodeWithAncestors', function() {
 	var ourtree = sampleTree();
 	TreeUtil.addNodeWithAncestors(ourtree, ['c2', 'c2c1', 'c2c1c1'], {'name': 'Testing'});
 	equals(ourtree.children[1].children[0].children[0].id, 'c2c1c1', 'tree should have extra nodes');
+});
+
+test('calculateValues', function() {
+	var ourtree = sampleTree();
+	TreeUtil.calculateValues(ourtree);
+	equals(ourtree.value, 30);
+	equals(ourtree.children[0].value, 10);
 });
 
