@@ -73,20 +73,22 @@ WDMMG.sunburst.loadData = function(callback) {
 }
 
 WDMMG.sunburst.render = function () {
-	var nodes = WDMMG.sunburst.getNodes()
 	var vistype = WDMMG.CONFIG.visualizationType;
 	if (vistype == 'sunburst') {
+		var nodes = WDMMG.sunburst.getNodes('root', 2)
 		WDMMG.sunburst.sunburst(nodes);
 	} else if (vistype == 'nodelink') {
+		var nodes = WDMMG.sunburst.getNodes('root', 2)
 		WDMMG.sunburst.nodelink(nodes);
 	} else if (vistype == 'dendogram') {
+		var nodes = WDMMG.sunburst.getNodes('root', 1)
 		WDMMG.sunburst.dendogram(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
 }
 
-WDMMG.sunburst.getNodes = function (breakdownIdentifier) {
+WDMMG.sunburst.getTree = function () {
 	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
@@ -98,25 +100,84 @@ WDMMG.sunburst.getNodes = function (breakdownIdentifier) {
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
 	});
-	var idxToKey = {};
-	$.each(wdmmg_data.metadata.axes, function(idx, key){
-		idxToKey[idx] = key;
+
+	var tree = {
+		id: 'root',
+		name: 'Total Spending',
+		metadata: {
+			keyOrder: hierarchy
+		},
+		children: [
+			]
+	};
+	$.each(wdmmg_data.results, function(idx, row) {
+		// each row corresponds to a leaf
+
+		var tkeys = row[0];
+		var tvalues = row[1];
+		// resort the keys into the correct order dictated by hierarchy
+		var orderedKeys = $.map(hierarchy, function(hierarchyKey,idx) {
+			return tkeys[keyToIdx[hierarchyKey]];
+		});
+		// if orderedKeys are ['from', 'region'] then treeKeys are
+		// ['from', 'from::region']
+		var treeKeys = [];
+		for (var i=0; i<orderedKeys.length; i++) {
+			treeKeys[i] = orderedKeys.slice(0,i+1).join('::');
+		}
+		TreeUtil.addNodeWithAncestors(tree, treeKeys,
+			{
+				'value': tvalues[yearIdx],
+				'data': {'values': tvalues}
+			});
 	});
-	var tree = pv.tree(wdmmg_data.results)
-		.keys(function(d) {
-				var labels = $.map(hierarchy, function(k,idx) {
-					var code = d[0][keyToIdx[k]];
-					return WDMMG.DATA_CACHE.keys[k][code]['name'];
-				});
-				return labels;
-			})
-		.value(function(d) {return d[1][yearIdx]})
-		.map();
-	var dom = pv.dom(tree);
+	// walk the tree setting the name attribute
+	TreeUtil.each(tree, function(node) {
+			if (node.id!='root') {
+				var keyCodes = node.id.split('::');
+				var ourkey = hierarchy[keyCodes.length-1];
+				var ourcode = keyCodes[keyCodes.length-1];
+				node.name = WDMMG.DATA_CACHE.keys[ourkey][ourcode]['name'];
+			}
+		});
+	TreeUtil.calculateValues(tree);
+	return tree;
+}
+
+WDMMG.sunburst.getNodes = function (nodeId, depth) {
+	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
+	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
+			return year.substring(0,4);
+	});
+	var yearIdx = years.indexOf(String(WDMMG.CONFIG.year));
+	var year = wdmmg_data.metadata.dates[yearIdx];
+	var hierarchy = WDMMG.CONFIG.breakdownKeys;
+	var keyToIdx = {} 
+	$.each(wdmmg_data.metadata.axes, function(idx, key){
+		keyToIdx[key] = idx;
+	});
+	var jsonTree = WDMMG.sunburst.getTree();
+	// only show top level
+	TreeUtil.prune(jsonTree, depth);
+	function convertToProtovisTree(node) {
+		if (node.children.length == 0) {
+			return node.value;
+		} else {
+			var out = {}
+			for(var i=0; i<node.children.length; i++) {
+				// use name not id ...
+				out[node.children[i].name] = convertToProtovisTree(node.children[i]);
+			}
+			return out;
+		}
+	}
+	var protovisTree = convertToProtovisTree(jsonTree);
+	var dom = pv.dom(protovisTree);
+	// TODO: use data from jsonTree
 	var nodes =
 		dom.root("Total Spending " + year)
 			.sort(function(a, b) {
-				return pv.naturalOrder(a.nodeValue, b.nodeValue)
+				return pv.naturalOrder(b.nodeValue, a.nodeValue)
 			})
 			.nodes()
 	return nodes;
@@ -159,36 +220,47 @@ WDMMG.sunburst.sunburst = function (data) {
 	partition.label.add(pv.Label)
 		.visible(function(d) {
 			// depth 0 for root, 0.5 for first ring, 1 for 2nd ring
-			return d.angle * d.outerRadius >= 50 && d.depth <= 0.5
+			return d.angle * d.outerRadius >= 20;
 			})
 		;
 
 	vis.render();
 }
 
+// TODO: put in namespace or move elsewhere
+function nodeval(node) {
+	var selfval = 0;
+	if (node.nodeValue) {
+		selfval = node.nodeValue;
+	}
+	return selfval + pv.sum(node.childNodes, nodeval);
+}
+
+function treeDepth(nodes) {
+	if (nodes.length>0) {
+		return 1 + treeDepth(nodes[0].childNodes);
+	} else {
+		return 0;
+	}
+}
+
 WDMMG.sunburst.nodelink = function (nodes) {
 	var vis = WDMMG.sunburst.getPanel();
 
+	var ourTreeDepth = treeDepth(nodes) - 1;
+	console.log(ourTreeDepth);
 	var tree = vis.add(pv.Layout.Tree)
 		.nodes(nodes)
-		.depth(140)
-		.breadth(5)
+		.depth(290 / ourTreeDepth)
+		.breadth(Math.pow(30, 1/ourTreeDepth))
 		.orient("radial")
 		;
 
 	tree.link.add(pv.Line);
 
-	function nodeval(node) {
-		var selfval = 0;
-		if (node.nodeValue) {
-			selfval = node.nodeValue;
-		}
-		return selfval + pv.sum(node.childNodes, nodeval);
-	}
-
 	function dotSize(node) {
 		var selfval = nodeval(node);
-		// divide by 0.5 billion
+		// divide by 0.1 billion
 		return selfval / (0.5 * 1000000 * 1000);
 	}
 
@@ -199,8 +271,9 @@ WDMMG.sunburst.nodelink = function (nodes) {
 		.title(function(d) {
 			var selfval = nodeval(d);
 			var t = '';
-			// only 2nd layer ring
-			if (d.depth > 0.5 ) {
+			console.log(d.parentNode);
+			// only >= 2nd layer ring
+			if (d.parentNode && d.parentNode.parentNode) {
 				var t = d.parentNode.nodeName + ' - ';
 			}
 			var t = t + d.nodeName + ' GBP ' + numberAsString(selfval);
@@ -208,12 +281,6 @@ WDMMG.sunburst.nodelink = function (nodes) {
 			})
 		.size(function(d) {
 			return dotSize(d);
-			})
-		.visible(function(d) {
-				// remove all leaf nodes
-				// return d.childNodes.length > 0;
-				// return dotSize(d) > 5;
-				return true;
 			})
 		;
 	
@@ -227,8 +294,12 @@ WDMMG.sunburst.nodelink = function (nodes) {
 }
 
 WDMMG.sunburst.dendogram = function (nodes) {
-	var vis = WDMMG.sunburst.getPanel();
-	vis.height(2000);
+	var vis = WDMMG.sunburst.getPanel()
+		.height(function() {(nodes.length + 1) * 12})
+		.width(200)
+		.left(150)
+		.right(200)
+		;
 
 	var layout = vis.add(pv.Layout.Cluster)
 		.nodes(nodes)
@@ -243,9 +314,16 @@ WDMMG.sunburst.dendogram = function (nodes) {
 	layout.node.add(pv.Dot)
 		.fillStyle(function(n) {
 			return n.firstChild ? "#aec7e8" : "#ff7f0e"
-		});
+		})
+		.title(function(d) {
+			var selfval = nodeval(d);
+			var t = d.nodeName + ' GBP ' + numberAsString(selfval);
+			return t;
+			})
+		;
 
-	layout.label.add(pv.Label);
+	layout.label.add(pv.Label)
+		;
 
 	vis.render();
 }
