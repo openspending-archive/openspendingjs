@@ -17,19 +17,19 @@ WDMMG.DATA_CACHE = {
 	'keys': {
 	}
 }
-WDMMG.sunburst = {};
+WDMMG.explorer = {};
 
 $(document).ready(function() {
-	var callback = WDMMG.sunburst.render;
+	var callback = WDMMG.explorer.render;
 	// department then region
-	WDMMG.sunburst.loadData(callback);
+	WDMMG.explorer.loadData(callback);
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
 		var vistype = $('div.vis-type').find('input:checked');
 		vistype = $($(vistype)[0]).attr('value');
 		WDMMG.CONFIG.visualizationType = vistype;
-		WDMMG.sunburst.render();
+		WDMMG.explorer.render();
 	});
 
     $("#slider").slider({
@@ -40,13 +40,13 @@ $(document).ready(function() {
       slide: function(event, ui) {
         $("#year").text(ui.value);
 		WDMMG.CONFIG.year = ui.value;
-		WDMMG.sunburst.render();
+		WDMMG.explorer.render();
       }
     });
     $("#year").text($("#slider").slider("value"));
 });
 
-WDMMG.sunburst.loadData = function(callback) {
+WDMMG.explorer.loadData = function(callback) {
 	if (DEBUG) {
 		WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier] = dept_region;
 		WDMMG.DATA_CACHE['keys']['from'] = key_from['enumeration_values'];
@@ -72,23 +72,23 @@ WDMMG.sunburst.loadData = function(callback) {
 	}
 }
 
-WDMMG.sunburst.render = function () {
+WDMMG.explorer.render = function () {
 	var vistype = WDMMG.CONFIG.visualizationType;
 	if (vistype == 'sunburst') {
-		var nodes = WDMMG.sunburst.getNodes('root', 2)
-		WDMMG.sunburst.sunburst(nodes);
+		var nodes = WDMMG.explorer.getNodes('root', 2)
+		WDMMG.explorer.sunburst(nodes);
 	} else if (vistype == 'nodelink') {
-		var nodes = WDMMG.sunburst.getNodes('root', 1)
-		WDMMG.sunburst.nodelink(nodes);
+		var nodes = WDMMG.explorer.getNodes('root', 1)
+		WDMMG.explorer.nodelink(nodes);
 	} else if (vistype == 'dendogram') {
-		var nodes = WDMMG.sunburst.getNodes('root', 1)
-		WDMMG.sunburst.dendogram(nodes);
+		var nodes = WDMMG.explorer.getNodes('root', 1)
+		WDMMG.explorer.dendogram(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
 }
 
-WDMMG.sunburst.getTree = function () {
+WDMMG.explorer.getTree = function () {
 	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
@@ -144,7 +144,7 @@ WDMMG.sunburst.getTree = function () {
 	return tree;
 }
 
-WDMMG.sunburst.getNodes = function (nodeId, depth) {
+WDMMG.explorer.getNodes = function (nodeId, depth) {
 	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
@@ -156,7 +156,7 @@ WDMMG.sunburst.getNodes = function (nodeId, depth) {
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
 	});
-	var jsonTree = WDMMG.sunburst.getTree();
+	var jsonTree = WDMMG.explorer.getTree();
 	// only show top level
 	TreeUtil.prune(jsonTree, depth);
 	function convertToProtovisTree(node) {
@@ -183,7 +183,7 @@ WDMMG.sunburst.getNodes = function (nodeId, depth) {
 	return nodes;
 }
 
-WDMMG.sunburst.getPanel = function() {
+WDMMG.explorer.getPanel = function() {
 	var vis = new pv.Panel()
 		.width(700)
 		.height(600)
@@ -192,8 +192,8 @@ WDMMG.sunburst.getPanel = function() {
 	return vis;
 }
 
-WDMMG.sunburst.sunburst = function (data) {
-	var vis = WDMMG.sunburst.getPanel();
+WDMMG.explorer.sunburst = function (data) {
+	var vis = WDMMG.explorer.getPanel();
 
 	var partition = vis.add(pv.Layout.Partition.Fill)
 		.nodes(data)
@@ -244,8 +244,8 @@ function treeDepth(nodes) {
 	}
 }
 
-WDMMG.sunburst.nodelink = function (nodes) {
-	var vis = WDMMG.sunburst.getPanel();
+WDMMG.explorer.nodelink = function (nodes) {
+	var vis = WDMMG.explorer.getPanel();
 
 	var ourTreeDepth = treeDepth(nodes) - 1;
 	var tree = vis.add(pv.Layout.Tree)
@@ -291,8 +291,8 @@ WDMMG.sunburst.nodelink = function (nodes) {
 	vis.render();
 }
 
-WDMMG.sunburst.dendogram = function (nodes) {
-	var vis = WDMMG.sunburst.getPanel()
+WDMMG.explorer.dendogram = function (nodes) {
+	var vis = WDMMG.explorer.getPanel()
 		.height(function() {(nodes.length + 1) * 12})
 		.width(200)
 		.left(150)
