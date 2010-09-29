@@ -9,6 +9,7 @@ WDMMG.CONFIG = {
 	'breakdownKeys': [ 'from', 'region' ],
 	// 'breakdownKeys': [ 'region', 'from' ],
 	'year': 2008,
+	'currentNodeId': 'root'
 }
 
 WDMMG.DATA_CACHE = {
@@ -44,6 +45,11 @@ $(document).ready(function() {
       }
     });
     $("#year").text($("#slider").slider("value"));
+	$('#back-to-top-level').click(function(e) {
+		e.preventDefault();
+		WDMMG.CONFIG.currentNodeId = 'root';
+		WDMMG.explorer.render();
+	});
 });
 
 WDMMG.explorer.loadData = function(callback) {
@@ -74,14 +80,16 @@ WDMMG.explorer.loadData = function(callback) {
 
 WDMMG.explorer.render = function () {
 	var vistype = WDMMG.CONFIG.visualizationType;
+	// TODO: this is not really a config variable but something just an internal variable ...
+	var nodeId = WDMMG.CONFIG.currentNodeId;
 	if (vistype == 'sunburst') {
-		var nodes = WDMMG.explorer.getNodes('root', 2)
+		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
 		WDMMG.explorer.sunburst(nodes);
 	} else if (vistype == 'nodelink') {
-		var nodes = WDMMG.explorer.getNodes('root', 1)
+		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.nodelink(nodes);
 	} else if (vistype == 'dendogram') {
-		var nodes = WDMMG.explorer.getNodes('root', 1)
+		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.dendogram(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
@@ -103,7 +111,7 @@ WDMMG.explorer.getTree = function () {
 
 	var tree = {
 		id: 'root',
-		name: 'Total Spending',
+		name: 'Total Spending ' + year,
 		metadata: {
 			keyOrder: hierarchy
 		},
@@ -157,11 +165,17 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 		keyToIdx[key] = idx;
 	});
 	var jsonTree = WDMMG.explorer.getTree();
-	// only show top level
+	jsonTree = TreeUtil.getSubtree(jsonTree, nodeId);
 	TreeUtil.prune(jsonTree, depth);
+	// TODO: move this out
 	function convertToProtovisTree(node) {
 		if (node.children.length == 0) {
-			return node.value;
+			// deep copy is safer!
+			return {
+				id: node.id,
+				name: node.name,
+				value: node.value
+			}
 		} else {
 			var out = {}
 			for(var i=0; i<node.children.length; i++) {
@@ -172,14 +186,23 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 		}
 	}
 	var protovisTree = convertToProtovisTree(jsonTree);
-	var dom = pv.dom(protovisTree);
+	var dom = pv.dom(protovisTree)
+		.leaf(function(node) {
+			return (node.id!=null);
+			})
+		;
 	// TODO: use data from jsonTree
 	var nodes =
-		dom.root("Total Spending " + year)
+		dom.root(jsonTree.name)
 			.sort(function(a, b) {
-				return pv.naturalOrder(b.nodeValue, a.nodeValue)
+				return pv.naturalOrder(b.nodeValue.value, a.nodeValue.value)
 			})
 			.nodes()
+	// annoyingly protovis seems to discard nodeValue material for root node so we reinstate it
+	nodes[0].nodeValue = {
+		id: jsonTree.id,
+		value: jsonTree.value
+	}
 	return nodes;
 }
 
@@ -197,7 +220,7 @@ WDMMG.explorer.sunburst = function (data) {
 
 	var partition = vis.add(pv.Layout.Partition.Fill)
 		.nodes(data)
-		.size(function(d) {return d.nodeValue})
+		.size(function(d) {return d.nodeValue.value})
 		.order("descending")
 		.orient("radial");
 
@@ -231,7 +254,7 @@ WDMMG.explorer.sunburst = function (data) {
 function nodeval(node) {
 	var selfval = 0;
 	if (node.nodeValue) {
-		selfval = node.nodeValue;
+		selfval = node.nodeValue.value;
 	}
 	return selfval + pv.sum(node.childNodes, nodeval);
 }
@@ -248,16 +271,21 @@ WDMMG.explorer.nodelink = function (nodes) {
 	var vis = WDMMG.explorer.getPanel();
 
 	var ourTreeDepth = treeDepth(nodes) - 1;
+	var numberNodesInFirstLevel = nodes[0].childNodes.length
 	var tree = vis.add(pv.Layout.Tree)
 		.nodes(nodes)
 		.depth(170 / ourTreeDepth)
-		.breadth(Math.pow(18, 1/ourTreeDepth))
+		.breadth(1050/numberNodesInFirstLevel)
 		.orient("radial")
 		;
 
+	// normalize sizes of dots
+	// first node in nodes is the root node which is the largest
+	// and we normalize it to size of 1000
+	var maxSize = nodes[0].nodeValue.value;
 	function dotSize(node) {
 		var selfval = nodeval(node);
-		return selfval / (0.5 * 1000000 * 1000);
+		return 2500 * selfval / maxSize;
 	}
 
 	tree.node.add(pv.Dot)
@@ -277,11 +305,20 @@ WDMMG.explorer.nodelink = function (nodes) {
 		.size(function(d) {
 			return dotSize(d);
 			})
+		.event('click', function(d) {
+			WDMMG.CONFIG.currentNodeId = d.nodeValue.id;
+			WDMMG.explorer.render();
+			})
 		;
 	
 	tree.label.add(pv.Label)
 		.text(function(d) {
-				return d.nodeName.length <= 25 ? d.nodeName : d.nodeName.substr(0,25) + '...';
+				// show node name up to 25 characters or full name if root node
+				if (d.nodeName.length <= 25 || (d.parentNode==null)) {
+					return d.nodeName;
+				} else {
+					return d.nodeName.substr(0,25) + '...';
+				}
 			})
 		.visible(function(d) {
 			return (d.parentNode==null || d.parentNode.parentNode == null);
