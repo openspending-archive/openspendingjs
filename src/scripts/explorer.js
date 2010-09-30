@@ -19,6 +19,13 @@ WDMMG.DATA_CACHE = {
 	}
 }
 WDMMG.explorer = {};
+WDMMG.explorer.color = {};
+WDMMG.explorer.color.fill = function(node) {
+	return 'rgba(129,130,133, 0.5)';
+};
+WDMMG.explorer.color.stroke = function(node) {
+	return '#818285';
+}
 
 $(document).ready(function() {
 	var callback = WDMMG.explorer.render;
@@ -290,7 +297,10 @@ WDMMG.explorer.nodelink = function (nodes) {
 
 	tree.node.add(pv.Dot)
 		.fillStyle(function(n) {
-			return n.firstChild ? "#aec7e8" : "#ff7f0e"
+			return WDMMG.explorer.color.fill(n);
+			})
+		.strokeStyle(function(n) {
+			return WDMMG.explorer.color.stroke(n);
 			})
 		.title(function(d) {
 			var selfval = nodeval(d);
