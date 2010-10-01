@@ -29,4 +29,5 @@ div#controls {
 .ui-slider-horizontal .ui-slider-handle {
   height: 12px;
   width: 4px;
+  margin-left: -0.1em;
 }
