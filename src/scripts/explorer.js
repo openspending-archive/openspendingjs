@@ -90,9 +90,9 @@ WDMMG.explorer.render = function () {
 	} else if (vistype == 'nodelink') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.nodelink(nodes);
-	} else if (vistype == 'dendogram') {
+	} else if (vistype == 'dendrogram') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
-		WDMMG.explorer.dendogram(nodes);
+		WDMMG.explorer.dendrogram(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
@@ -370,7 +370,7 @@ WDMMG.explorer.nodelink = function (nodes) {
 	vis.render();
 }
 
-WDMMG.explorer.dendogram = function (nodes) {
+WDMMG.explorer.dendrogram = function (nodes) {
 	var vis = WDMMG.explorer.getPanel()
 		.height(function() {(nodes.length + 1) * 12})
 		.width(200)
