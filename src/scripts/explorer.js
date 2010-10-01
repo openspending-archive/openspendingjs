@@ -52,11 +52,6 @@ $(document).ready(function() {
       }
     });
     $("#year").text($("#slider").slider("value"));
-	$('#back-to-top-level').click(function(e) {
-		e.preventDefault();
-		WDMMG.CONFIG.currentNodeId = 'root';
-		WDMMG.explorer.render();
-	});
 });
 
 WDMMG.explorer.loadData = function(callback) {
@@ -171,8 +166,8 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
 	});
-	var jsonTree = WDMMG.explorer.getTree();
-	jsonTree = TreeUtil.getSubtree(jsonTree, nodeId);
+	var fullTree = WDMMG.explorer.getTree();
+	var jsonTree = TreeUtil.getSubtree(fullTree, nodeId);
 	TreeUtil.prune(jsonTree, depth);
 	// TODO: move this out
 	function convertToProtovisTree(node) {
@@ -202,14 +197,24 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 	var nodes =
 		dom.root(jsonTree.name)
 			.sort(function(a, b) {
-				return pv.naturalOrder(b.nodeValue.value, a.nodeValue.value)
+				if (a.nodeValue && a.nodeValue.value) {
+					return pv.naturalOrder(b.nodeValue.value, a.nodeValue.value)
+				} else {
+					return pv.naturalOrder(b.nodeValue, a.nodeValue);
+				}
 			})
 			.nodes()
 	// annoyingly protovis seems to discard nodeValue material for root node so we reinstate it
 	nodes[0].nodeValue = {
 		id: jsonTree.id,
-		value: jsonTree.value
+		value: jsonTree.value,
+		name: jsonTree.name
 	}
+
+	// TODO: ugly to have this here - this whole function is clearly in need of refactoring!
+	WDMMG.explorer._tree = fullTree;
+	WDMMG.explorer._currentTree = jsonTree;
+	WDMMG.explorer._depth = TreeUtil.getDepth(fullTree, nodeId); 
 	return nodes;
 }
 
@@ -318,6 +323,43 @@ WDMMG.explorer.nodelink = function (nodes) {
 		.event('click', function(d) {
 			WDMMG.CONFIG.currentNodeId = d.nodeValue.id;
 			WDMMG.explorer.render();
+			})
+		;
+
+	// 'contextual' dots
+	var contextData = [];
+	var _currentNode = nodes[0];
+	// all other nodes we will get from json tree and will have attributes directly available
+	_currentNode.id = _currentNode.nodeValue.id;
+	_currentNode.name = _currentNode.nodeValue.name;
+	_currentNode.value = _currentNode.nodeValue.value;
+	for(var i=0; i<=WDMMG.explorer._depth; i++) {
+		contextData.push([
+			50,
+			20 + (WDMMG.explorer._depth - i) * 20,
+			100/(WDMMG.explorer._depth-i+1),
+			_currentNode
+		]);
+		_currentNode = TreeUtil.getParent(WDMMG.explorer._tree, _currentNode.id);
+	}
+	contextData.reverse();
+	vis.add(pv.Dot)
+		.data(contextData)
+		.left(function(d) {return d[0]})
+		.top(function(d) {return d[1]})
+		.size(function(d) {return d[2]})
+		.title(function(d) {
+			return 'GBP ' + numberAsString(d[3].value) + '\nClick to go to this level';
+			})
+		.fillStyle('#3a3a3c')
+		.strokeStyle('#3a3a3c')
+		.event('click', function(d) {
+			WDMMG.CONFIG.currentNodeId = d[3].id;
+			WDMMG.explorer.render();
+			})
+		.anchor('right').add(pv.Label)
+			.text(function(d) {
+				return d[3].name;
 			})
 		;
 	
