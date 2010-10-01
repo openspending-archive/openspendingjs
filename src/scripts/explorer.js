@@ -262,15 +262,6 @@ WDMMG.explorer.sunburst = function (data) {
 	vis.render();
 }
 
-// TODO: put in namespace or move elsewhere
-function nodeval(node) {
-	var selfval = 0;
-	if (node.nodeValue) {
-		selfval = node.nodeValue.value;
-	}
-	return selfval + pv.sum(node.childNodes, nodeval);
-}
-
 function treeDepth(nodes) {
 	if (nodes.length>0) {
 		return 1 + treeDepth(nodes[0].childNodes);
@@ -296,8 +287,7 @@ WDMMG.explorer.nodelink = function (nodes) {
 	// and we normalize it to size of 1000
 	var maxSize = nodes[0].nodeValue.value;
 	function dotSize(node) {
-		var selfval = nodeval(node);
-		return 2500 * selfval / maxSize;
+		return 2500 * node.nodeValue.value / maxSize;
 	}
 
 	tree.node.add(pv.Dot)
@@ -308,7 +298,7 @@ WDMMG.explorer.nodelink = function (nodes) {
 			return WDMMG.explorer.color.stroke(n);
 			})
 		.title(function(d) {
-			var selfval = nodeval(d);
+			var selfval = d.nodeValue.value;
 			var t = '';
 			// only >= 2nd layer ring
 			if (d.parentNode && d.parentNode.parentNode) {
@@ -384,32 +374,50 @@ WDMMG.explorer.dendogram = function (nodes) {
 	var vis = WDMMG.explorer.getPanel()
 		.height(function() {(nodes.length + 1) * 12})
 		.width(200)
-		.left(150)
+		.left(50)
 		.right(200)
-		;
+		.top(20)
+		.bottom(20)
+	;
 
 	var layout = vis.add(pv.Layout.Cluster)
 		.nodes(nodes)
 		.group(true)
 		.orient("left");
 
-	layout.link.add(pv.Line)
-		.strokeStyle("#ccc")
-		.lineWidth(1)
-		.antialias(false);
+	var maxSize = nodes[0].nodeValue.value;
+	function dotSize(node) {
+		return 2500 * node.nodeValue.value / maxSize;
+	}
 
 	layout.node.add(pv.Dot)
 		.fillStyle(function(n) {
 			return n.firstChild ? "#aec7e8" : "#ff7f0e"
 		})
 		.title(function(d) {
-			var selfval = nodeval(d);
+			var selfval = d.nodeValue.value;
 			var t = d.nodeName + ' GBP ' + numberAsString(selfval);
 			return t;
 			})
-		;
-
-	layout.label.add(pv.Label)
+		.size(function(node) {
+			return dotSize(node);
+			})
+		// TODO: cannot have 2 anchors ...
+//		.anchor('top').add(pv.Label)
+//			.text(function(d) {
+//				return d.firstChild ? d.nodeValue.name : '';
+//			})
+//			.textAlign(function(node) {
+//				return 'right';
+//			})
+//		;
+		.anchor('right').add(pv.Label)
+			.text(function(d) {
+				return d.nodeValue.name;
+			})
+			.textAlign(function(node) {
+				return 'left';
+			})
 		;
 
 	vis.render();
