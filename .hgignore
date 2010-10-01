@@ -1,6 +1,31 @@
 syntax: glob
 ## general
 *.orig
+*~
 ## specific
 scripts/localconfig.js
+src/latest-tar-from-dave
+src/flash-ordnance
+src/dfid
+.DS_Store
+.DS_Store
+AC_OETags.js
+WDMMGassets.swf
+WDMMGassets2.swf
+expressInstall.swf
+history.css
+history.js
+historyFrame.html
+main-iframe.html
+main.swf
+patch
+patch2
+playerProductInstall.swf
+swfaddress.js
+swfobject.js
+table4.1.json.zlib
+table4.2.json.zlib
+table5.2.json.zlib
+cra_config.json
+? src/flash/dashboard-config.json
 

@@ -34,7 +34,7 @@ ul.flash-menu li a {
 }
 
 .minibutton {
-	background:url("/images/minibutton_matrix.png") no-repeat scroll 0 0 transparent;
+	background:url("../images/minibutton_matrix.png") no-repeat scroll 0 0 transparent;
 	border:medium none;
 	color:#333333;
 	cursor:pointer;
@@ -56,7 +56,7 @@ ul.flash-menu li a {
 }
 
 .minibutton > span {
-	background:url("/images/minibutton_matrix.png") no-repeat scroll 100% 0 transparent;
+	background:url("../images/minibutton_matrix.png") no-repeat scroll 100% 0 transparent;
 	display:block;
 	height:23px;
 	line-height:23px;
@@ -79,7 +79,7 @@ ul.flash-menu li a {
 /* icons for Flash screen menu buttons */
 
 .btn-index .icon, .btn-daily-bread .icon, .btn-regional .icon, .btn-long-term .icon {
-	background:url("/images/minibutton_icons.png?v20100306") no-repeat scroll 0 0 transparent;
+	background:url("../images/minibutton_icons.png?v20100306") no-repeat scroll 0 0 transparent;
 	float:left;
 	height:22px;
 	margin-left:-4px;
@@ -100,8 +100,4 @@ ul.flash-menu li a {
 
 .btn-long-term .icon {
 	background-position:-60px 0;
-}
-
-#disqus_thread {
-   padding-top: 15px;
 }
