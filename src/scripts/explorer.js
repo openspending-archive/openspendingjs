@@ -93,6 +93,9 @@ WDMMG.explorer.render = function () {
 	} else if (vistype == 'dendrogram') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.dendrogram(nodes);
+	} else if (vistype == 'icicle') {
+		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
+		WDMMG.explorer.icicle(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
@@ -423,3 +426,39 @@ WDMMG.explorer.dendrogram = function (nodes) {
 	vis.render();
 }
 
+WDMMG.explorer.icicle = function (nodes) {
+	var vis = WDMMG.explorer.getPanel();
+
+	var layout = vis.add(pv.Layout.Partition.Fill)
+		.nodes(nodes)
+		.order('descending')
+		.orient('top')
+		.size(function(d) {return d.nodeValue.value})
+
+	layout.node.add(pv.Bar)
+		.fillStyle(pv.Colors.category19().by(function(d) {
+			return d.parentNode && d.parentNode.nodeName;
+			}))
+		.strokeStyle('rgba(255,255,255,.5)')
+		.lineWidth(1)
+		.antialias(false)
+		.title(function(d) {
+			var t = '';
+			// only 2nd layer ring
+			if (d.depth > 0.5 ) {
+				var t = d.parentNode.nodeName + ' - ';
+			}
+			var t = t + d.nodeName + ' GBP ' + numberAsString(d.size);
+			return t;
+			})
+		;
+
+	layout.label.add(pv.Label)
+		.textAngle(-Math.PI / 2)
+		.visible(function(d) {
+			return d.dx > 6
+			})
+		;
+
+	vis.render();
+}
