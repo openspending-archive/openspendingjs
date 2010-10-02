@@ -178,6 +178,21 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 	return nodes;
 }
 
+function treeDepth(nodes) {
+	if (nodes.length>0) {
+		return 1 + treeDepth(nodes[0].childNodes);
+	} else {
+		return 0;
+	}
+}
+
+function title(node) {
+	var t = node.parentNode && node.parentNode.parentNode ? 
+		node.parentNode.nodeName + ' - ' : '';
+	var t = t + node.nodeName + ' GBP ' + numberAsString(node.value);
+	return t;
+}
+
 WDMMG.explorer.getPanel = function() {
 	var vis = new pv.Panel()
 		.width(700)
@@ -200,34 +215,17 @@ WDMMG.explorer.sunburst = function (data) {
 		.fillStyle(pv.Colors.category19().by(function(d) {return d.parentNode && d.parentNode.nodeName}))
 		.strokeStyle("#fff")
 		.lineWidth(.5)
-		.title(function(d) {
-			var t = '';
-			// only 2nd layer ring
-			if (d.depth > 0.5 ) {
-				var t = d.parentNode.nodeName + ' - ';
-			}
-			var t = t + d.nodeName + ' GBP ' + numberAsString(d.size);
-			return t;
-			})
-		.event("mouseover", pv.Behavior.tipsy({gravity: "w", fade: true}));
+		.title(function(d) {return title(d)})
 		;
 
 	partition.label.add(pv.Label)
 		.visible(function(d) {
 			// depth 0 for root, 0.5 for first ring, 1 for 2nd ring
-			return d.angle * d.outerRadius >= 20;
+			return d.angle * d.outerRadius >= 10;
 			})
 		;
 
 	vis.render();
-}
-
-function treeDepth(nodes) {
-	if (nodes.length>0) {
-		return 1 + treeDepth(nodes[0].childNodes);
-	} else {
-		return 0;
-	}
 }
 
 WDMMG.explorer.nodelink = function (nodes) {
@@ -257,16 +255,7 @@ WDMMG.explorer.nodelink = function (nodes) {
 		.strokeStyle(function(n) {
 			return WDMMG.explorer.color.stroke(n);
 			})
-		.title(function(d) {
-			var selfval = d.nodeValue.value;
-			var t = '';
-			// only >= 2nd layer ring
-			if (d.parentNode && d.parentNode.parentNode) {
-				var t = d.parentNode.nodeName + ' - ';
-			}
-			var t = t + d.nodeName + ' GBP ' + numberAsString(selfval);
-			return t;
-			})
+		.title(function(d) {return title(d)})
 		.size(function(d) {
 			return dotSize(d);
 			})
@@ -354,11 +343,7 @@ WDMMG.explorer.dendrogram = function (nodes) {
 		.fillStyle(function(n) {
 			return n.firstChild ? "#aec7e8" : "#ff7f0e"
 		})
-		.title(function(d) {
-			var selfval = d.nodeValue.value;
-			var t = d.nodeName + ' GBP ' + numberAsString(selfval);
-			return t;
-			})
+		.title(function(d) {return title(d)})
 		.size(function(node) {
 			return dotSize(node);
 			})
@@ -399,15 +384,7 @@ WDMMG.explorer.icicle = function (nodes) {
 		.strokeStyle('rgba(255,255,255,.5)')
 		.lineWidth(1)
 		.antialias(false)
-		.title(function(d) {
-			var t = '';
-			// only 2nd layer ring
-			if (d.depth > 0.5 ) {
-				var t = d.parentNode.nodeName + ' - ';
-			}
-			var t = t + d.nodeName + ' GBP ' + numberAsString(d.size);
-			return t;
-			})
+		.title(function(d) {return title(d)})
 		;
 
 	layout.label.add(pv.Label)
@@ -423,6 +400,10 @@ WDMMG.explorer.icicle = function (nodes) {
 WDMMG.explorer.treemap = function (nodes) {
 	var vis = WDMMG.explorer.getPanel();
 
+	function matchtitle(d) {
+		return d.parentNode ? (title(d.parentNode) + "." + d.nodeName) : d.nodeName;
+	}
+
 	var re = '',
 		color = pv.Colors.category19().by(function(d) {return d.parentNode.nodeName});
 
@@ -433,21 +414,12 @@ WDMMG.explorer.treemap = function (nodes) {
 		;
 
 	layout.leaf.add(pv.Panel)
-		.fillStyle(function(d) {return color(d).alpha(title(d).match(re) ? 1 : .2)})
+		.fillStyle(function(d) {return color(d).alpha(matchtitle(d).match(re) ? 1 : .2)})
 		.strokeStyle("#fff")
 		.lineWidth(1)
 		.antialias(false)
-		.title(function(d) {
-			var t = d.parentNode && d.parentNode.parentNode ? 
-				d.parentNode.nodeName + ' - ' : '';
-			var t = t + d.nodeName + ' GBP ' + numberAsString(d.nodeValue.value);
-			return t;
-			})
+		.title(function(d) {return title(d)})
 		;
-
-	function title(d) {
-		return d.parentNode ? (title(d.parentNode) + "." + d.nodeName) : d.nodeName;
-	}
 
 	layout.label.add(pv.Label)
 		.visible(function(d) {
