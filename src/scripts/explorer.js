@@ -55,6 +55,9 @@ WDMMG.explorer.render = function () {
 	} else if (vistype == 'nodelink') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.nodelink(nodes);
+	} else if (vistype == 'treemap') {
+		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
+		WDMMG.explorer.treemap(nodes);
 	} else if (vistype == 'dendrogram') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.dendrogram(nodes);
@@ -412,6 +415,44 @@ WDMMG.explorer.icicle = function (nodes) {
 		.visible(function(d) {
 			return d.dx > 6
 			})
+		;
+
+	vis.render();
+}
+
+WDMMG.explorer.treemap = function (nodes) {
+	var vis = WDMMG.explorer.getPanel();
+
+	var re = '',
+		color = pv.Colors.category19().by(function(d) {return d.parentNode.nodeName});
+
+	var layout = vis.add(pv.Layout.Treemap)
+		.nodes(nodes)
+		.round(true)
+		.size(function(d) {return d.nodeValue.value})
+		;
+
+	layout.leaf.add(pv.Panel)
+		.fillStyle(function(d) {return color(d).alpha(title(d).match(re) ? 1 : .2)})
+		.strokeStyle("#fff")
+		.lineWidth(1)
+		.antialias(false)
+		.title(function(d) {
+			var t = d.parentNode && d.parentNode.parentNode ? 
+				d.parentNode.nodeName + ' - ' : '';
+			var t = t + d.nodeName + ' GBP ' + numberAsString(d.nodeValue.value);
+			return t;
+			})
+		;
+
+	function title(d) {
+		return d.parentNode ? (title(d.parentNode) + "." + d.nodeName) : d.nodeName;
+	}
+
+	layout.label.add(pv.Label)
+		.visible(function(d) {
+			return d.dx > 20 && d.dy > 20;
+		})
 		;
 
 	vis.render();
