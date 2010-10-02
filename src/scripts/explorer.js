@@ -1,7 +1,6 @@
-var WDMMG = {};
-
-WDMMG.CONFIG = {
-	'dataStoreApi': 'http://data.wheredoesmymoneygo.org/api',
+WDMMG.explorer = {};
+WDMMG.explorer.config = {
+	'dataset': 'cra',
 	'breakdownIdentifier': 'slice=cra&breakdown-from=yes&breakdown-region=yes',
 	// 'visualizationType': 'sunburst'
 	'visualizationType': 'nodelink',
@@ -10,15 +9,8 @@ WDMMG.CONFIG = {
 	// 'breakdownKeys': [ 'region', 'from' ],
 	'year': 2008,
 	'currentNodeId': 'root'
-}
+};
 
-WDMMG.DATA_CACHE = {
-	'breakdown': {
-	},
-	'keys': {
-	}
-}
-WDMMG.explorer = {};
 WDMMG.explorer.color = {};
 WDMMG.explorer.color.fill = function(node) {
 	return 'rgba(129,130,133, 0.5)';
@@ -30,60 +22,34 @@ WDMMG.explorer.color.stroke = function(node) {
 $(document).ready(function() {
 	var callback = WDMMG.explorer.render;
 	// department then region
-	WDMMG.explorer.loadData(callback);
+	WDMMG.datastore.loadData(WDMMG.explorer.config.breakdownIdentifier, callback);
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
 		var vistype = $('div.vis-type').find('input:checked');
 		vistype = $($(vistype)[0]).attr('value');
-		WDMMG.CONFIG.visualizationType = vistype;
+		WDMMG.explorer.config.visualizationType = vistype;
 		WDMMG.explorer.render();
 	});
 
     $("#slider").slider({
-      value: WDMMG.CONFIG.year,
+      value: WDMMG.explorer.config.year,
       min: 2004,
       max: 2010,
       step: 1,
       slide: function(event, ui) {
         $("#year").text(ui.value);
-		WDMMG.CONFIG.year = ui.value;
+		WDMMG.explorer.config.year = ui.value;
 		WDMMG.explorer.render();
       }
     });
     $("#year").text($("#slider").slider("value"));
 });
 
-WDMMG.explorer.loadData = function(callback) {
-	if (DEBUG) {
-		WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier] = dept_region;
-		WDMMG.DATA_CACHE['keys']['from'] = key_from['enumeration_values'];
-		WDMMG.DATA_CACHE['keys']['region'] = key_region['enumeration_values'];
-		callback();
-	} else {
-		var api_url = WDMMG.CONFIG.dataStoreApi + '/aggregate?' + WDMMG.CONFIG.breakdownIdentifier + '&callback=?';
-		$.getJSON(api_url, function(data) {
-			WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier] = data;
-			// need to do work to ensure we only call render after *all* data loaded
-			var done = 2; // number of total requests
-			$.each(data.metadata.axes, function(i,key) {
-				var api_url = WDMMG.CONFIG.dataStoreApi + '/rest/key/' + key + '?callback=?';
-				$.getJSON(api_url, function(data) {
-					WDMMG.DATA_CACHE['keys'][key] = data['enumeration_values'];
-					done -= 1;
-					if(done == 0) {
-						callback();
-					}
-				});
-			});
-		});
-	}
-}
-
 WDMMG.explorer.render = function () {
-	var vistype = WDMMG.CONFIG.visualizationType;
+	var vistype = WDMMG.explorer.config.visualizationType;
 	// TODO: this is not really a config variable but something just an internal variable ...
-	var nodeId = WDMMG.CONFIG.currentNodeId;
+	var nodeId = WDMMG.explorer.config.currentNodeId;
 	if (vistype == 'sunburst') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
 		WDMMG.explorer.sunburst(nodes);
@@ -102,13 +68,13 @@ WDMMG.explorer.render = function () {
 }
 
 WDMMG.explorer.getTree = function () {
-	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
+	var wdmmg_data = WDMMG.datastore['breakdown'][WDMMG.explorer.config.breakdownIdentifier];
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
 	});
-	var yearIdx = years.indexOf(String(WDMMG.CONFIG.year));
+	var yearIdx = years.indexOf(String(WDMMG.explorer.config.year));
 	var year = wdmmg_data.metadata.dates[yearIdx];
-	var hierarchy = WDMMG.CONFIG.breakdownKeys;
+	var hierarchy = WDMMG.explorer.config.breakdownKeys;
 	var keyToIdx = {} 
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
@@ -150,7 +116,7 @@ WDMMG.explorer.getTree = function () {
 				var keyCodes = node.id.split('::');
 				var ourkey = hierarchy[keyCodes.length-1];
 				var ourcode = keyCodes[keyCodes.length-1];
-				node.name = WDMMG.DATA_CACHE.keys[ourkey][ourcode]['name'];
+				node.name = WDMMG.datastore.keys[ourkey][ourcode]['name'];
 			}
 		});
 	TreeUtil.calculateValues(tree);
@@ -158,13 +124,13 @@ WDMMG.explorer.getTree = function () {
 }
 
 WDMMG.explorer.getNodes = function (nodeId, depth) {
-	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
+	var wdmmg_data = WDMMG.datastore['breakdown'][WDMMG.explorer.config.breakdownIdentifier];
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
 	});
-	var yearIdx = years.indexOf(String(WDMMG.CONFIG.year));
+	var yearIdx = years.indexOf(String(WDMMG.explorer.config.year));
 	var year = wdmmg_data.metadata.dates[yearIdx];
-	var hierarchy = WDMMG.CONFIG.breakdownKeys;
+	var hierarchy = WDMMG.explorer.config.breakdownKeys;
 	var keyToIdx = {} 
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
@@ -314,7 +280,7 @@ WDMMG.explorer.nodelink = function (nodes) {
 			return dotSize(d);
 			})
 		.event('click', function(d) {
-			WDMMG.CONFIG.currentNodeId = d.nodeValue.id;
+			WDMMG.explorer.config.currentNodeId = d.nodeValue.id;
 			WDMMG.explorer.render();
 			})
 		;
@@ -347,7 +313,7 @@ WDMMG.explorer.nodelink = function (nodes) {
 		.fillStyle('#3a3a3c')
 		.strokeStyle('#3a3a3c')
 		.event('click', function(d) {
-			WDMMG.CONFIG.currentNodeId = d[3].id;
+			WDMMG.explorer.config.currentNodeId = d[3].id;
 			WDMMG.explorer.render();
 			})
 		.anchor('right').add(pv.Label)
