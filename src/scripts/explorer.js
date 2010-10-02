@@ -1,7 +1,6 @@
 WDMMG.explorer = {};
 WDMMG.explorer.config = {
 	'dataset': 'cra',
-	'breakdownIdentifier': 'slice=cra&breakdown-from=yes&breakdown-region=yes',
 	// 'visualizationType': 'sunburst'
 	'visualizationType': 'nodelink',
 	// ordered list of keys (used in displaying the spending)
@@ -22,7 +21,7 @@ WDMMG.explorer.color.stroke = function(node) {
 $(document).ready(function() {
 	var callback = WDMMG.explorer.render;
 	// department then region
-	WDMMG.datastore.loadData(WDMMG.explorer.config.breakdownIdentifier, callback);
+	WDMMG.datastore.loadData(WDMMG.explorer.config, callback);
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
@@ -68,7 +67,7 @@ WDMMG.explorer.render = function () {
 }
 
 WDMMG.explorer.getTree = function () {
-	var wdmmg_data = WDMMG.datastore['breakdown'][WDMMG.explorer.config.breakdownIdentifier];
+	var wdmmg_data = WDMMG.datastore.getAggregate(WDMMG.explorer.config);
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
 	});
@@ -124,17 +123,6 @@ WDMMG.explorer.getTree = function () {
 }
 
 WDMMG.explorer.getNodes = function (nodeId, depth) {
-	var wdmmg_data = WDMMG.datastore['breakdown'][WDMMG.explorer.config.breakdownIdentifier];
-	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
-			return year.substring(0,4);
-	});
-	var yearIdx = years.indexOf(String(WDMMG.explorer.config.year));
-	var year = wdmmg_data.metadata.dates[yearIdx];
-	var hierarchy = WDMMG.explorer.config.breakdownKeys;
-	var keyToIdx = {} 
-	$.each(wdmmg_data.metadata.axes, function(idx, key){
-		keyToIdx[key] = idx;
-	});
 	var fullTree = WDMMG.explorer.getTree();
 	var jsonTree = TreeUtil.getSubtree(fullTree, nodeId);
 	TreeUtil.prune(jsonTree, depth);
