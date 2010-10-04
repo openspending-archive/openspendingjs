@@ -1,11 +1,13 @@
 WDMMG.explorer = {};
 WDMMG.explorer.config = {
 	'dataset': 'cra',
-	// 'visualizationType': 'sunburst'
+	// current 'breakdown' keys - used in displaying the spending
+	// set from html at the moment
+	'breakdownKeys': [],
+	'defaultBreakdownKeys': ['from', 'region'],
+	// all possible keys
+	'keys': ['from', 'region', 'cofog1', 'cofog2', 'cofog3'],
 	'visualizationType': 'nodelink',
-	// ordered list of keys (used in displaying the spending)
-	'breakdownKeys': [ 'from', 'region' ],
-	// 'breakdownKeys': [ 'region', 'from' ],
 	'year': 2008,
 	'currentNodeId': 'root'
 };
@@ -19,17 +21,46 @@ WDMMG.explorer.color.stroke = function(node) {
 }
 
 $(document).ready(function() {
+	var queryArgs = parseQueryString();
+	WDMMG.explorer.config.breakdownKeys = [];
+	$.each(queryArgs, function(idx, arg) {
+		if(arg[0].match('^breakdown')) {
+			WDMMG.explorer.config.breakdownKeys.push(arg[1]);
+		}
+	});
+	if(WDMMG.explorer.config.breakdownKeys.length == 0) {
+		WDMMG.explorer.config.breakdownKeys = WDMMG.explorer.config.defaultBreakdownKeys;
+	}
+
 	var callback = WDMMG.explorer.render;
 	// department then region
 	WDMMG.datastore.loadData(WDMMG.explorer.config, callback);
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
-		var vistype = $('div.vis-type').find('input:checked');
 		vistype = $($(vistype)[0]).attr('value');
 		WDMMG.explorer.config.visualizationType = vistype;
 		WDMMG.explorer.render();
 	});
+	
+	var keys = WDMMG.explorer.config.keys;
+	var theform = $('<form></form>');
+	for(var i in [0,1,2]) {
+		var select = $('<select id="breakdown-' + i + '" name="breakdown-' + i + '"></select>')
+		select.append('<option value=""></option>');
+		for(var j in keys) {
+			var opt = $('<option value="' + keys[j] + '">' + keys[j] + '</option>');
+			if (keys[j] == WDMMG.explorer.config.breakdownKeys[i]) {
+				opt.attr('selected', '1');
+			}
+			select.append(opt);
+		}
+		theform.append(select);
+		theform.append(', then<br />');
+	}
+	var submit = $('<input type="submit" value="Go &raquo;" name="go" />')
+	submit.appendTo(theform);
+	$('#controls-breakdown').append(theform);
 
     $("#slider").slider({
       value: WDMMG.explorer.config.year,
@@ -77,7 +108,7 @@ WDMMG.explorer.getTree = function () {
 	var yearIdx = years.indexOf(String(WDMMG.explorer.config.year));
 	var year = wdmmg_data.metadata.dates[yearIdx];
 	var hierarchy = WDMMG.explorer.config.breakdownKeys;
-	var keyToIdx = {} 
+	var keyToIdx = {};
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
 	});
@@ -189,7 +220,7 @@ function treeDepth(nodes) {
 function title(node) {
 	var t = node.parentNode && node.parentNode.parentNode ? 
 		node.parentNode.nodeName + ' - ' : '';
-	var t = t + node.nodeName + ' GBP ' + numberAsString(node.value);
+	var t = t + node.nodeName + ' GBP ' + numberAsString(node.nodeValue.value);
 	return t;
 }
 
