@@ -24,3 +24,19 @@ function numberAsString(num) {
 	}
 }
 
+/*
+	Parse a URL query string (?xyz=abc...) into a dictionary.
+*/
+function parseQueryString() {
+	var q = arguments.length > 0 ? arguments[0] : window.location.search.substring(1);
+	var urlParams = {},
+		e,
+		d = function (s) { return unescape(s.replace(/\+/g, " ")); },
+		r = /([^&=]+)=?([^&]*)/g;
+
+	while (e = r.exec(q)) {
+		urlParams[d(e[1])] = d(e[2]);
+	}
+	return urlParams;
+}
+
