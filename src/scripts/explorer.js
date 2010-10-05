@@ -24,7 +24,7 @@ $(document).ready(function() {
 	var queryArgs = parseQueryString();
 	WDMMG.explorer.config.breakdownKeys = [];
 	$.each(queryArgs, function(idx, arg) {
-		if(arg[0].match('^breakdown')) {
+		if(arg[0].match('^breakdown') && arg[1]) {
 			WDMMG.explorer.config.breakdownKeys.push(arg[1]);
 		}
 	});
