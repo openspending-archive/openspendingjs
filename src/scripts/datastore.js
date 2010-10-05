@@ -34,18 +34,15 @@ this.WDMMG.datastore = {
 
 	loadData: function(aggregateSpec, callback) {
 		var aggregateString = this.breakdownIdentifierString(aggregateSpec);
-		if (DEBUG) {
-			this.breakdown[aggregateString] = dept_region;
-			// TODO: make this generic ...
-			this.keys['from'] = key_from['enumeration_values'];
-			this.keys['region'] = key_region['enumeration_values'];
+		// already have a cached value
+		if(aggregateString in this.breakdown) {
 			callback();
 		} else {
 			var api_url = this.config.dataStoreApi + '/aggregate?' + aggregateString + '&callback=?';
 			$.getJSON(api_url, function(data) {
 				this.breakdown[breakdownIdentifier] = data;
 				// need to do work to ensure we only call render after *all* data loaded
-				var done = 2; // number of total requests
+				var done = data.metadata.axes.length; // number of total requests
 				$.each(data.metadata.axes, function(i,key) {
 					var api_url = this.config.dataStoreApi + '/rest/key/' + key + '?callback=?';
 					$.getJSON(api_url, function(data) {
@@ -60,5 +57,12 @@ this.WDMMG.datastore = {
 		}
 	}
 };
+
+if (DEBUG) {
+	WDMMG.datastore.breakdown['slice=cra&breakdown-from=yes&breakdown-region=yes'] = dept_region;
+	// TODO: make this generic ...
+	WDMMG.datastore.keys['from'] = key_from['enumeration_values'];
+	WDMMG.datastore.keys['region'] = key_region['enumeration_values'];
+}
 
 })();
