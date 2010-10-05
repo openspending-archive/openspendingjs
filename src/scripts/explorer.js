@@ -75,6 +75,11 @@ $(document).ready(function() {
       }
     });
     $("#year").text($("#slider").slider("value"));
+
+	$('#show-table').click(function(e) {
+		e.preventDefault();
+		WDMMG.explorer.renderTable();
+	});
 });
 
 WDMMG.explorer.render = function () {
@@ -99,6 +104,28 @@ WDMMG.explorer.render = function () {
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
+}
+
+WDMMG.explorer.renderTable = function() {
+	var wdmmg_data = WDMMG.datastore.getAggregate(WDMMG.explorer.config);
+	var tabular = {
+		header: wdmmg_data.metadata.axes.concat(wdmmg_data.metadata.dates),
+		data: []
+	};
+	$.each(wdmmg_data.results, function(idx, entry) {
+		var keys = $.map(entry[0], function(code, idx) {
+			return WDMMG.datastore.keys[wdmmg_data.metadata.axes[idx]][code]['name'];
+		});
+		var values = $.map(entry[1], function(v, idx) {
+			return numberAsString(v);
+		});
+		tabular.data.push(keys.concat(values));
+	});
+	var tableHtml = writeTabularAsHtml(tabular);
+	var tableElem = $($('#data-table')[0]);
+	tableElem.innerHTML = '';
+	tableElem.append(tableHtml['thead']);
+	tableElem.append(tableHtml['tbody']);
 }
 
 WDMMG.explorer.getTree = function () {

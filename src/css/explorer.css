@@ -37,3 +37,7 @@ div#controls {
   top: -0.45em;
 }
 
+div#data #data-table {
+  font-size: 70%;
+}
+

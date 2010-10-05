@@ -31,6 +31,10 @@ this.WDMMG.datastore = {
 		}
 		return out;
 	},
+	
+	apiUrl: function(breakdownIdentifier) {
+		var api_url = this.config.dataStoreApi + '/aggregate?' + aggregateString + '&callback=?';
+	},
 
 	loadData: function(aggregateSpec, callback) {
 		var aggregateString = this.breakdownIdentifierString(aggregateSpec);
