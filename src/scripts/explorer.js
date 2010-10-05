@@ -38,6 +38,7 @@ $(document).ready(function() {
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
+		var vistype = $('div.vis-type').find('input:checked');
 		vistype = $($(vistype)[0]).attr('value');
 		WDMMG.explorer.config.visualizationType = vistype;
 		WDMMG.explorer.render();
@@ -218,9 +219,10 @@ function treeDepth(nodes) {
 }
 
 function title(node) {
+	var value = node.nodeValue ? node.nodeValue.value : node.size;
 	var t = node.parentNode && node.parentNode.parentNode ? 
 		node.parentNode.nodeName + ' - ' : '';
-	var t = t + node.nodeName + ' GBP ' + numberAsString(node.nodeValue.value);
+	var t = t + node.nodeName + ' GBP ' + numberAsString(value);
 	return t;
 }
 
