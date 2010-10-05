@@ -228,8 +228,9 @@ function title(node) {
 
 WDMMG.explorer.getPanel = function() {
 	var vis = new pv.Panel()
-		.width(700)
-		.height(600)
+		.width($('#fig').width())
+		// seems height will include a bit off the screen
+		.height($('#fig').height()-50)
 		.canvas('fig')
 		;
 	return vis;
