@@ -63,6 +63,10 @@ if (DEBUG) {
 	// TODO: make this generic ...
 	WDMMG.datastore.keys['from'] = key_from['enumeration_values'];
 	WDMMG.datastore.keys['region'] = key_region['enumeration_values'];
+
+	WDMMG.datastore.breakdown['slice=cra&breakdown-cofog1=yes&breakdown-cofog2=yes'] = breakdown_cofog1_cofog2;
+	WDMMG.datastore.keys['cofog1'] = key_cofog1['enumeration_values'];
+	WDMMG.datastore.keys['cofog2'] = key_cofog2['enumeration_values'];
 }
 
 })();
