@@ -2,9 +2,10 @@
   <head>
     <title>Where Does My Money Go? UK Spending Explorer</title>
     <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="vendor/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="vendor/jquery.tablesorter-2.0.3.js"></script>
     <script type="text/javascript" src="vendor/jquery.tipsy-1.0.0.js"></script>
     <script type="text/javascript" src="vendor/jqueryui-1.8.4/jquery-ui.min.js"></script>
-    <link type="text/css" href="vendor/jqueryui-1.8.4/css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" /> 
     <!--
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js"></script>
     -->
@@ -28,7 +29,9 @@
     <script type="text/javascript" src="scripts/datastore.js"/></script>
     <script type="text/javascript" src="scripts/explorer.js"/></script>
 
+    <link type="text/css" href="vendor/jqueryui-1.8.4/css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" /> 
     <link rel="stylesheet" href="http://assets.okfn.org/kforge/css/master.css" type="text/css" />
+    <link rel="stylesheet" href="http://assets.okfn.org/ext/jquery.tablesorter/style.css" type="text/css">
     <link rel="stylesheet" href="css/wdmmg.css" type="text/css">
     <link rel="stylesheet" href="css/explorer.css" type="text/css">
 <script type="text/javascript">
@@ -37,7 +40,7 @@
 </script>
   </head>
   <body>
-    <h1>Where Does My Money Go? UK Spending Explorer</h1>
+    <h1 id="page-top">Where Does My Money Go? UK Spending Explorer</h1>
     <div id="vis">
     <div id="fig"></div>
     <div id="controls">
@@ -63,14 +66,22 @@
         <input type="radio" name="vis-type" value="icicle" /> Icicle 
       </div>
 
-      <h3>Data</h3>
-      <a href="#table" id="show-table">Show Table</a>
-      <a href=""></a>
+      <h3>Source Data</h3>
+      <ul>
+        <li>
+          <a href="#data-table" id="show-data-table">HTML Table</a> (<a href="#page-top" class="hide-data">Hide</a>)
+        </li>
+        <li>
+        <a href="#data-json" id="show-data-json">Raw JSON</a> (<a href="#page-top" class="hide-data">Hide</a>)
+        </li>
+      </ul>
     </div>
 
     <div id="data" style="clear: both;">
       <table id="data-table">
       </table>
+      <textarea id="data-json">
+      </textarea>
     </div>
 
     </div>

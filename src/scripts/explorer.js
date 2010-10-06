@@ -76,9 +76,15 @@ $(document).ready(function() {
     });
     $("#year").text($("#slider").slider("value"));
 
-	$('#show-table').click(function(e) {
-		e.preventDefault();
-		WDMMG.explorer.renderTable();
+	$('#show-data-table').click(function(e) {
+		$('#data-table').show('slow');
+	});
+	$('#show-data-json').click(function(e) {
+		$('#data-json').show('slow');
+	});
+	$('.hide-data').click(function(e) {
+		$('#data-table').hide('slow');
+		$('#data-json').hide('slow');
 	});
 });
 
@@ -104,6 +110,11 @@ WDMMG.explorer.render = function () {
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
+	// also renders json at the moment
+	WDMMG.explorer.renderTable();
+	// hide by default
+	$('#data-table').hide();
+	$('#data-json').hide();
 }
 
 WDMMG.explorer.renderTable = function() {
@@ -126,6 +137,11 @@ WDMMG.explorer.renderTable = function() {
 	tableElem.innerHTML = '';
 	tableElem.append(tableHtml['thead']);
 	tableElem.append(tableHtml['tbody']);
+	tableElem.tablesorter({
+		widgets: ['zebra']
+	});
+	var json = $($('#data-json')[0]);
+	json.val($.toJSON(wdmmg_data));
 }
 
 WDMMG.explorer.getTree = function () {
