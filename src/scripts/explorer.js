@@ -32,9 +32,17 @@ $(document).ready(function() {
 		WDMMG.explorer.config.breakdownKeys = WDMMG.explorer.config.defaultBreakdownKeys;
 	}
 
-	var callback = WDMMG.explorer.render;
 	// department then region
-	WDMMG.datastore.loadData(WDMMG.explorer.config, callback);
+	WDMMG.datastore.loadData(WDMMG.explorer.config, function() {
+		// only need to re-render tables and json when data changes ...
+		// hide by default
+		$('#data-table').hide();
+		$('#data-json').hide();
+		// also renders json as well as table
+		WDMMG.explorer.renderTable();
+		// the visualizations
+		WDMMG.explorer.render();
+	});
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
@@ -110,11 +118,6 @@ WDMMG.explorer.render = function () {
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
-	// also renders json at the moment
-	WDMMG.explorer.renderTable();
-	// hide by default
-	$('#data-table').hide();
-	$('#data-json').hide();
 }
 
 WDMMG.explorer.renderTable = function() {
