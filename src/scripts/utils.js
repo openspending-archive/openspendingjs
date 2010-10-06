@@ -11,13 +11,14 @@ function numberAsString(num) {
 	var billion = 1000000000;
 	var million = 1000000;
 	var thousand = 1000; 
-	if (num > billion) {
+	var numabs = Math.abs(num);
+	if (numabs > billion) {
 		return num / billion + 'bn';
 	}
-	if (num > (million/2)) {
+	if (numabs > (million/2)) {
 		return num/million + 'm';
 	}
-	if (num > thousand) {
+	if (numabs > thousand) {
 		return num/thousand + 'k';
 	} else {
 		return num; 

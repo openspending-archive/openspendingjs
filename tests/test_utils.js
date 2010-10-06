@@ -1,5 +1,18 @@
 module('utils');
 
+test('numberAsString', function() {
+	var testset = [
+		[9000, '9k'],
+		[9000000, '9m'],
+		[9000000000, '9bn'],
+		[-9000, '-9k'],
+		[-9000000, '-9m'],
+	];
+	for(var i in testset) {
+		equals(numberAsString(testset[i][0]), testset[i][1]);
+	}
+});
+
 test('parseQueryString', function() {
 	var testdata = 'i=main&mode=front&sid=de8d49b78a85a322c4155015fdce22c4&enc=+Hello%20&empty'
 	var out = parseQueryString(testdata);
