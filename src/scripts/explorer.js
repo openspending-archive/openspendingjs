@@ -27,6 +27,9 @@ $(document).ready(function() {
 		if(arg[0].match('^breakdown') && arg[1]) {
 			WDMMG.explorer.config.breakdownKeys.push(arg[1]);
 		}
+		if(arg[0] == 'vistype') {
+			WDMMG.explorer.config.visualizationType = arg[1];
+		}
 	});
 	if(WDMMG.explorer.config.breakdownKeys.length == 0) {
 		WDMMG.explorer.config.breakdownKeys = WDMMG.explorer.config.defaultBreakdownKeys;
@@ -504,7 +507,12 @@ WDMMG.explorer.treemap = function (nodes) {
 
 	layout.label.add(pv.Label)
 		.visible(function(d) {
-			return d.dx > 20 && d.dy > 20;
+			// only show on first layer and where large enough
+			return (
+				(d.parentNode && d.parentNode.parentNode == null)
+				&&
+				(d.dx > 20 && d.dy > 20)
+			);
 		})
 		;
 
