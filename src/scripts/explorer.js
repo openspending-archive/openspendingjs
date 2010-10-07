@@ -404,7 +404,7 @@ WDMMG.explorer.dendrogram = function (nodes) {
 	var vis = WDMMG.explorer.getPanel()
 		.height(function() {(nodes.length + 1) * 12})
 		.width(200)
-		.left(50)
+		.left(60)
 		.right(200)
 		.top(20)
 		.bottom(20)
