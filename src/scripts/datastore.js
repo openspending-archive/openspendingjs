@@ -42,15 +42,16 @@ this.WDMMG.datastore = {
 		if(aggregateString in this.breakdown) {
 			callback();
 		} else {
+            var self = this;
 			var api_url = this.config.dataStoreApi + '/aggregate?' + aggregateString + '&callback=?';
 			$.getJSON(api_url, function(data) {
-				this.breakdown[breakdownIdentifier] = data;
+				self.breakdown[aggregateString] = data;
 				// need to do work to ensure we only call render after *all* data loaded
 				var done = data.metadata.axes.length; // number of total requests
 				$.each(data.metadata.axes, function(i,key) {
-					var api_url = this.config.dataStoreApi + '/rest/key/' + key + '?callback=?';
+					var api_url = self.config.dataStoreApi + '/rest/key/' + key + '?callback=?';
 					$.getJSON(api_url, function(data) {
-						this.keys[key] = data['enumeration_values'];
+						self.keys[key] = data['enumeration_values'];
 						done -= 1;
 						if(done == 0) {
 							callback();
