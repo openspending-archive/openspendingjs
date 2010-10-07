@@ -132,7 +132,8 @@ WDMMG.explorer.renderTable = function() {
 	};
 	$.each(wdmmg_data.results, function(idx, entry) {
 		var keys = $.map(entry[0], function(code, idx) {
-			return WDMMG.datastore.keys[wdmmg_data.metadata.axes[idx]][code]['name'];
+            var key = wdmmg_data.metadata.axes[idx];
+			return getKeyCodeName(key, code);
 		});
 		var values = $.map(entry[1], function(v, idx) {
 			return numberAsString(v);
@@ -200,7 +201,7 @@ WDMMG.explorer.getTree = function () {
 				var keyCodes = node.id.split('::');
 				var ourkey = hierarchy[keyCodes.length-1];
 				var ourcode = keyCodes[keyCodes.length-1];
-				node.name = WDMMG.datastore.keys[ourkey][ourcode]['name'];
+				node.name = getKeyCodeName(ourkey, ourcode);
 			}
 		});
 	TreeUtil.calculateValues(tree);
@@ -274,6 +275,14 @@ function title(node) {
 		node.parentNode.nodeName + ' - ' : '';
 	var t = t + node.nodeName + ' GBP ' + numberAsString(value);
 	return t;
+}
+
+function getKeyCodeName(key, code) {
+    if(code == null)  {
+        return 'Unknown';
+    } else {
+        return WDMMG.datastore.keys[key][code].name;
+    }
 }
 
 WDMMG.explorer.getPanel = function() {
