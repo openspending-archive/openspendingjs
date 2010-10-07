@@ -32,8 +32,9 @@ $(document).ready(function() {
 		WDMMG.explorer.config.breakdownKeys = WDMMG.explorer.config.defaultBreakdownKeys;
 	}
 
-	// department then region
+	loadingMessage();
 	WDMMG.datastore.loadData(WDMMG.explorer.config, function() {
+		$.unblockUI();
 		// only need to re-render tables and json when data changes ...
 		// hide by default
 		$('#data-table').hide();

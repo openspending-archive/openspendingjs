@@ -115,3 +115,20 @@ writeTabularAsHtml = function(tabular) {
 	return {'thead': _thead, 'tbody': _tbody};
 }
 
+function loadingMessage() {
+	$.blockUI({
+		message: 'Please wait, loading ...',
+		timeout: 30000,
+		css: { 
+			border: 'none', 
+			padding: '15px', 
+			backgroundColor: '#000', 
+			'-webkit-border-radius': '10px', 
+			'-moz-border-radius': '10px', 
+			opacity: .5, 
+			color: '#fff' 
+		}
+	}); 
+	$('.blockMsg').attr('title','Click to unblock').click($.unblockUI); 
+}
+
