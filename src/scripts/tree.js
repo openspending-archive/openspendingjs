@@ -258,6 +258,19 @@ this.TreeUtil = {
 			node.value = total;
 		}
 		return node.value
+	},
+	
+	/*
+		Get the depth of node specified by nodeId within the tree.
+
+		:return: an integer representing the level (root node has level 0).
+
+		TODO: really inefficient (should reuse getParent code)
+	*/
+	getDepth: function(tree, nodeId) {
+		if(tree.id == nodeId) return 0;
+		var _parent = this.getParent(tree, nodeId);
+		return 1 + this.getDepth(tree, _parent.id);
 	}
 };
 

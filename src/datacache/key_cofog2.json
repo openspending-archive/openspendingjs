@@ -1,0 +1,631 @@
+var key_cofog2 = {
+  "enumeration_values": {
+    "04.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.1", 
+      "id": "03a7db2c-c4a0-4ed2-8f84-b1e38f2e2ea0", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "General economic, commercial and labour affairs"
+    }, 
+    "07.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "07.2", 
+      "id": "1aade2e1-09c2-4381-b54b-08f9f583c19b", 
+      "keyvalues": {
+        "parent": "07"
+      }, 
+      "name": "Outpatient services"
+    }, 
+    "03.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "03.4", 
+      "id": "cca7a074-40ad-4505-b7ca-32a14b367820", 
+      "keyvalues": {
+        "parent": "03"
+      }, 
+      "name": "Prisons"
+    }, 
+    "07.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "07.6", 
+      "id": "cadbfcac-55cc-4f9a-9c3a-b25e29ff6645", 
+      "keyvalues": {
+        "parent": "07"
+      }, 
+      "name": "Health n.e.c."
+    }, 
+    "07.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "07.5", 
+      "id": "ee343818-ad94-443b-9ba5-ebbd75e14626", 
+      "keyvalues": {
+        "parent": "07"
+      }, 
+      "name": "R&D Health"
+    }, 
+    "06.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "06.1", 
+      "id": "d65d4897-324b-496a-bdab-b02749e7a324", 
+      "keyvalues": {
+        "parent": "06"
+      }, 
+      "name": "Housing development"
+    }, 
+    "10.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.3", 
+      "id": "a297b5d5-061b-4944-9f4e-a68a6795581a", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Survivors"
+    }, 
+    "06.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "06.3", 
+      "id": "1e5e523d-6c07-4b70-a417-39961622155e", 
+      "keyvalues": {
+        "parent": "06"
+      }, 
+      "name": "Water supply"
+    }, 
+    "10.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.5", 
+      "id": "c10fde5d-d1e6-4dfb-b990-131e04aec0b2", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Unemployment"
+    }, 
+    "06.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "06.5", 
+      "id": "3befc1aa-63aa-42e7-8e9a-e02c2e352e2c", 
+      "keyvalues": {
+        "parent": "06"
+      }, 
+      "name": "R&D Housing and community amenities"
+    }, 
+    "10.7": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.7", 
+      "id": "0f05abfe-a60d-4fd3-8188-1e484fb4a0b7", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Social exclusion n.e.c."
+    }, 
+    "10.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.6", 
+      "id": "b1145d88-ee2d-4452-89b0-8a7f88275d2e", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Housing"
+    }, 
+    "10.9": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.9", 
+      "id": "e3672d26-1963-46fc-b209-524e7db862bf", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Social protection n.e.c."
+    }, 
+    "10.8": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.8", 
+      "id": "e0376d11-0462-404b-a4c5-e44497c87080", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "R&D Social protection"
+    }, 
+    "07.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "07.1", 
+      "id": "19ca7b3d-12ae-4e33-b38c-1b2dc0b3a9bd", 
+      "keyvalues": {
+        "parent": "07"
+      }, 
+      "name": "Medical products, appliances and equipment"
+    }, 
+    "08.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "08.6", 
+      "id": "a4313324-77f1-4361-a043-0a17eb84278a", 
+      "keyvalues": {
+        "parent": "08"
+      }, 
+      "name": "Recreation, culture and religion n.e.c."
+    }, 
+    "08.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "08.4", 
+      "id": "8dadcb50-86a3-4112-9d6e-80a2b086d3a6", 
+      "keyvalues": {
+        "parent": "08"
+      }, 
+      "name": "Religious and other community services"
+    }, 
+    "08.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "08.5", 
+      "id": "6410fa9f-37f4-405d-84f5-9d7c4f6e5c2d", 
+      "keyvalues": {
+        "parent": "08"
+      }, 
+      "name": "R&D Recreation, culture and religion"
+    }, 
+    "08.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "08.2", 
+      "id": "bbcdc641-712e-4089-8168-ed16b6a321fb", 
+      "keyvalues": {
+        "parent": "08"
+      }, 
+      "name": "Cultural services"
+    }, 
+    "08.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "08.3", 
+      "id": "fdbe52ae-4a06-4fbc-a798-b126f6c792dc", 
+      "keyvalues": {
+        "parent": "08"
+      }, 
+      "name": "Broadcasting and publishing services"
+    }, 
+    "08.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "08.1", 
+      "id": "b5dcac4f-6ca9-4f9d-b352-69586a96cf00", 
+      "keyvalues": {
+        "parent": "08"
+      }, 
+      "name": "Recreational and sporting services"
+    }, 
+    "04.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.6", 
+      "id": "99f9389f-1f43-442b-83af-dff1be5b2668", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Communication"
+    }, 
+    "04.7": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.7", 
+      "id": "036ceb85-4b36-45b0-bcb7-2d65e6f86df8", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Other industries"
+    }, 
+    "10.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.1", 
+      "id": "c125cf74-f404-480a-ac38-46db24177c86", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Sickness and disability"
+    }, 
+    "09.8": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.8", 
+      "id": "e50db280-b001-42c8-89a7-78dbd823e59e", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Education n.e.c."
+    }, 
+    "04.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.4", 
+      "id": "ead3c493-5b0f-440b-895c-44888a14372b", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Mining, manufacturing and construction"
+    }, 
+    "07.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "07.4", 
+      "id": "0f15b666-bf8a-4cbc-a43d-2fba81325943", 
+      "keyvalues": {
+        "parent": "07"
+      }, 
+      "name": "Public health services"
+    }, 
+    "09.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.3", 
+      "id": "7caf07bc-2b2f-40b4-b75a-99556db0a7fb", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Post-secondary non-tertiary education"
+    }, 
+    "09.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.2", 
+      "id": "bb838dd2-be54-48a6-b569-6bf64dccfdbe", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Secondary education"
+    }, 
+    "09.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.1", 
+      "id": "557348ef-8dbc-44dc-8928-41a1efd2946a", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Pre-primary and primary education"
+    }, 
+    "04.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.3", 
+      "id": "ab0a2280-b977-45ba-935b-8f2cfdf10eab", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Fuel and energy"
+    }, 
+    "09.7": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.7", 
+      "id": "e27ca6d7-008f-4ce5-b516-d3003df7f188", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "R&D Education"
+    }, 
+    "06.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "06.2", 
+      "id": "535368e1-e8c0-492f-9407-cd5e7b5f1acf", 
+      "keyvalues": {
+        "parent": "06"
+      }, 
+      "name": "Community development"
+    }, 
+    "09.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.5", 
+      "id": "6f6c863f-b8e1-449a-9158-3fde7d5268db", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Education not definable by level"
+    }, 
+    "09.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.6", 
+      "id": "e1d78dbc-6700-4b07-99df-6828cc6dbdb8", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Subsidiary services to education"
+    }, 
+    "01.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.3", 
+      "id": "95a331f2-cd1d-406a-a72c-e9c596a03dfb", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "General services"
+    }, 
+    "01.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.2", 
+      "id": "f46375b6-92c6-48d1-8ade-956a944db9e5", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "Foreign economic aid"
+    }, 
+    "01.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.1", 
+      "id": "0db3713e-707b-44af-9c18-7be172de8b96", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "Executive and legislative organs, financial and fiscal affairs, external affairs"
+    }, 
+    "10.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.2", 
+      "id": "891bc704-0e60-4283-833a-0e8904d4bdcc", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Old age"
+    }, 
+    "01.7": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.7", 
+      "id": "3b81d5fd-d878-47c4-b525-59e5bbb4f13f", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "Public debt transactions"
+    }, 
+    "01.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.6", 
+      "id": "e9aa1bd7-0ea7-4d74-80f5-d3030ce8a5c1", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "General public services n.e.c."
+    }, 
+    "01.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.5", 
+      "id": "e0698a08-ed1d-4bfa-a4ec-3464fc267b2e", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "R&D General public services"
+    }, 
+    "01.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.4", 
+      "id": "a7ff384a-112b-43ec-8b0d-7fbab8f01af1", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "Basic research"
+    }, 
+    "06.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "06.4", 
+      "id": "6b2d8260-3861-46e6-8d3d-ba4d143d28ba", 
+      "keyvalues": {
+        "parent": "06"
+      }, 
+      "name": "Street lighting"
+    }, 
+    "01.8": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "01.8", 
+      "id": "27c70957-6df9-45f6-b348-98248cf29b19", 
+      "keyvalues": {
+        "parent": "01"
+      }, 
+      "name": "Transfers of a general character between different levels of government"
+    }, 
+    "09.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "09.4", 
+      "id": "838e280b-c9be-4da7-8ed1-807a030032bc", 
+      "keyvalues": {
+        "parent": "09"
+      }, 
+      "name": "Tertiary education"
+    }, 
+    "10.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "10.4", 
+      "id": "221359ae-edf9-482f-b073-6b08233d73ea", 
+      "keyvalues": {
+        "parent": "10"
+      }, 
+      "name": "Family and children"
+    }, 
+    "03.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "03.1", 
+      "id": "4589f178-4d33-4eef-aa48-6925bc645d83", 
+      "keyvalues": {
+        "parent": "03"
+      }, 
+      "name": "Police services"
+    }, 
+    "03.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "03.3", 
+      "id": "ae47a895-6cce-46cd-b1f6-76a9cbda08f8", 
+      "keyvalues": {
+        "parent": "03"
+      }, 
+      "name": "Law courts"
+    }, 
+    "03.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "03.2", 
+      "id": "832911d4-6ad2-4218-a42b-5b0ba7c3f636", 
+      "keyvalues": {
+        "parent": "03"
+      }, 
+      "name": "Fire-protection services"
+    }, 
+    "03.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "03.5", 
+      "id": "28b56dff-f1fb-4a65-b50f-58fe77145726", 
+      "keyvalues": {
+        "parent": "03"
+      }, 
+      "name": "R&D Public order and safety"
+    }, 
+    "06.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "06.6", 
+      "id": "be32d960-cd6d-47f8-8e09-22520bab7e07", 
+      "keyvalues": {
+        "parent": "06"
+      }, 
+      "name": "Housing and community amenities n.e.c."
+    }, 
+    "07.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "07.3", 
+      "id": "1eb82b2e-f359-4bae-8831-97c821edec6f", 
+      "keyvalues": {
+        "parent": "07"
+      }, 
+      "name": "Hospital services"
+    }, 
+    "02.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "02.4", 
+      "id": "5d5b7e7f-ef8b-4f4b-9f31-b978f4bc1cd5", 
+      "keyvalues": {
+        "parent": "02"
+      }, 
+      "name": "R&D Defence"
+    }, 
+    "02.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "02.5", 
+      "id": "eb295030-8915-4c14-9e64-579a224f83c1", 
+      "keyvalues": {
+        "parent": "02"
+      }, 
+      "name": "Defence n.e.c."
+    }, 
+    "03.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "03.6", 
+      "id": "47d193b0-0a85-40eb-814f-1ece3a253f76", 
+      "keyvalues": {
+        "parent": "03"
+      }, 
+      "name": "Public order and safety n.e.c."
+    }, 
+    "02.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "02.1", 
+      "id": "20420c05-1251-42fc-97c7-3555b3be7499", 
+      "keyvalues": {
+        "parent": "02"
+      }, 
+      "name": "Military defence"
+    }, 
+    "02.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "02.2", 
+      "id": "363db046-33ba-4d5d-b9c9-f7a153cd4078", 
+      "keyvalues": {
+        "parent": "02"
+      }, 
+      "name": "Civil defence"
+    }, 
+    "02.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "02.3", 
+      "id": "1742486a-c6e0-4be1-bcc8-ac503dc5b408", 
+      "keyvalues": {
+        "parent": "02"
+      }, 
+      "name": "Foreign military aid"
+    }, 
+    "04.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.2", 
+      "id": "3dc4afaf-3382-43a8-b5bd-01b5ac130a1b", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Agriculture, forestry, fishing and hunting"
+    }, 
+    "05.6": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "05.6", 
+      "id": "7ed2aea3-5c47-407a-b67d-866e3b920edd", 
+      "keyvalues": {
+        "parent": "05"
+      }, 
+      "name": "Environmental protection n.e.c."
+    }, 
+    "05.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "05.5", 
+      "id": "d1ea614f-1199-42e2-bafb-1eb6cb8a8519", 
+      "keyvalues": {
+        "parent": "05"
+      }, 
+      "name": "R&D Environmental protection"
+    }, 
+    "05.4": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "05.4", 
+      "id": "237caa59-d161-4679-a9c8-2bf281780235", 
+      "keyvalues": {
+        "parent": "05"
+      }, 
+      "name": "Protection of biodiversity and landscape"
+    }, 
+    "05.3": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "05.3", 
+      "id": "3452d33e-2eb6-46ca-b20e-3f965fd37a08", 
+      "keyvalues": {
+        "parent": "05"
+      }, 
+      "name": "Pollution abatement"
+    }, 
+    "05.2": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "05.2", 
+      "id": "2dbda657-b57e-4fcb-bbe8-33bb7cb2efe1", 
+      "keyvalues": {
+        "parent": "05"
+      }, 
+      "name": "Waste water management"
+    }, 
+    "05.1": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "05.1", 
+      "id": "7f1a6fac-71ac-4316-b675-3b74cbe09f13", 
+      "keyvalues": {
+        "parent": "05"
+      }, 
+      "name": "Waste management"
+    }, 
+    "04.5": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.5", 
+      "id": "280f7b58-414a-4986-884d-b8f12636a4d7", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Transport"
+    }, 
+    "04.8": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.8", 
+      "id": "af5bad3f-6beb-46c3-9e9f-0d5b2a2c0776", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "R&D Economic affairs"
+    }, 
+    "04.9": {
+      "key_id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+      "code": "04.9", 
+      "id": "fb7bfe59-e569-4051-ba24-667e4fb87a3b", 
+      "keyvalues": {
+        "parent": "04"
+      }, 
+      "name": "Economic affairs n.e.c."
+    }
+  }, 
+  "notes": "Classification Of Function Of Government, level 2", 
+  "id": "823855ea-3110-4a5a-924d-b4af2912afa0", 
+  "keyvalues": {
+    "parent": "cofog1"
+  }, 
+  "name": "cofog2"
+}

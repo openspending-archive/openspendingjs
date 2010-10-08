@@ -55,3 +55,13 @@ test('calculateValues', function() {
 	equals(ourtree.children[0].value, 10);
 });
 
+test('getDepth', function() {
+	var ourtree = sampleTree();
+	var out = TreeUtil.getDepth(ourtree, 'root');
+	equals(out, 0);
+	var out = TreeUtil.getDepth(ourtree, 'c2');
+	equals(out, 1);
+	var out = TreeUtil.getDepth(ourtree, 'c1c1');
+	equals(out, 2);
+});
+

@@ -1,110 +1,166 @@
-var WDMMG = {};
-
-WDMMG.CONFIG = {
-	'dataStoreApi': 'http://data.wheredoesmymoneygo.org/api',
-	'breakdownIdentifier': 'slice=cra&breakdown-from=yes&breakdown-region=yes',
-	// 'visualizationType': 'sunburst'
+WDMMG.explorer = {};
+WDMMG.explorer.config = {
+	'dataset': 'cra',
+	// current 'breakdown' keys - used in displaying the spending
+	// set from html at the moment
+	'breakdownKeys': [],
+	'defaultBreakdownKeys': ['from', 'region'],
+	// all possible keys
+	'keys': ['from', 'region', 'cofog1', 'cofog2', 'cofog3'],
 	'visualizationType': 'nodelink',
-	// ordered list of keys (used in displaying the spending)
-	'breakdownKeys': [ 'from', 'region' ],
-	// 'breakdownKeys': [ 'region', 'from' ],
 	'year': 2008,
 	'currentNodeId': 'root'
-}
+};
 
-WDMMG.DATA_CACHE = {
-	'breakdown': {
-	},
-	'keys': {
-	}
+WDMMG.explorer.color = {};
+WDMMG.explorer.color.fill = function(node) {
+	return 'rgba(129,130,133, 0.5)';
+};
+WDMMG.explorer.color.stroke = function(node) {
+	return '#818285';
 }
-WDMMG.explorer = {};
 
 $(document).ready(function() {
-	var callback = WDMMG.explorer.render;
-	// department then region
-	WDMMG.explorer.loadData(callback);
+	var queryArgs = parseQueryString();
+	WDMMG.explorer.config.breakdownKeys = [];
+	$.each(queryArgs, function(idx, arg) {
+		if(arg[0].match('^breakdown') && arg[1]) {
+			WDMMG.explorer.config.breakdownKeys.push(arg[1]);
+		}
+		if(arg[0] == 'vistype') {
+			WDMMG.explorer.config.visualizationType = arg[1];
+		}
+	});
+	if(WDMMG.explorer.config.breakdownKeys.length == 0) {
+		WDMMG.explorer.config.breakdownKeys = WDMMG.explorer.config.defaultBreakdownKeys;
+	}
+
+	loadingMessage();
+	WDMMG.datastore.loadData(WDMMG.explorer.config, function() {
+		$.unblockUI();
+		// only need to re-render tables and json when data changes ...
+		// hide by default
+		$('#data-table').hide();
+		$('#data-json').hide();
+		// also renders json as well as table
+		WDMMG.explorer.renderTable();
+		// the visualizations
+		WDMMG.explorer.render();
+	});
 	// TODO: set checked on page (at start) based on visualizationType or vice-versa 
 	$("#controls .vis-type input").click(function(e) {
 		// radio, so only one
 		var vistype = $('div.vis-type').find('input:checked');
 		vistype = $($(vistype)[0]).attr('value');
-		WDMMG.CONFIG.visualizationType = vistype;
+		WDMMG.explorer.config.visualizationType = vistype;
 		WDMMG.explorer.render();
 	});
+	
+	var keys = WDMMG.explorer.config.keys;
+	var theform = $('<form></form>');
+	for(var i in [0,1,2]) {
+		var select = $('<select id="breakdown-' + i + '" name="breakdown-' + i + '"></select>')
+		select.append('<option value=""></option>');
+		for(var j in keys) {
+			var opt = $('<option value="' + keys[j] + '">' + keys[j] + '</option>');
+			if (keys[j] == WDMMG.explorer.config.breakdownKeys[i]) {
+				opt.attr('selected', '1');
+			}
+			select.append(opt);
+		}
+		theform.append(select);
+		theform.append(', then<br />');
+	}
+	var submit = $('<input type="submit" value="Go &raquo;" name="go" />')
+	submit.appendTo(theform);
+	$('#controls-breakdown').append(theform);
 
     $("#slider").slider({
-      value: WDMMG.CONFIG.year,
+      value: WDMMG.explorer.config.year,
       min: 2004,
       max: 2010,
       step: 1,
       slide: function(event, ui) {
         $("#year").text(ui.value);
-		WDMMG.CONFIG.year = ui.value;
+		WDMMG.explorer.config.year = ui.value;
 		WDMMG.explorer.render();
       }
     });
     $("#year").text($("#slider").slider("value"));
-	$('#back-to-top-level').click(function(e) {
-		e.preventDefault();
-		WDMMG.CONFIG.currentNodeId = 'root';
-		WDMMG.explorer.render();
+
+	$('#show-data-table').click(function(e) {
+		$('#data-table').show('slow');
+	});
+	$('#show-data-json').click(function(e) {
+		$('#data-json').show('slow');
+	});
+	$('.hide-data').click(function(e) {
+		$('#data-table').hide('slow');
+		$('#data-json').hide('slow');
 	});
 });
 
-WDMMG.explorer.loadData = function(callback) {
-	if (DEBUG) {
-		WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier] = dept_region;
-		WDMMG.DATA_CACHE['keys']['from'] = key_from['enumeration_values'];
-		WDMMG.DATA_CACHE['keys']['region'] = key_region['enumeration_values'];
-		callback();
-	} else {
-		var api_url = WDMMG.CONFIG.dataStoreApi + '/aggregate?' + WDMMG.CONFIG.breakdownIdentifier + '&callback=?';
-		$.getJSON(api_url, function(data) {
-			WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier] = data;
-			// need to do work to ensure we only call render after *all* data loaded
-			var done = 2; // number of total requests
-			$.each(data.metadata.axes, function(i,key) {
-				var api_url = WDMMG.CONFIG.dataStoreApi + '/rest/key/' + key + '?callback=?';
-				$.getJSON(api_url, function(data) {
-					WDMMG.DATA_CACHE['keys'][key] = data['enumeration_values'];
-					done -= 1;
-					if(done == 0) {
-						callback();
-					}
-				});
-			});
-		});
-	}
-}
-
 WDMMG.explorer.render = function () {
-	var vistype = WDMMG.CONFIG.visualizationType;
+	var vistype = WDMMG.explorer.config.visualizationType;
 	// TODO: this is not really a config variable but something just an internal variable ...
-	var nodeId = WDMMG.CONFIG.currentNodeId;
+	var nodeId = WDMMG.explorer.config.currentNodeId;
 	if (vistype == 'sunburst') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
 		WDMMG.explorer.sunburst(nodes);
 	} else if (vistype == 'nodelink') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
 		WDMMG.explorer.nodelink(nodes);
-	} else if (vistype == 'dendogram') {
+	} else if (vistype == 'treemap') {
+		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
+		WDMMG.explorer.treemap(nodes);
+	} else if (vistype == 'dendrogram') {
 		var nodes = WDMMG.explorer.getNodes(nodeId, 1)
-		WDMMG.explorer.dendogram(nodes);
+		WDMMG.explorer.dendrogram(nodes);
+	} else if (vistype == 'icicle') {
+		var nodes = WDMMG.explorer.getNodes(nodeId, 2)
+		WDMMG.explorer.icicle(nodes);
 	} else {
 		alert('Visualization type not recognized ' + vistype);
 	}
 }
 
+WDMMG.explorer.renderTable = function() {
+	var wdmmg_data = WDMMG.datastore.getAggregate(WDMMG.explorer.config);
+	var tabular = {
+		header: wdmmg_data.metadata.axes.concat(wdmmg_data.metadata.dates),
+		data: []
+	};
+	$.each(wdmmg_data.results, function(idx, entry) {
+		var keys = $.map(entry[0], function(code, idx) {
+            var key = wdmmg_data.metadata.axes[idx];
+			return getKeyCodeName(key, code);
+		});
+		var values = $.map(entry[1], function(v, idx) {
+			return numberAsString(v);
+		});
+		tabular.data.push(keys.concat(values));
+	});
+	var tableHtml = writeTabularAsHtml(tabular);
+	var tableElem = $($('#data-table')[0]);
+	tableElem.innerHTML = '';
+	tableElem.append(tableHtml['thead']);
+	tableElem.append(tableHtml['tbody']);
+	tableElem.tablesorter({
+		widgets: ['zebra']
+	});
+	var json = $($('#data-json')[0]);
+	json.val($.toJSON(wdmmg_data));
+}
+
 WDMMG.explorer.getTree = function () {
-	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
+	var wdmmg_data = WDMMG.datastore.getAggregate(WDMMG.explorer.config);
 	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
 			return year.substring(0,4);
 	});
-	var yearIdx = years.indexOf(String(WDMMG.CONFIG.year));
+	var yearIdx = years.indexOf(String(WDMMG.explorer.config.year));
 	var year = wdmmg_data.metadata.dates[yearIdx];
-	var hierarchy = WDMMG.CONFIG.breakdownKeys;
-	var keyToIdx = {} 
+	var hierarchy = WDMMG.explorer.config.breakdownKeys;
+	var keyToIdx = {};
 	$.each(wdmmg_data.metadata.axes, function(idx, key){
 		keyToIdx[key] = idx;
 	});
@@ -145,7 +201,7 @@ WDMMG.explorer.getTree = function () {
 				var keyCodes = node.id.split('::');
 				var ourkey = hierarchy[keyCodes.length-1];
 				var ourcode = keyCodes[keyCodes.length-1];
-				node.name = WDMMG.DATA_CACHE.keys[ourkey][ourcode]['name'];
+				node.name = getKeyCodeName(ourkey, ourcode);
 			}
 		});
 	TreeUtil.calculateValues(tree);
@@ -153,19 +209,8 @@ WDMMG.explorer.getTree = function () {
 }
 
 WDMMG.explorer.getNodes = function (nodeId, depth) {
-	var wdmmg_data = WDMMG.DATA_CACHE['breakdown'][WDMMG.CONFIG.breakdownIdentifier];
-	var years = $.map(wdmmg_data.metadata.dates, function(year, idx) {
-			return year.substring(0,4);
-	});
-	var yearIdx = years.indexOf(String(WDMMG.CONFIG.year));
-	var year = wdmmg_data.metadata.dates[yearIdx];
-	var hierarchy = WDMMG.CONFIG.breakdownKeys;
-	var keyToIdx = {} 
-	$.each(wdmmg_data.metadata.axes, function(idx, key){
-		keyToIdx[key] = idx;
-	});
-	var jsonTree = WDMMG.explorer.getTree();
-	jsonTree = TreeUtil.getSubtree(jsonTree, nodeId);
+	var fullTree = WDMMG.explorer.getTree();
+	var jsonTree = TreeUtil.getSubtree(fullTree, nodeId);
 	TreeUtil.prune(jsonTree, depth);
 	// TODO: move this out
 	function convertToProtovisTree(node) {
@@ -195,21 +240,56 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 	var nodes =
 		dom.root(jsonTree.name)
 			.sort(function(a, b) {
-				return pv.naturalOrder(b.nodeValue.value, a.nodeValue.value)
+				if (a.nodeValue && a.nodeValue.value) {
+					return pv.naturalOrder(b.nodeValue.value, a.nodeValue.value)
+				} else {
+					return pv.naturalOrder(b.nodeValue, a.nodeValue);
+				}
 			})
 			.nodes()
 	// annoyingly protovis seems to discard nodeValue material for root node so we reinstate it
 	nodes[0].nodeValue = {
 		id: jsonTree.id,
-		value: jsonTree.value
+		value: jsonTree.value,
+		name: jsonTree.name
 	}
+
+	// TODO: ugly to have this here - this whole function is clearly in need of refactoring!
+	WDMMG.explorer._tree = fullTree;
+	WDMMG.explorer._currentTree = jsonTree;
+	WDMMG.explorer._depth = TreeUtil.getDepth(fullTree, nodeId); 
 	return nodes;
+}
+
+function treeDepth(nodes) {
+	if (nodes.length>0) {
+		return 1 + treeDepth(nodes[0].childNodes);
+	} else {
+		return 0;
+	}
+}
+
+function title(node) {
+	var value = node.nodeValue ? node.nodeValue.value : node.size;
+	var t = node.parentNode && node.parentNode.parentNode ? 
+		node.parentNode.nodeName + ' - ' : '';
+	var t = t + node.nodeName + ' GBP ' + numberAsString(value);
+	return t;
+}
+
+function getKeyCodeName(key, code) {
+    if(code == null)  {
+        return 'Unknown';
+    } else {
+        return WDMMG.datastore.keys[key][code].name;
+    }
 }
 
 WDMMG.explorer.getPanel = function() {
 	var vis = new pv.Panel()
-		.width(700)
-		.height(600)
+		.width($('#fig').width())
+		// seems height will include a bit off the screen
+		.height($('#fig').height()-50)
 		.canvas('fig')
 		;
 	return vis;
@@ -228,43 +308,17 @@ WDMMG.explorer.sunburst = function (data) {
 		.fillStyle(pv.Colors.category19().by(function(d) {return d.parentNode && d.parentNode.nodeName}))
 		.strokeStyle("#fff")
 		.lineWidth(.5)
-		.title(function(d) {
-			var t = '';
-			// only 2nd layer ring
-			if (d.depth > 0.5 ) {
-				var t = d.parentNode.nodeName + ' - ';
-			}
-			var t = t + d.nodeName + ' GBP ' + numberAsString(d.size);
-			return t;
-			})
-		.event("mouseover", pv.Behavior.tipsy({gravity: "w", fade: true}));
+		.title(function(d) {return title(d)})
 		;
 
 	partition.label.add(pv.Label)
 		.visible(function(d) {
 			// depth 0 for root, 0.5 for first ring, 1 for 2nd ring
-			return d.angle * d.outerRadius >= 20;
+			return d.angle * d.outerRadius >= 10;
 			})
 		;
 
 	vis.render();
-}
-
-// TODO: put in namespace or move elsewhere
-function nodeval(node) {
-	var selfval = 0;
-	if (node.nodeValue) {
-		selfval = node.nodeValue.value;
-	}
-	return selfval + pv.sum(node.childNodes, nodeval);
-}
-
-function treeDepth(nodes) {
-	if (nodes.length>0) {
-		return 1 + treeDepth(nodes[0].childNodes);
-	} else {
-		return 0;
-	}
 }
 
 WDMMG.explorer.nodelink = function (nodes) {
@@ -284,30 +338,60 @@ WDMMG.explorer.nodelink = function (nodes) {
 	// and we normalize it to size of 1000
 	var maxSize = nodes[0].nodeValue.value;
 	function dotSize(node) {
-		var selfval = nodeval(node);
-		return 2500 * selfval / maxSize;
+		return 2500 * node.nodeValue.value / maxSize;
 	}
 
 	tree.node.add(pv.Dot)
 		.fillStyle(function(n) {
-			return n.firstChild ? "#aec7e8" : "#ff7f0e"
+			return WDMMG.explorer.color.fill(n);
 			})
-		.title(function(d) {
-			var selfval = nodeval(d);
-			var t = '';
-			// only >= 2nd layer ring
-			if (d.parentNode && d.parentNode.parentNode) {
-				var t = d.parentNode.nodeName + ' - ';
-			}
-			var t = t + d.nodeName + ' GBP ' + numberAsString(selfval);
-			return t;
+		.strokeStyle(function(n) {
+			return WDMMG.explorer.color.stroke(n);
 			})
+		.title(function(d) {return title(d)})
 		.size(function(d) {
 			return dotSize(d);
 			})
 		.event('click', function(d) {
-			WDMMG.CONFIG.currentNodeId = d.nodeValue.id;
+			WDMMG.explorer.config.currentNodeId = d.nodeValue.id;
 			WDMMG.explorer.render();
+			})
+		;
+
+	// 'contextual' dots
+	var contextData = [];
+	var _currentNode = nodes[0];
+	// all other nodes we will get from json tree and will have attributes directly available
+	_currentNode.id = _currentNode.nodeValue.id;
+	_currentNode.name = _currentNode.nodeValue.name;
+	_currentNode.value = _currentNode.nodeValue.value;
+	for(var i=0; i<=WDMMG.explorer._depth; i++) {
+		contextData.push([
+			50,
+			20 + (WDMMG.explorer._depth - i) * 20,
+			100/(WDMMG.explorer._depth-i+1),
+			_currentNode
+		]);
+		_currentNode = TreeUtil.getParent(WDMMG.explorer._tree, _currentNode.id);
+	}
+	contextData.reverse();
+	vis.add(pv.Dot)
+		.data(contextData)
+		.left(function(d) {return d[0]})
+		.top(function(d) {return d[1]})
+		.size(function(d) {return d[2]})
+		.title(function(d) {
+			return 'GBP ' + numberAsString(d[3].value) + '\nClick to go to this level';
+			})
+		.fillStyle('#3a3a3c')
+		.strokeStyle('#3a3a3c')
+		.event('click', function(d) {
+			WDMMG.explorer.config.currentNodeId = d[3].id;
+			WDMMG.explorer.render();
+			})
+		.anchor('right').add(pv.Label)
+			.text(function(d) {
+				return d[3].name;
 			})
 		;
 	
@@ -328,38 +412,118 @@ WDMMG.explorer.nodelink = function (nodes) {
 	vis.render();
 }
 
-WDMMG.explorer.dendogram = function (nodes) {
+WDMMG.explorer.dendrogram = function (nodes) {
 	var vis = WDMMG.explorer.getPanel()
 		.height(function() {(nodes.length + 1) * 12})
 		.width(200)
-		.left(150)
+		.left(60)
 		.right(200)
-		;
+		.top(20)
+		.bottom(20)
+	;
 
 	var layout = vis.add(pv.Layout.Cluster)
 		.nodes(nodes)
 		.group(true)
 		.orient("left");
 
-	layout.link.add(pv.Line)
-		.strokeStyle("#ccc")
-		.lineWidth(1)
-		.antialias(false);
+	var maxSize = nodes[0].nodeValue.value;
+	function dotSize(node) {
+		return 2500 * node.nodeValue.value / maxSize;
+	}
 
 	layout.node.add(pv.Dot)
 		.fillStyle(function(n) {
 			return n.firstChild ? "#aec7e8" : "#ff7f0e"
 		})
-		.title(function(d) {
-			var selfval = nodeval(d);
-			var t = d.nodeName + ' GBP ' + numberAsString(selfval);
-			return t;
+		.title(function(d) {return title(d)})
+		.size(function(node) {
+			return dotSize(node);
 			})
-		;
-
-	layout.label.add(pv.Label)
+		// TODO: cannot have 2 anchors ...
+//		.anchor('top').add(pv.Label)
+//			.text(function(d) {
+//				return d.firstChild ? d.nodeValue.name : '';
+//			})
+//			.textAlign(function(node) {
+//				return 'right';
+//			})
+//		;
+		.anchor('right').add(pv.Label)
+			.text(function(d) {
+				return d.nodeValue.name;
+			})
+			.textAlign(function(node) {
+				return 'left';
+			})
 		;
 
 	vis.render();
 }
 
+WDMMG.explorer.icicle = function (nodes) {
+	var vis = WDMMG.explorer.getPanel();
+
+	var layout = vis.add(pv.Layout.Partition.Fill)
+		.nodes(nodes)
+		.order('descending')
+		.orient('top')
+		.size(function(d) {return d.nodeValue.value})
+
+	layout.node.add(pv.Bar)
+		.fillStyle(pv.Colors.category19().by(function(d) {
+			return d.parentNode && d.parentNode.nodeName;
+			}))
+		.strokeStyle('rgba(255,255,255,.5)')
+		.lineWidth(1)
+		.antialias(false)
+		.title(function(d) {return title(d)})
+		;
+
+	layout.label.add(pv.Label)
+		.textAngle(-Math.PI / 2)
+		.visible(function(d) {
+			return d.dx > 6
+			})
+		;
+
+	vis.render();
+}
+
+WDMMG.explorer.treemap = function (nodes) {
+	var vis = WDMMG.explorer.getPanel();
+
+	function matchtitle(d) {
+		return d.parentNode ? (title(d.parentNode) + "." + d.nodeName) : d.nodeName;
+	}
+
+	var re = '',
+		color = pv.Colors.category19().by(function(d) {return d.parentNode.nodeName});
+
+	var layout = vis.add(pv.Layout.Treemap)
+		.nodes(nodes)
+		.round(true)
+		.size(function(d) {return d.nodeValue.value})
+		;
+
+	layout.leaf.add(pv.Panel)
+		.fillStyle(function(d) {return color(d).alpha(matchtitle(d).match(re) ? 1 : .2)})
+		.strokeStyle("#fff")
+		.lineWidth(1)
+		.antialias(false)
+		.title(function(d) {return title(d)})
+		;
+
+	layout.label.add(pv.Label)
+		.visible(function(d) {
+			// only show on first layer and where large enough
+			return (
+				(d.parentNode && d.parentNode.parentNode == null)
+				&&
+				(d.dx > 20 && d.dy > 20)
+			);
+		})
+		;
+
+	vis.render();
+}
