@@ -1,19 +1,30 @@
 var view_name = '';
+var helper_file_location = ''; //change this for server settings
+
+var viewnames = {};
+viewnames['daily-bread'] = 'My Daily Bread';
+viewnames['uk-bubble-chart'] = "UK government spending";
+viewnames['long-term'] = "Long-term spending";
+viewnames['regional-overview'] = "Regional spending";
+viewnames['comparatron-a'] = "Comparison by region";
+
+function updateTitle(view_name) {
+	//alert('updateTitle: ' + viewnames[view_name]);
+	if (document.getElementById("viewtitle")!=null) {
+        document.getElementById("viewtitle").innerHTML = viewnames[view_name];
+    }
+}
+
+function loadView(view_name) {
+	// TODO: change css class dynamically
+    var params = {};
+    changeView(view_name, params);	
+    updateTitle(view_name);
+}
 
 //////////////////////////////////////////////////////////////
 // Get URL parameters: view name and view parameters
 //////////////////////////////////////////////////////////////
-function getViewName() {
-    var sPath = window.location.pathname;
-    var sPage = sPath.substring(sPath.lastIndexOf('/')+1);
-    sPage = sPage.split(".")[0];
-    if ((sPage=="index") || (sPage=="")) {
-        sPage="uk-bubble-chart";
-    }
-    view_name = sPage;
-    //alert('getViewName: ' + view_name);
-    return sPage;
-}
 
 // works for hash urls and querystrings
 function getViewParameters() {
@@ -69,10 +80,14 @@ function wdmmgInit() {
 function wdmmgReady() {
     var m = swfobject.getObjectById("wdmmg");
     var url_params = getViewParameters();
-    // alert showing params picked up from URL 
+	var view_name = url_params.view;
+	delete url_params.view;
     //alert("wdmmgReady, got following params from URL: " + url_params.toSource())
-    changeView(getViewName(), url_params);
-	//changeView("uk-bubble-chart", {'focus':'01'});
+    if (view_name==null) {
+	    view_name = "uk-bubble-chart";
+    }
+    updateTitle(view_name);
+    changeView(view_name, url_params);
 	//changeView("daily-bread", {'interesting':['01', '02', '03.x', '06.1', '08.2', 'foo']});
 }
 
@@ -83,11 +98,33 @@ function wdmmgReady() {
 function wdmmgCallback(page, params) {
 	//alert showing the parameter object passed to wdmmgCallback
     //alert("wdmmgCallback, passed the following params: " + params.toSource());
+    params.view = page;
     var uid = paramsToString(params);
     window.location.hash = uid;
     //reload iframe with comments
-    document.getElementById('commentframe').src = "comments.html?" + uid + "&view=" + view_name;
-    document.getElementById('commentframe').height = document.getElementById('commentframe').contentWindow.document.body.scrollHeight + "px";
+	if (document.getElementById("commentframe")!=null) {
+        document.getElementById('commentframe').src = helper_file_location + "/comments.html?" + uid;
+    }
+    updateEmbed(uid);
+    //document.getElementById('commentframe').height = document.getElementById('commentframe').contentWindow.document.body.scrollHeight + "px";
+}
+
+function updateEmbed(uid) {
+    var iframecode = document.getElementById('iframecode');
+    if (iframecode!=null) {
+	    iframecode.value = "<iframe src='http://" + document.domain;
+        iframecode.value += helper_file_location + "/iframe.html#" + uid;
+        iframecode.value += "' height='600' width='1000'></iframe>";
+    }
+}
+
+function adjustIframeHeight() {
+    var commentframe = document.getElementById('commentframe');
+    if (commentframe!=null) {
+        commentframe.style.height = '300px';
+		//alert("adjustIframeHeight " + (commentframe.scrollHeight + 10).toString());
+        commentframe.style.height = (commentframe.scrollHeight + 10).toString() + "px";
+    }
 }
 
 //////////////////////////////////////////////////////////////
@@ -98,5 +135,4 @@ function changeView(viewName, params) {
 	//alert("changeView, passed the following params: " + params.toSource());
     var m = swfobject.getObjectById("wdmmg");
     m.changeView(viewName, params);
-
 }
