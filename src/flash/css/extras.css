@@ -1,5 +1,3 @@
-
-
 /* remove default black border from Flash wrapper */
 #wrapper {
     background: none;
@@ -17,7 +15,6 @@ ul.flash-menu  {
 	margin:0 0 10px 0;
 	padding:5px 0 5px 20px;
 	list-style-type:none;
-	clear: both;
 }
 
 ul.flash-menu li {
@@ -78,7 +75,7 @@ ul.flash-menu li a {
 
 /* icons for Flash screen menu buttons */
 
-.btn-index .icon, .btn-daily-bread .icon, .btn-regional .icon, .btn-long-term .icon {
+.btn-index .icon, .btn-daily-bread .icon, .btn-regional .icon, .btn-long-term .icon, .btn-compare .icon {
 	background:url("../images/minibutton_icons.png?v20100306") no-repeat scroll 0 0 transparent;
 	float:left;
 	height:22px;
@@ -100,4 +97,8 @@ ul.flash-menu li a {
 
 .btn-long-term .icon {
 	background-position:-60px 0;
+}
+
+.btn-compare .icon {
+	background-position:-40px 0;
 }
