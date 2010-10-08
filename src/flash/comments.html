@@ -36,13 +36,12 @@
 		<script type="text/javascript">
 		// if not inside an iframe, redirect to view page
 		function loadPage() {
+			//parent.document.getElementById('commentframe').height = document['body'].offsetHeight;
 		    if (top === self) { 
 				var view_params = getViewParameters();
-				var view_name = view_params.view;
 				//remove the 'view' parameter and use it as view name
-				delete view_params.view;
 				var param_string = paramsToString(view_params);
-				window.location = view_name + ".html#" + param_string;
+				window.location = "#" + param_string; //TODO: fix this so comments forward correctly
 			 } 
 		}
 		</script>
