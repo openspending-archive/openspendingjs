@@ -3,11 +3,13 @@ syntax: glob
 *.orig
 *~
 ## specific
+\.hgignore
 scripts/localconfig.js
 src/latest-tar-from-dave
 src/flash-ordnance
 src/dfid
-.DS_Store
+src/flash-working
+src/flash/index.html
 .DS_Store
 AC_OETags.js
 WDMMGassets.swf
