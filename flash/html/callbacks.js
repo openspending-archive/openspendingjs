@@ -1,5 +1,5 @@
 var view_name = '';
-var helper_file_location = ''; //change this for server settings
+var helper_file_location = '/html'; //change this dependent on server settings
 
 var viewnames = {};
 viewnames['daily-bread'] = 'My Daily Bread';
