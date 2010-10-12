@@ -1,8 +1,14 @@
-Anna's version of the WDMMG Flash repository. UNTESTED. Will check in tested version shortly. 
+WDMMG additions to the Iconomical Flash repository.
 
-To make this work, you probably need to define the Flash directory location in main.html, and move or symlink dashboard-config.json to the Flash directory.
+To make this work, you need to:
 
-How these files differ from the Iconomical Flash repo located at /phase-2: 
+* define the Flash directory location in main.html, using the 'flashvars' parameter (by default, this points at the sibling /phase-2/flash directory)
+
+If you want to use the WDMMG dashboard formatting options (as opposed to Iconomical's version), you also need to:
+
+* move or symlink ./dashboard-config.json into the Flash directory
+
+Notes on how these files differ from Iconomical's Flash repo located at /phase-2: 
 
  * main.html: Dashboard embedded within HTML. Uses configurable option for location of Flash .swf files: <param name="flashvars" value="assets=flash/"/>. 
  * callbacks.js: rewrites URLs dynamically, calls iframe for comments location. 
