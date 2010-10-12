@@ -10,4 +10,9 @@ src/flash-ordnance
 .DS_Store
 src/dfid
 src/flash-working
+flash/html/AC_OETags.js
+flash/html/expressInstall.swf
+flash/html/flash/WDMMGassets.swf
+flash/html/flash/WDMMGassets2.swf
+flash/html/flash/swfaddress.js
 
