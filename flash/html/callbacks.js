@@ -15,11 +15,24 @@ function updateTitle(view_name) {
     }
 }
 
+function updateMenu(view_name) {
+	alert('updateMenu');
+	var list_items = document.getElementById('flash-menu').getElementsByTagName('a')
+    for (var i=0, j=list_items.length; i<j; i++){
+        var elm = list_items[i];
+        if (elm.className) {
+            elm.className = elm.className.replace(/\bactive\b/, '');
+        }
+    }
+	document.getElementById(view_name).className += " active";
+}
+
 function loadView(view_name) {
 	// TODO: change css class dynamically
     var params = {};
     changeView(view_name, params);	
     updateTitle(view_name);
+    updateMenu(view_name);
 }
 
 //////////////////////////////////////////////////////////////
@@ -87,6 +100,7 @@ function wdmmgReady() {
 	    view_name = "uk-bubble-chart";
     }
     updateTitle(view_name);
+    updateMenu(view_name);
     changeView(view_name, url_params);
 	//changeView("daily-bread", {'interesting':['01', '02', '03.x', '06.1', '08.2', 'foo']});
 }
