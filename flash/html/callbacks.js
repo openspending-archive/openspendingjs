@@ -16,7 +16,7 @@ function updateTitle(view_name) {
 }
 
 function updateMenu(view_name) {
-	alert('updateMenu');
+	//alert('updateMenu');
 	var list_items = document.getElementById('flash-menu').getElementsByTagName('a')
     for (var i=0, j=list_items.length; i<j; i++){
         var elm = list_items[i];
