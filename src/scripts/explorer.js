@@ -277,6 +277,15 @@ function title(node) {
 	return t;
 }
 
+function trimNodeName(node, trimLength) {
+	// show node name up to 25 characters or full name if root node
+	if (node.nodeName.length <= 25 || (node.parentNode==null)) {
+		return node.nodeName;
+	} else {
+		return node.nodeName.substr(0,25) + '...';
+	}
+}
+
 function getKeyCodeName(key, code) {
     if(code == null)  {
         return 'Unknown';
@@ -341,13 +350,16 @@ WDMMG.explorer.nodelink = function (nodes) {
 		return 2500 * node.nodeValue.value / maxSize;
 	}
 
-	tree.node.add(pv.Dot)
-		.fillStyle(function(n) {
-			return WDMMG.explorer.color.fill(n);
-			})
-		.strokeStyle(function(n) {
-			return WDMMG.explorer.color.stroke(n);
-			})
+	var nodeDot = tree.node.add(pv.Dot)
+		.fillStyle(
+			pv.Colors.category19().by(function(d) {return d.nodeName
+			}))
+		//.fillStyle(function(n) {
+		//	return WDMMG.explorer.color.fill(n);
+		//	})
+		.strokeStyle(
+			pv.Colors.category19().by(function(d) {return d.nodeName
+			}))
 		.title(function(d) {return title(d)})
 		.size(function(d) {
 			return dotSize(d);
@@ -357,7 +369,34 @@ WDMMG.explorer.nodelink = function (nodes) {
 			WDMMG.explorer.render();
 			})
 		;
-
+	
+	nodeDot.anchor(function(d) {
+			return d.parentNode == null ? 'center' : 'left';
+		})
+		.add(pv.Label)
+		.text(function(d) {
+			return trimNodeName(d, 25);
+		})
+		// cribbed from protovis code
+		// pv.Network.Layout this.label code
+		.textMargin(10)
+		.textAngle(function(n) {
+			var a = n.midAngle;
+			return pv.Wedge.upright(a) ? a : (a + Math.PI);
+		})
+		.textAlign(function(n) {
+			// special case root node
+			if (n.parentNode == null) {
+				return 'center';
+			} else {
+				return pv.Wedge.upright(n.midAngle) ? 'left' : 'right';
+			}
+		})
+		.visible(function(d) {
+			return (d.parentNode==null || d.parentNode.parentNode == null);
+			})
+	;
+	
 	// 'contextual' dots
 	var contextData = [];
 	var _currentNode = nodes[0];
@@ -392,20 +431,6 @@ WDMMG.explorer.nodelink = function (nodes) {
 		.anchor('right').add(pv.Label)
 			.text(function(d) {
 				return d[3].name;
-			})
-		;
-	
-	tree.label.add(pv.Label)
-		.text(function(d) {
-				// show node name up to 25 characters or full name if root node
-				if (d.nodeName.length <= 25 || (d.parentNode==null)) {
-					return d.nodeName;
-				} else {
-					return d.nodeName.substr(0,25) + '...';
-				}
-			})
-		.visible(function(d) {
-			return (d.parentNode==null || d.parentNode.parentNode == null);
 			})
 		;
 
