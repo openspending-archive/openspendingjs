@@ -1,3 +1,6 @@
+@import url('http://assets.okfn.org/kforge/css/master.css');
+@import url('http://assets.okfn.org/ext/jquery.tablesorter/style.css');
+
 body {
   background-image: none;
 }
