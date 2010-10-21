@@ -295,10 +295,10 @@ function getKeyCodeName(key, code) {
 }
 
 WDMMG.explorer.getPanel = function() {
+	var viewportHeight = window.innerHeight ? window.innerHeight : $(window).height();
 	var vis = new pv.Panel()
 		.width($('#fig').width())
-		// seems height will include a bit off the screen
-		.height($('#fig').height()-50)
+		.height(viewportHeight-100)
 		.canvas('fig')
 		;
 	return vis;
