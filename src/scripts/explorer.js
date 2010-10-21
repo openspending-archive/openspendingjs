@@ -278,11 +278,10 @@ function title(node) {
 }
 
 function trimNodeName(node, trimLength) {
-	// show node name up to 25 characters or full name if root node
-	if (node.nodeName.length <= 25 || (node.parentNode==null)) {
+	if (node.nodeName.length <= trimLength || (node.parentNode==null)) {
 		return node.nodeName;
 	} else {
-		return node.nodeName.substr(0,25) + '...';
+		return node.nodeName.substr(0,trimLength) + '..';
 	}
 }
 
@@ -347,7 +346,12 @@ WDMMG.explorer.nodelink = function (nodes) {
 	// and we normalize it to size of 1000
 	var maxSize = nodes[0].nodeValue.value;
 	function dotSize(node) {
-		return 2500 * node.nodeValue.value / maxSize;
+		return 2500 * Math.abs(node.nodeValue.value) / maxSize;
+	}
+
+	function makeNodeCenterOfUniverse(d) {
+		WDMMG.explorer.config.currentNodeId = d.nodeValue.id;
+		WDMMG.explorer.render();
 	}
 
 	var nodeDot = tree.node.add(pv.Dot)
@@ -364,18 +368,19 @@ WDMMG.explorer.nodelink = function (nodes) {
 		.size(function(d) {
 			return dotSize(d);
 			})
-		.event('click', function(d) {
-			WDMMG.explorer.config.currentNodeId = d.nodeValue.id;
-			WDMMG.explorer.render();
-			})
+		.cursor('pointer') 
+		.event('click', makeNodeCenterOfUniverse)
 		;
 	
 	nodeDot.anchor(function(d) {
 			return d.parentNode == null ? 'center' : 'left';
 		})
 		.add(pv.Label)
+		// turn this on in order to get mouseover events on labels
+		.events('all')
+		.cursor('pointer') 
 		.text(function(d) {
-			return trimNodeName(d, 25);
+			return d.parentNode == null ? d.nodeName : trimNodeName(d, 25);
 		})
 		// cribbed from protovis code
 		// pv.Network.Layout this.label code
@@ -392,9 +397,11 @@ WDMMG.explorer.nodelink = function (nodes) {
 				return pv.Wedge.upright(n.midAngle) ? 'left' : 'right';
 			}
 		})
+		.title(function(d) {return title(d)})
 		.visible(function(d) {
 			return (d.parentNode==null || d.parentNode.parentNode == null);
 			})
+		.event('click', makeNodeCenterOfUniverse)
 	;
 	
 	// 'contextual' dots
