@@ -32,22 +32,22 @@
         "10":["0xff3300", "0xff6633", "0xff9966"]
 	},
 	"theme":{
-		"background":"0x333333",
-		"font":{"color":"0xffffff"},
-		"comment-button":{"font":{"color":"0xffffff"}},
+     	"background":"0xffffff",
+	    "font":{"color":"0x000000"},
+		"comment-button":{"font":{"color":"0x000000"}},
 		"title":{"font":{"name":"Gill Sans Bold", "embedded":"false", "bold":true, "size":26}},
-		"graphs":{"title":{"font":{"color":"0xffffff"}}, "axes":{"color":"0xffffff", "labels":{"font":{"color":"0xffffff"}}}},
-		"slider":{"font":{"color":"0xffffff"}},
-		"view-buttons":{"font":{"color":"0xffffff", "name":"Gill Sans"}, "selected-color":"0x333333", "deselected-color":"0x666666"},
-		"uk-bubble-chart":{"background":"0x333333", "font":{"color":"0xffffff"}, "innercolor":"0x000000"},
-		"national-bubble-chart":{"background":"0x333333", "font":{"color":"0xffffff"}, "innercolor":"0x000000"},
+		"graphs":{"title":{"font":{"color":"0x000000"}}, "axes":{"color":"0x000000", "labels":{"font":{"color":"0x000000"}}}},
+		"slider":{"font":{"color":"0x000000"}},
+		"view-buttons":{"font":{"color":"0x000000", "name":"Gill Sans"}, "selected-color":"0x333333", "deselected-color":"0x666666"},
+		"uk-bubble-chart":{"background":"0xffffff", "font":{"color":"0x000000"}, "innercolor":"0x000000"},
+		"national-bubble-chart":{"background":"0xffffff", "font":{"color":"0x000000"}, "innercolor":"0x000000"},
 		"long-term":{"long-term-label":{"font":{"size":15}}, "tme-label":{"font":{"size":15}}},
 		"national-trends":{"title":{"font":{"size":18}}},
-		"regional-drilldown":{"background":"0x333333", "title":{"font":{"color":"0xffffff", "size":18}},
-							  "subfunctions":{"font":{"color":"0xffffff"}},
-							  "next-button":{"color":"0xffffff", "font":{"color":"0xffffff"}},
-							  "prev-button":{"color":"0xffffff", "font":{"color":"0xffffff"}}},
+		"regional-drilldown":{"background":"0xffffff", "title":{"font":{"color":"0x000000", "size":18}},
+							  "subfunctions":{"font":{"color":"0x000000"}},
+							  "next-button":{"color":"0x000000", "font":{"color":"0x000000"}},
+							  "prev-button":{"color":"0x000000", "font":{"color":"0x000000"}}},
 		"daily-bread":{"background":"0xffffff", "font":{"color":"0x000000"}, "slider":{"font":{"color":"0x000000"}}, "select":{}, "salary":{"title":{}, "value":{}}, "tax":{"title":{}, "value":{}}},
-		"comparatron-a":{"background":"0x333333", "labels":{"font":{"size":11, "color":"0xffffff"}}}
+		"comparatron-a":{"background":"0xffffff", "labels":{"font":{"size":11, "color":"0x000000"}}}
 	}
 }
