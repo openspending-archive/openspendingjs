@@ -3,108 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <title>Where Does My Money Go?</title>
-  <script type="text/javascript" src="/phase-2/flash/swfobject.js"></script>
-  <script type="text/javascript" src="/phase-2/flash/swfaddress.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+  <script type="text/javascript" src="../phase-2/flash/swfobject.js"></script>
+  <script type="text/javascript" src="../phase-2/flash/swfaddress.js"></script>
   <script type="text/javascript">
     swfobject.registerObject("wdmmg", "9.0.0");
   </script>
   <script type="text/javascript" src="callbacks.js"></script>
-  </script>
   <link rel="stylesheet" type="text/css" href="http://wp.staging.wheredoesmymoneygo.org/wp-content/themes/wdmmg/style.css">
-  <link rel="stylesheet" type="text/css" href="css/extras.css">
-  </head>
+</head>
 
-	<body>
-	 <div id="airlock">
-	    <div id="header">
-	      <h1><a href="#">Where Does My Money Go?</a></h1>
-	      <h2>Visualising government spending</h2>
-	      <div id="login-and-search">
+<body>
+  <div id="airlock">
+    <div id="header">
 
-	        <form action="#search"><a href="#login">Login</a> | <a href="#register">Register</a> <input type="search" placeholder="Search..."></form>
+      <h1><a href="#">Where Does My Money Go?</a></h1>
+      <h2>Visualising government spending</h2>
 
-	      </div>
-	      <div id="nav">
-	        <ul>
-	          <li><a href="index.html" class="active">Home</a></li>
-	          <li><a href="#blog">Blog</a></li>
-	          <li><a href="#datastore">Datastore</a></li>
-	          <li><a href="#about">About us</a></li>
-	        </ul>
+      <div id="login-and-search">
+        <form action="#search"><a href="#login">Login</a> | <a href="#register">Register</a> <input type="search" placeholder="Search..."></form>
+      </div>
 
-	      </div><!-- /#nav -->
-	    </div><!-- /#header -->
+      <div id="nav">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#datastore">Datastore</a></li>
+          <li><a href="#about">About us</a></li>
+        </ul>
+      </div><!-- /#nav -->
 
-	    <div id="main">
-	
-		<h3 id="viewtitle" style="clear:none;float:left;">UK government spending</h3>
-		
-		<ul class="flash-menu" id="flash-menu" style="clear:none;float:right;">
-		<li class="uk-bubble-chart"><a href="#" id="uk-bubble-chart" class="minibutton btn-index active" onclick="loadView('uk-bubble-chart');"><span>UK spending</span></a></li>
-		<li class="daily-bread"><a href="#" id="daily-bread" class="minibutton btn-daily-bread" onclick="loadView('daily-bread');"><span>Daily Bread</span></a></li>
-		<li class="long-term"><a href="#" id="long-term" class="minibutton btn-long-term" onclick="loadView('long-term');"><span>Long-term spending</span></a></li>
-		<li class="regional-overview"><a href="#" id="regional-overview" class="minibutton btn-regional" onclick="loadView('regional-overview');"><span>Regional overview</span></a></li>
-		<li class="comparatron-a"><a href="#" id="comparatron-a" class="minibutton btn-compare" onclick="loadView('comparatron-a');"><span>Compare</span></a></li>
-		</ul>
-		
-		<div id="wrapper">
-		<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
-			<param name="movie" value="/phase-2/main.swf" />
-			<param name="flashvars" value="assets=/phase-2/flash/"/>
-			<!--[if !IE]>-->
-			<object type="application/x-shockwave-flash" data="/phase-2/main.swf" width="100%" height="100%">
-			<param name="flashvars" value="assets=/phase-2/flash/"/>
-			<!--<![endif]-->
-				<a href="http://www.adobe.com/go/getflashplayer">
-					<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
-				</a>
-			<!--[if !IE]>-->
-			</object>
-			<!--<![endif]-->
-		</object>
-		</div>
-		<p>Copy and paste to embed this view in your page: <input type="text" id="iframecode" size="100" /></p>		
-		<iframe frameborder=0 border=0 src="" style="overflow: auto;" width="100%" height="400px" name="commentframe" id="commentframe" onload="adjustIframeHeight()">
-		  <p>Sorry, your browser does not support iframes, so we cannot show comments on this view.</p>
-		</iframe>
-		
-	</div><!-- /#main -->
+    </div><!-- /#header -->
 
-	    <div id="footer">
-	      <div id="footer-content">
-        <!--#include file="footer.html"-->
+    <div id="main">
+
+      <h3 id="dashboard-title">UK spending</h3>
+
+      <ul id="dashboard-menu" class="flash-menu">
+        <li class="uk-bubble-chart"><a href="#" id="uk-bubble-chart" class="minibutton btn-index active"><span>UK spending</span></a></li>
+        <li class="daily-bread"><a href="#" id="daily-bread" class="minibutton btn-daily-bread"><span>Daily Bread</span></a></li>
+        <li class="long-term"><a href="#" id="long-term" class="minibutton btn-long-term"><span>Long-term spending</span></a></li>
+        <li class="regional-overview"><a href="#" id="regional-overview" class="minibutton btn-regional"><span>Regional overview</span></a></li>
+        <li class="comparatron-a"><a href="#" id="comparatron-a" class="minibutton btn-compare"><span>Compare</span></a></li>
+      </ul>
+
+      <div id="dashboard-flash-wrapper">
+        <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
+          <param name="movie" value="../phase-2/main.swf" />
+          <param name="flashvars" value="assets=../phase-2/flash/"/>
+          <!--[if !IE]>-->
+          <object type="application/x-shockwave-flash" data="../phase-2/main.swf" width="100%" height="100%">
+          <param name="flashvars" value="assets=../phase-2/flash/"/>
+          <!--<![endif]-->
+            <a href="http://www.adobe.com/go/getflashplayer">
+              <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+            </a>
+          <!--[if !IE]>-->
+          </object>
+          <!--<![endif]-->
+        </object>
+      </div><!-- /#dashboard-flash-wrapper -->
+
+      <p>Copy and paste to embed this view in your page: <input type="text" id="iframecode" size="100" /></p>
+
+      <iframe src="" style="overflow: auto;" width="100%" height="400px" name="commentframe" id="commentframe" onload="adjustIframeHeight()">
+        <p>Sorry, your browser does not support iframes, so we cannot show comments on this view.</p>
+      </iframe>
+    </div><!-- /#main -->
+
+    <div id="footer">
+      <div id="footer-content">
+      <!--#include file="footer.html"-->
 
         <h3>About</h3>
-	        <ul>
-	          <li><a href="#">About Where Does My Money Go</a></li>
-	          <li><a href="#">Blog</a></li>
-	          <li><a href="#">Terms &amp; Conditions</a></li>
-	          <li><a href="#">Privacy</a></li>
+        <ul>
+          <li><a href="#">About Where Does My Money Go</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Terms &amp; Conditions</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Legal</a></li>
+        </ul>
 
-	          <li><a href="#">Legal</a></li>
-	        </ul>
+        <h3>Data</h3>
+        <ul>
+          <li><a href="#">Browse Data</a></li>
+          <li><a href="#">Request a Dataset</a></li>
+          <li><a href="#">Create a Dataset</a></li>
+          <li><a href="#">API</a></li>
+        </ul>
 
-	        <h3>Data</h3>
+        <h3>Help</h3>
+        <ul>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
+          <li><a href="#">Code Documentation</a></li>
+          <li><a href="#">Developer's Discussion List</a></li>
+        </ul>
 
-	        <ul>
-	          <li><a href="#">Browse Data</a></li>
-	          <li><a href="#">Request a Dataset</a></li>
-	          <li><a href="#">Create a Dataset</a></li>
-	          <li><a href="#">API</a></li>
-	        </ul>
-			        <h3>Help</h3>
-			        <ul>
-			          <li><a href="#">Contact Us</a></li>
-			          <li><a href="#"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
-			          <li><a href="#">Code Documentation</a></li>
-			          <li><a href="#">Developer's Discussion List</a></li>
-			        </ul>
-			        <p id="okfnattrib">An <a href="http://okfn.org">Open Knowledge Foundation</a> Project</p>
+        <p id="okfnattrib">An <a href="http://okfn.org">Open Knowledge Foundation</a> Project</p>
 
-			</div>
-		</div><!-- /#footer -->
-     </div><!-- /#airlock -->
+      </div><!-- /#footer-content -->
+    </div><!-- /#footer -->
+
   </div><!-- /#airlock -->
-		
 </body>
 </html>
