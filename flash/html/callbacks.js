@@ -1,8 +1,9 @@
 var WDMMG = WDMMG || {};
 WDMMG.dashboard = {};
-//WDMMG.dashboard.helperFileLocation = '/html'; // Assumed to be an absolute path.
+WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute path.
 
 (function (d) {
+	var $ = jQuery.noConflict();
 	// Init: set up dashboard.
 	d.init = function () {
 		if (d.helperFileLocation) {
