@@ -2,6 +2,7 @@
 	"dataStore":"http://data.wheredoesmymoneygo.org/",
 	"mainSite":"http://www.wheredoesmymoneygo.org/",
 	"commentsLocation":"http://www.wheredoesmymoneygo.org/comments/dashboard/?page=",
+	"infoboxDisabled":false,
 	"dataRequests":{
 		"classification":["cofog1", "cofog2", "cofog3", "region"],
 		"queries":{
@@ -39,8 +40,8 @@
 		"graphs":{"title":{"font":{"color":"0x000000"}}, "axes":{"color":"0x000000", "labels":{"font":{"color":"0x000000"}}}},
 		"slider":{"font":{"color":"0x000000"}},
 		"view-buttons":{"font":{"color":"0x000000", "name":"Gill Sans"}, "selected-color":"0x333333", "deselected-color":"0x666666"},
-		"uk-bubble-chart":{"background":"0xffffff", "font":{"color":"0x000000"}, "innercolor":"0x000000"},
-		"national-bubble-chart":{"background":"0xffffff", "font":{"color":"0x000000"}, "innercolor":"0x000000"},
+		"uk-bubble-chart":{"background":"0xffffff", "innerfont":{"color":"0x000000"}, "outerfont":{"color":"0x333333"}},
+		"national-bubble-chart":{"background":"0xffffff", "innerfont":{"color":"0x000000"}, "outerfont":{"color":"0x000000"}},
 		"long-term":{"long-term-label":{"font":{"size":15}}, "tme-label":{"font":{"size":15}}},
 		"national-trends":{"title":{"font":{"size":18}}},
 		"regional-drilldown":{"background":"0xffffff", "title":{"font":{"color":"0x000000", "size":18}},
