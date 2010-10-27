@@ -2,15 +2,10 @@ syntax: glob
 ## general
 *.orig
 *~
+sandbox/*
 ## specific
-\.hgignore
 scripts/localconfig.js
-src/latest-tar-from-dave
 src/flash-ordnance
 .DS_Store
 src/dfid
 src/flash-working
-flash/html/flash
-flash/html/main.swf
-flash/html/playerProductInstall.swf
-flash/html/expressInstall.swf
