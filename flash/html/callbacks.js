@@ -20,6 +20,7 @@ WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute
 
 		d.$menu         = $('#dashboard-menu');
 		d.$title        = $('#dashboard-title');
+		d.$intro        = $('#dashboard-intro');
 
 		d.$menu.find('a').click(function () {
 			d.changeView(this.id);
@@ -45,6 +46,7 @@ WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute
 
 		// Set title text to the same as the inner text of the button.
 		d.$title.text( d.$menu.find('.active').text() );
+		d.introText( d.$menu.find('.active')[0].id );
 
 		params = params || {};
 
@@ -96,6 +98,11 @@ WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute
 		   .height(($cf[0].scrollHeight + 10).toString() + "px");
 	};
 
+	d.introText = function(id) {
+		var text = $($('script[type=text/dashboard-intro]#dashboard-intro-'+id)[0]).text() || '';		
+		$(d.$intro[0])[0].innerHTML = text;
+	};
+
 })(WDMMG.dashboard);
 
 // For temporary backwards compatibility, bring these functions into the
@@ -132,3 +139,4 @@ function getViewParameters() {
 
 	return get_params;
 }
+

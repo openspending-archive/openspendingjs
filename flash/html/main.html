@@ -11,13 +11,18 @@
   </script>
   <script type="text/javascript" src="callbacks.js"></script>
   <link rel="stylesheet" type="text/css" href="http://wp.staging.wheredoesmymoneygo.org/wp-content/themes/wdmmg/style.css">
+  <style type="text/css">
+    #dashboard-intro {
+      float: left;
+    }
+  </style>
 </head>
 
 <body>
   <div id="airlock">
     <div id="header">
 
-      <h1><a href="#">Where Does My Money Go?</a></h1>
+      <h1 id="dashboard-view-title"><a href="#">Where Does My Money Go?</a></h1>
       <h2>Visualising government spending</h2>
 
       <div id="login-and-search">
@@ -36,16 +41,53 @@
     </div><!-- /#header -->
 
     <div id="main">
+  <script type="text/dashboard-intro" id="dashboard-intro-uk-bubble-chart">
+    <p>Explore the <a href="/data/overview/">official spending data</a>
+    published by the UK Government. <strong>Click on the bubbles to see how total
+      spending breaks down</strong>. To view the data in different ways select from the menu of visualizations.</p>
+  </script>
 
-      <h3 id="dashboard-view-title">UK spending</h3>
+  <script type="text/dashboard-intro" id="dashboard-intro-daily-bread">
+    <p>Explore the <a href="/data/overview/">official spending data</a>
+    published by the UK Government. <strong>Click on the icons to see how your tax is
+      being spent in different areas</strong>. To view the data in different ways select
+    from the menu of visualizations.</p>
+  </script>
 
-      <ul id="dashboard-menu" class="flash-menu">
-        <li class="uk-bubble-chart"><a href="#" id="uk-bubble-chart" class="minibutton btn-index active"><span>UK spending</span></a></li>
-        <li class="daily-bread"><a href="#" id="daily-bread" class="minibutton btn-daily-bread"><span>Daily Bread</span></a></li>
-        <li class="long-term"><a href="#" id="long-term" class="minibutton btn-long-term"><span>Long-term spending</span></a></li>
-        <li class="regional-overview"><a href="#" id="regional-overview" class="minibutton btn-regional"><span>Regional overview</span></a></li>
-        <li class="comparatron-a"><a href="#" id="comparatron-a" class="minibutton btn-compare"><span>Compare</span></a></li>
-      </ul>
+      <div id="dashboard-masthead">
+        <h1 id="dashboard-view-title">Spending Dashboard</h1>
+
+        <div id="dashboard-intro">
+        </div>
+
+        <ul id="dashboard-menu" class="flash-menu">
+          <li class="uk-bubble-chart">
+            <a href="#" id="uk-bubble-chart" class="minibutton btn-index active" title="See how spending breaks down in our bubble chart">
+              <span>Bubbles</span>
+            </a>
+          </li>
+          <li class="daily-bread">
+            <a href="#" id="daily-bread" class="minibutton btn-daily-bread" title="Calcluate how much this costs me each day">
+              <span>Daily Bread</span>
+            </a>
+          </li>
+          <li class="long-term">
+            <a href="#" id="long-term" class="minibutton btn-long-term" title="View this data in a time chart">
+              <span>Time</span>
+            </a>
+          </li>
+          <li class="comparatron-a">
+            <a href="#" id="comparatron-a" class="minibutton btn-compare" title="Compare spending between UK regions">
+              <span>Compare Regions</span>
+            </a>
+          </li>
+          <li class="regional-overview">
+            <a href="#" id="regional-overview" class="minibutton btn-regional" title="Compare spending between UK regions">
+              <span>Regional Overview</span>
+            </a>
+          </li>
+        </ul>
+      </div>
 
       <div id="dashboard-flash-wrapper">
         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
