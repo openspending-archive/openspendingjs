@@ -1,0 +1,104 @@
+<html>
+  <head>
+    <title>Where Does My Money Go? UK Spending Explorer</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js"></script>
+
+    <script type="text/javascript" src="vendor/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="vendor/jqueryui-1.8.4/jquery-ui.min.js"></script>
+    <link type="text/css" href="vendor/jqueryui-1.8.4/css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" /> 
+
+<style type="text/css">
+@import url("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/ui-lightness/jquery-ui.css");
+
+#frontpage-slider {
+  width: 300px;
+  margin: auto;
+}
+
+#frontpage-slider .ui-widget-content {
+  background: none;
+  background-color: #830242;
+  height: 6px;
+}
+
+#frontpage-slider .ui-slider-horizontal .ui-slider-handle {
+  background: url('images/pound-slider.png') transparent no-repeat;
+  height: 17px;
+  width: 17px;
+  border: none;
+  cursor: auto;
+  margin-left: -0.4em;
+}
+
+#frontpage-slider div#ticks {
+  font-size: 90%;
+  margin-top: 5px;
+}
+
+#frontpage-slider div.tick-min {
+  float: left;
+  margin-left: -5px;
+}
+
+#frontpage-slider div.tick-max {
+  float: right;
+  margin-right: -15px;
+}
+
+#frontpage-slider input#income {
+  border: none;
+  font-family: 'Times New Roman';
+  font-size: 16px;
+  padding: 0;
+  margin: 0;
+  width: 50px;
+}
+
+#frontpage-slider .select-income {
+  text-align: center;
+}
+
+#frontpage-slider .visualize-button {
+  clear: both;
+  margin: auto;
+  text-align: center;
+}
+</style>
+  </head>
+  <body>
+    <h1 id="page-top">Where Does My Money Go? UK Spending Explorer</h1>
+    <div id="frontpage-slider">
+      <form id="form-income" action="dashboard" method="get">
+        <p class="select-income">
+        Select Your Income: &pound;<input id="income" name="income" value="10000" />
+        </p>
+        <div id="slider"></div>
+        <div id="ticks">
+          <div class="tick-min">10k</div>
+          <div class="tick-max">200k</div>
+        </div>
+        <div class="visualize-button">
+          <input type="submit" name="visualize" value="Your Daily Bread &raquo;" />
+        </div>
+      </form>
+<script type="text/javascript">
+  jQuery(document).ready(function() {
+    jQuery("#slider").slider({
+      min: 10000,
+      max: 200000,
+      step: 10,
+      animate: true,
+      slide: function(event, ui) {
+        jQuery("#income").val(ui.value);
+      }
+    });
+    jQuery('#form-income').submit(function(e) {
+      e.preventDefault();
+      window.location.href = '/html/#view=daily-bread&income=' + jQuery("#income").val();
+    });
+  });
+</script>
+    </div>
+  </body>
+</html>
