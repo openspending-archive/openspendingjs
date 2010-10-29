@@ -10,7 +10,10 @@
     swfobject.registerObject("wdmmg", "9.0.0");
   </script>
   <script type="text/javascript" src="callbacks.js"></script>
+  <!--
   <link rel="stylesheet" type="text/css" href="http://wp.staging.wheredoesmymoneygo.org/wp-content/themes/wdmmg/style.css">
+  -->
+  <link rel="stylesheet" type="text/css" href="http://wordpress/wp3.0/wp-content/themes/wdmmg/style.css">
   <style type="text/css">
     #dashboard-intro {
       float: left;
@@ -41,25 +44,31 @@
     </div><!-- /#header -->
 
     <div id="main">
+
   <script type="text/dashboard-intro" id="dashboard-intro-uk-bubble-chart">
-    <p>Explore the <a href="/data/overview/">official spending data</a>
+    Explore the <a href="/data/overview/">official spending data</a>
     published by the UK Government. <strong>Click on the bubbles to see how total
-      spending breaks down</strong>. To view the data in different ways select from the menu of visualizations.</p>
+      spending breaks down</strong>. To view the data in different ways select from the menu of visualizations.
   </script>
 
   <script type="text/dashboard-intro" id="dashboard-intro-daily-bread">
-    <p>Explore the <a href="/data/overview/">official spending data</a>
+    Explore the <a href="/data/overview/">official spending data</a>
     published by the UK Government. <strong>Click on the icons to see how your tax is
       being spent in different areas</strong>. To view the data in different ways select
-    from the menu of visualizations.</p>
+    from the menu of visualizations.
   </script>
 
-      <div id="dashboard-masthead">
-        <h1 id="dashboard-view-title">Spending Dashboard</h1>
+    <div id="dashboard-masthead">
+      <h1 id="dashboard-view-title">Spending Dashboard</h1>
 
+      <div id="dashboard-intro-wrapper">
+        <div id="dashboard-intro-controls">
+        </div>
         <div id="dashboard-intro">
         </div>
+      </div>
 
+      <div id="dashboard-navigation">
         <ul id="dashboard-menu" class="flash-menu">
           <li class="uk-bubble-chart">
             <a href="#" id="uk-bubble-chart" class="minibutton btn-index active" title="See how spending breaks down in our bubble chart">
@@ -87,7 +96,17 @@
             </a>
           </li>
         </ul>
+
+        <ul class="flash-menu">
+          <li>
+            <span class="st_twitter_hcount" displayText="Tweet"></span>
+            <span class="st_facebook_hcount" displayText="Share"></span>
+            <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script><script type="text/javascript">stLight.options({publisher:'99b03eb4-c4cc-4604-89e9-a2ff6f595e17'});</script>
+          </li>
+        </ul>
       </div>
+
+    </div><!-- /dashboard-masthead -->
 
       <div id="dashboard-flash-wrapper">
         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
@@ -105,8 +124,6 @@
           <!--<![endif]-->
         </object>
       </div><!-- /#dashboard-flash-wrapper -->
-
-      <p>Copy and paste to embed this view in your page: <input type="text" id="iframecode" size="100" /></p>
 
       <iframe src="" style="overflow: auto;" width="100%" height="400px" name="commentframe" id="commentframe" onload="adjustIframeHeight()">
         <p>Sorry, your browser does not support iframes, so we cannot show comments on this view.</p>
