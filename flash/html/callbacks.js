@@ -45,7 +45,7 @@ WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute
 			.find('a#' + viewName).addClass('active');
 
 		// Set title text to the same as the inner text of the button.
-		d.$title.text( d.$menu.find('.active').text() );
+		// d.$title.text( d.$menu.find('.active').text() );
 		d.introText( d.$menu.find('.active')[0].id );
 
 		params = params || {};
@@ -103,6 +103,16 @@ WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute
 		$(d.$intro[0])[0].innerHTML = text;
 	};
 
+	d.infobox = function(code, classificationName, link) {
+		alert(code+":"+classificationName+":"+link);
+	};
+
+	// Called by the dashboard for extra help information
+	//
+	d.help = function(id, params) {
+		alert(id);
+	};
+
 })(WDMMG.dashboard);
 
 // For temporary backwards compatibility, bring these functions into the
@@ -112,6 +122,8 @@ var wdmmgInit          = WDMMG.dashboard.init;
 var wdmmgReady         = WDMMG.dashboard.ready;
 var wdmmgCallback      = WDMMG.dashboard.visCallback;
 var adjustIframeHeight = WDMMG.dashboard.adjustIframeHeight;
+var wdmmgInfobox       = WDMMG.dashboard.infobox;
+var wdmmgHelp          = WDMMG.dashboard.help;
 
 // Get URL parameters:
 // - works for hash urls and querystrings
