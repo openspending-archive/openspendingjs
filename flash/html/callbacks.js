@@ -1,60 +1,106 @@
+jQuery.noConflict();
 var WDMMG = WDMMG || {};
-WDMMG.dashboard = {};
-WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute path.
 
-(function (d) {
-	var $ = jQuery.noConflict();
+WDMMG.InfoBox = function () {
+	var $ = jQuery, self = this;
+
+	this.$elem = $('<div class="wdmmg-infobox"><div class="head"><a class="close" title="Close this box" href="#"></a><h3></h3></div><div class="content"></div></div>');
+
+	// Init
+	(function () {
+		self.$elem.appendTo(document.body);
+		// Draggable from title bar
+		self.$elem.draggable({ handle: '.head' });
+		// Close on click of cross
+		self.$elem.delegate('.close', 'click', function () {
+			self.hide();
+			return false;
+		});
+	})();
+
+	this.setTitle = function (title) {
+		self.$elem.find('h3').text(title);
+	};
+
+	this.setContent = function (html) {
+		self.$elem.find('.content').html(html);
+	};
+
+	this.setPos = function (x, y) {
+		self.$elem.css({
+			left: x,
+			top: y
+		});
+	};
+
+	this.setPosViewportCentre = function () {
+		self.setPos(
+			($(window).width() - self.$elem.width()) / 2,
+			($(window).height() - self.$elem.height()) / 2 + $(window).scrollTop()
+		);
+	};
+
+	this.show = function () { self.$elem.show(); };
+	this.hide = function () { self.$elem.hide(); };
+
+	return this;
+};
+
+// Dashboard
+WDMMG.Dashboard = function () {
+	var $ = jQuery, self = this;
+
+	this.helperFileLocation = '/_dashboard'; // Assumed to be an absolute path.
+
 	// Init: set up dashboard.
-	d.init = function () {
-		if (d.helperFileLocation) {
-			d.helperFileLocation = 'http://' + document.domain + d.helperFileLocation;
+	this.init = function () {
+		if (self.helperFileLocation) {
+			self.helperFileLocation = 'http://' + document.domain + self.helperFileLocation;
 		} else {
-			d.helperFileLocation = d.currentLocation();
+			self.helperFileLocation = self.currentLocation();
 		}
 
-		d.swf = swfobject.getObjectById("wdmmg");
+		self.swf = swfobject.getObjectById("wdmmg");
 
-		d.swf.removeHeader();
-		d.swf.removeFooter();
-		d.swf.disableUrls();
+		self.swf.removeHeader();
+		self.swf.removeFooter();
+		self.swf.disableUrls();
 
-		d.$menu         = $('#dashboard-menu');
-		d.$title        = $('#dashboard-title');
-		d.$intro        = $('#dashboard-intro');
+		self.$menu         = $('#dashboard-menu');
+		self.$title        = $('#dashboard-title');
+		self.$intro        = $('#dashboard-intro');
 
-		d.$menu.find('a').click(function () {
-			d.changeView(this.id);
+		self.$menu.find('a').click(function () {
+			self.changeView(this.id);
 			return false;
 		});
 	};
 
 	// Choose view from URL params, if available.
-	d.ready = function () {
+	this.ready = function () {
 		var urlParams = getViewParameters();
 		var viewName = urlParams.view;
 
 		delete urlParams.view;
 
-		d.changeView(viewName || "uk-bubble-chart", urlParams);
-	}
+		self.changeView(viewName || "uk-bubble-chart", urlParams);
+	};
 
 	// Change view and update navigation, title.
-	d.changeView = function (viewName, params) {
-		d.$menu
+	this.changeView = function (viewName, params) {
+		self.$menu
 			.find('a').removeClass('active').end()
 			.find('a#' + viewName).addClass('active');
 
-		// Set title text to the same as the inner text of the button.
-		// d.$title.text( d.$menu.find('.active').text() );
-		d.introText( d.$menu.find('.active')[0].id );
+		self.introText( self.$menu.find('.active')[0].id );
 
 		params = params || {};
 
-		d.swf.changeView(viewName, params);
-		d.updateEmbed($.param(params));
+		self.swf.changeView(viewName, params);
+		self.updateEmbed($.param(params));
 	};
 
-	d.currentLocation = function () {
+	this.currentLocation = function () {
 		var loc = window.location.href;
 
 		var qs = loc.indexOf("?");
@@ -72,58 +118,73 @@ WDMMG.dashboard.helperFileLocation = '/_dashboard'; // Assumed to be an absolute
 		}
 
 		return loc;
-	}
+	};
 
 	// Called when visualisation parameters change.
-	d.visCallback = function (page, params) {
+	this.visCallback = function (page, params) {
 		params.view = page;
 		var uid = $.param(params);
 
 		window.location.hash = uid;
-		d.updateEmbed(uid);
+		self.updateEmbed(uid);
 
 		//reload iframe with comments
-		$('#commentframe').attr('src', d.helperFileLocation + "/comments.html?" + uid);
+		$('#commentframe').attr('src', self.helperFileLocation + "/comments.html?" + uid);
 	};
 
-	d.updateEmbed = function (uid) {
-		$('#iframecode').val("<iframe src='" + d.helperFileLocation
-		                     + "/iframe.html#" + uid
-		                     + "' height='600' width='1000'></iframe>");
-	}
+	// Called when "more info" is clicked
+	this.infoboxCallback = function(code, classificationName, link) {
+		if (!("infobox" in self)) {
+			self.infobox = new WDMMG.InfoBox();
+			self.infobox.setPosViewportCentre();
+		}
 
-	d.adjustIframeHeight = function() {
-		var $cf = $('#commentframe');
-		$cf.height('300px')
-		   .height(($cf[0].scrollHeight + 10).toString() + "px");
+		self.infobox.setTitle("A title");
+		self.infobox.setContent(code + ":" + classificationName + ":" + link + link + link + link + link + link + link + link + link + link + link + link + link + link + link + link);
+		self.infobox.show();
+
+		// Override default
+		return false;
 	};
 
-	d.introText = function(id) {
-		var text = $($('script[type=text/dashboard-intro]#dashboard-intro-'+id)[0]).text() || '';		
-		$(d.$intro[0])[0].innerHTML = text;
-	};
-
-	d.infobox = function(code, classificationName, link) {
-		alert(code+":"+classificationName+":"+link);
-	};
-
-	// Called by the dashboard for extra help information
-	//
-	d.help = function(id, params) {
+	// Called when help button is clicked
+	this.helpCallback = function(id, params) {
 		alert(id);
 	};
 
-})(WDMMG.dashboard);
+	this.updateEmbed = function (uid) {
+		$('#iframecode').val("<iframe src='" + self.helperFileLocation
+		                     + "/iframe.html#" + uid
+		                     + "' height='600' width='1000'></iframe>");
+	};
+
+	this.introText = function(id) {
+		var text = $($('script[type=text/dashboard-intro]#dashboard-intro-'+id)[0]).text() || '';
+		$(self.$intro[0])[0].innerHTML = text;
+	};
+
+	return this;
+};
 
 // For temporary backwards compatibility, bring these functions into the
 // global namespace;
-var changeView         = WDMMG.dashboard.changeView;
-var wdmmgInit          = WDMMG.dashboard.init;
-var wdmmgReady         = WDMMG.dashboard.ready;
-var wdmmgCallback      = WDMMG.dashboard.visCallback;
-var adjustIframeHeight = WDMMG.dashboard.adjustIframeHeight;
-var wdmmgInfobox       = WDMMG.dashboard.infobox;
-var wdmmgHelp          = WDMMG.dashboard.help;
+var changeView, wdmmgReady, wdmmgCallback,  wdmmgInfobox, wdmmgHelp;
+
+var wdmmgInit = function () {
+	var d = new WDMMG.Dashboard();
+	d.init();
+
+	changeView         = d.changeView;
+	wdmmgReady         = d.ready;
+	wdmmgCallback      = d.visCallback;
+	wdmmgInfobox       = d.infoboxCallback;
+	wdmmgHelp          = d.helpCallback;
+};
+
+var adjustIframeHeight = function() {
+	var $cf = jQuery('#commentframe');
+	$cf.height(($cf[0].scrollHeight + 10).toString() + "px");
+};
 
 // Get URL parameters:
 // - works for hash urls and querystrings
