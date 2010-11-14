@@ -38,6 +38,7 @@
 		"comment-button":{"font":{"color":"0xffffff"}},
 		"title":{"font":{"name":"Gill Sans Bold", "embedded":"false", "bold":true, "size":26}},
 		"graphs":{"title":{"font":{"color":"0xffffff"}}, "axes":{"color":"0xffffff", "labels":{"font":{"color":"0xffffff"}}}},
+		"bubble-chart":"circular",
 		"slider":{"font":{"color":"0xffffff"}},
 		"view-buttons":{"font":{"color":"0xffffff", "name":"Gill Sans"}, "selected-color":"0x333333", "deselected-color":"0x666666"},
 		"uk-bubble-chart":{"background":"0x333333", "innerfont":{"color":"0xffffff"}, "outerfont":{"color":"0xffffff"}},
