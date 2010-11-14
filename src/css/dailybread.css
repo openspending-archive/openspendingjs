@@ -1,0 +1,153 @@
+/** Layout */
+
+.layout-row, .db-area-row {
+  width: 100%;
+  overflow: auto; /* row expands to contain children */
+  margin-bottom: 1%;
+}
+
+.layout-col, .db-area-col {
+  margin: 0 0 0 1%;
+  float: left;
+}
+
+.layout-col-1 {
+  clear: left;
+  margin-left: 0;
+}
+
+.layout-3col-15-70-15 .layout-col {
+  width: 14.5%;
+}
+
+.layout-3col-15-70-15 .layout-col-2 {
+  width: 69%;
+}
+
+/** Header */
+
+#db-header {
+	text-align: center;
+}
+
+#db-header h1 {
+	color: #830242;
+	font-size: 2.5em;
+	text-transform: uppercase;
+}
+
+#db-header h2 {
+	margin: 0;
+	color: #aaa;
+	font-size: 1.5em;
+	text-transform: uppercase;
+}
+
+/** Top bar */
+
+#db-topbar {
+	margin: 1em 0 0 0;
+}
+
+#db-topbar div h2 {
+	margin: 0;
+	padding: 0;
+	font-size: 1.2em;
+	text-transform: uppercase;
+}
+
+#db-topbar div p {
+	margin: 0;
+	padding: 0;
+	color: #830242;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+#db-salary {
+	text-align: left;
+}
+
+#db-slider {
+	text-align: center;
+}
+
+#db-tax {
+	text-align: right;
+}
+
+/** Slider */
+
+.wdmmg-slider {
+	width: 70%;
+	margin: 0.25em auto;
+}
+
+.wdmmg-slider.ui-widget-content {
+	background: none;
+	background-color: #830242;
+	height: 6px;
+}
+
+.wdmmg-slider.ui-slider-horizontal .ui-slider-handle {
+	background: url('../img/pound-slider.png') transparent no-repeat;
+	height: 17px;
+	width: 17px;
+	border: none;
+	cursor: move;
+	margin-left: -0.4em;
+}
+
+.wdmmg-slider div#ticks {
+	font-size: 90%;
+	margin-top: 5px;
+}
+
+.wdmmg-slider div.tick-min {
+	float: left;
+	margin-left: -5px;
+}
+
+.wdmmg-slider div.tick-max {
+	float: right;
+	margin-right: -15px;
+}
+
+/** Tiers */
+
+.db-tier {
+	width: 100%;
+	margin: 1em 0 0 0;
+}
+
+.db-area-row {
+	overflow: hidden;
+	margin: 0;
+}
+
+.db-area-col {
+	cursor: pointer;
+	margin: 0;
+	text-align: center;
+}
+
+.db-area-col.active {
+	color: #830242;
+	font-weight: bold;
+}
+
+.db-area-title h3 {
+	font-size: 1em;
+	height: 4em;
+}
+
+.db-area-col .db-area-icon {
+	height: 5em;
+	border-right: 1px solid #fff;
+	background: #ddd;
+}
+
+.db-area-col.active .db-area-icon {
+	background: rgba(131, 2, 66, 0.1);
+}
+
