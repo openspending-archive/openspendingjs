@@ -11,6 +11,8 @@ WDMMG.PopupBox = function () {
     self.$elem.appendTo(document.body)
     // Draggable from title bar
     self.$elem.draggable({ handle: '.head' })
+    // Resizable
+    self.$elem.resizable()
     // Close on click of cross
     self.$elem.delegate('.close', 'click', function () {
       self.hide()
