@@ -12,9 +12,10 @@
   </script>
   <script type="text/javascript" src="callbacks.js"></script>
   <link rel="stylesheet" type="text/css" href="http://localhost/dev/web/wdmmg-wp-theme/style.css">
+  <link rel="stylesheet" type="text/css" href="http://wordpress/wp3.0/wp-content/themes/wdmmg/style.css">
   <style type="text/css">
-    #dashboard-intro {
-      float: left;
+    #nav {
+      display: none;
     }
   </style>
 </head>
@@ -109,9 +110,11 @@
       <div id="dashboard-flash-wrapper">
         <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="wdmmg">
           <param name="movie" value="main.swf" />
+          <param name="wmode" value="opaque" />
           <param name="flashvars" value="assets=flash/"/>
           <!--[if !IE]>-->
           <object type="application/x-shockwave-flash" data="main.swf" width="100%" height="100%">
+          <param name="wmode" value="opaque" />
           <param name="flashvars" value="assets=flash/"/>
           <!--<![endif]-->
             <a href="http://www.adobe.com/go/getflashplayer">
