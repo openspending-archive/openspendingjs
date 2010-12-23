@@ -51,5 +51,7 @@
 							  "prev-button":{"color":"0xffffff", "font":{"color":"0xffffff"}}},
 		"daily-bread":{"background":"0xffffff", "font":{"color":"0x000000"}, "slider":{"font":{"color":"0x000000"}}, "select":{}, "salary":{"title":{}, "value":{"font":{"color":"0x8d1d4a"}}}, "tax":{"title":{}, "value":{"font":{"color":"0x8d1d4a"}}}},
 		"comparatron-a":{"background":"0x333333", "title":{"font":{"color":"0xffffff", "size":"18"}}}
-	}
+	},
+	"currencyPrefix":"£",
+	"currencySuffix":""
 }

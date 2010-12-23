@@ -1,0 +1,278 @@
+
+Build dependencies:
+
+Adobe corelib: https://github.com/mikechambers/as3corelib
+AS3 data structures: http://lab.polygonal.de/ds/
+PureMVC: http://trac.puremvc.org/PureMVC_AS3/
+TweenMax: https://www.greensock.com/tweenmax/
+Flare: http://flare.prefuse.org/
+SWFAddress: http://www.asual.com/swfaddress/
+
+In addition, the HTML/Javascript environment makes use of swfobject
+(http://code.google.com/p/swfobject/).
+
+The build environment is set up for Flex Builder. It should be
+relatively straightforward to get everything working using
+Adobe's command-line SDK.
+
+
+
+PureMVC
+=======
+
+PureMVC is the glue that holds the application together.
+
+PureMVC nomenclature is a little different from standard MVC.
+Views are still the actual components that draw on the glass.
+However, in PureMVC, models are called Proxies, and controllers
+are called Mediators.
+
+Views generate events which are picked up by mediators.
+Mediators then call proxies to change/retrieve state.
+When proxy states change, they send notifications which
+are picked up by mediators, which then update views
+accordingly.
+
+The facade is responsible for routing notifications around
+the system. Mediators need to know about their proxies and
+views, but views and proxies don't need to know about each
+other.
+
+The remaining PureMVC class is the Command. This is a way
+to package up application logic into a self-contained way
+that coordinates the work of other objects. Commands are
+linked to notifications.
+
+All proxies and mediators are effectively singletons, ie,
+we don't create multiple copies of them.
+
+
+Source tree
+===========
+
+charts				- charting code
+charts/bubblechart	- bubble chart
+charts/include		- AS3 source for MXML components
+commands			- application Commands
+components			- various UI components
+components/include	- AS3 source for MXML components
+data				- data handling
+events				- application event classes
+include				- AS3 source for WDMMG component
+mediators			- application Mediators
+proxies				- application Proxies
+uk					- legacy UK/COFOG definitions
+views				- individual views
+views/commands		- view commands
+views/components	- view subcomponents
+views/events		- view event classes
+views/include		- AS3 source for view components
+views/mediators		- view Mediators
+views/proxies		- view Proxies
+
+
+Startup
+=======
+
+The toplevel main.mxml simply loads the WDMMG component from
+com/iconomical/wdmmg. The main role of WDMMG is to provide
+an overall screen layout, and to start up the application
+by creating the facade, WDMMGFacade. Most of the facade's
+job is done in the Facade superclass. The WDMMGFacade itself is
+used to register and call the initial application-specific
+StartupCommand.
+
+The surrounding HTML must pass an 'assets' parameter to the
+application on startup. This is read by StartupCommand,
+and tells the application where to load all other asset
+files, including the main dashboard-config.json file.
+
+StartupCommand then creates a number of startup proxies,
+followed by the application mediator.
+
+The main application mediator is WDMMGAppMediator. Its primary
+job is to organise the startup sequence, and initialise
+the interface once all config files and assets have been
+loaded. It waits until it has received notifications from
+the startup proxies, then executes InitialiseInterface.
+
+
+Config
+======
+
+ConfigProxy loads the dashboard-config file, and provides
+access to the config data.
+
+
+
+
+Data
+====
+
+Apart from the long-term trends view, all data comes from
+the data store.
+
+Data query specification is parameterised through the
+config file.
+
+Currently, COFOG per-capita data by region is hardwired.
+This is the only request where customised post-processing
+is done, and until we have further examples, we can't
+decide how to parameterise this.
+
+
+User interface assets
+---------------------
+
+Graphical assets are loaded through WDMMGAssetsProxy and
+WDMMGAssetsProxy2, which are wrappers for WDMMGAssets
+and WDMMGAssets2. Some older code might bypass the proxies.
+
+
+Views
+=====
+
+Each separate screen is a view, and they all live in the views
+subdirectory.
+
+DailyBreadView: daily bread
+LongTermFunctionalView: long term trends
+LongTermSubfunctionalView: uk-wide bubble chart
+NationalFunctionalView: nations stacked chart
+NationalSubfunctionalView: nations bubble chart
+RegionsComparisonView: comparatron
+RegionsFunctionalView: regional overview
+RegionsSubfunctionsView: regional subfunctions
+
+Each view has an MXML file, a proxy, and a mediator. MXML files use
+source files from the include subdirectory.
+
+
+Views are brought onto the screen by sending the appropriate
+notification. This results in a Command being run - these are
+all in the views/commands directory.
+
+CurrentViewProxy keeps track which view is current. Each change-view
+command works by changing the CurrentViewProxy state. CurrentViewProxy
+then issues a notification, which is picked up by WDMMGViewsMediator.
+
+WDMMGViewsMediator does the actual work of removing the old view
+and organising the new one.
+
+
+Javascript interface
+====================
+
+The application provides an API to allow it to be
+controlled through Javascript.
+
+changeView(viewName, params)
+----------------------------
+
+This allows the current view to be changed. Parameters can
+also be provided.
+
+long-term:
+	functionSpending (actual/real/gdp)
+	longTermSpending (actual/real/gdp)
+
+uk-bubble-chart:
+	focus (spending code, eg, 01.1 in cofog)
+	year (year text, eg, 2007-2008)
+
+national-trends:
+	region (country names, spaces replaced with '-', entire uk is 'uk')
+	focus (spending code)
+
+national-bubble-chart:
+	focus (spending code)
+	region (country names, spaces replaced with '-', entire uk is 'uk')
+	year
+
+regional-overview:
+	spending (indexed/per_capita/actual)
+	region (cofog region names, spaces replaced with '-')
+	year
+	filter (comma separated list of top-level spending codes)
+
+regional-drilldown:
+	spending (actual/per_capita)
+	focus (spending code)
+	year
+
+daily-bread:
+	income
+	code (toplevel classification code)
+	interesting (array of classification codes)
+
+comparatron-a:
+	region1
+	region2
+	year
+
+
+removeHeader()
+--------------
+
+Remove the header components.
+
+
+removeFooter()
+--------------
+
+Remove the footer components.
+
+
+disableUrls()
+-------------
+
+Prevent the application from rewriting URLs as the
+view is changed.
+
+
+wdmmgInit()
+-----------
+
+Called by the application when it is starting up.
+removeHeader(), removeFooter() and disableUrls()
+can be called here, but not changeView().
+
+
+wdmmgReady()
+------------
+
+Called by the application when it is fully initialised,
+ie, when the interface can be modified. changeView()
+should not be called before wdmmgReady() is received.
+
+
+wdmmgInfobox(code, classificationName, link)
+--------------------------------------------
+
+Called by the application when the user wishes to see
+more information on an item, and 'infoboxDisabled' has
+been set to true in the config file.
+
+
+wdmmgCallback(viewName, params)
+-------------------------------
+
+Called by the application when a view changes. viewName
+and params correspond to the changeView parameters.
+
+
+wdmmgHelp(viewName, params)
+---------------------------
+
+Called by the application when the user clicks on a help button.
+
+
+
+
+Caveats
+=======
+
+Many things are not ideal. The project started as a very quick
+and dirty prototype based around a non-homogeneous data set,
+and there has been little opportunity to revisit or
+re-architecture.
