@@ -240,7 +240,7 @@ WDMMG.explorer.getNodes = function (nodeId, depth) {
 	var nodes =
 		dom.root(jsonTree.name)
 			.sort(function(a, b) {
-				if (a.nodeValue && a.nodeValue.value) {
+				if (a.nodeValue && a.nodeValue.value && b.nodeValue) {
 					return pv.naturalOrder(b.nodeValue.value, a.nodeValue.value)
 				} else {
 					return pv.naturalOrder(b.nodeValue, a.nodeValue);
