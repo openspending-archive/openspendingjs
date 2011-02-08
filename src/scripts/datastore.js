@@ -1,77 +1,72 @@
-(function() {
+var WDMMG = WDMMG || {};
 /*
-	Abstract the WDMMG data store (accessed via its api).
+    Abstract the WDMMG data store (accessed via its api).
+    Sample use:
+    
+    var datastore = WDMMG.Datastore(other_config);
+    datastore.list("entries", function(data){...});
+    datastore.listEntries(function(data){...});
+    datastore.filterDataset({key: value, foo: bar}, function(data){...});
+    
 */
 
-// TODO: move this somewhere common for all code
-this.WDMMG = {};
+WDMMG.Datastore = (function($){
+    var defaultConfig = {
+            // dataStoreApi: 'http://data.wheredoesmymoneygo.org/api',
+            'endpoint': 'http://localhost:5000/'
+    };
+    return function(customConfig){
+        var breakdown = {}
+            , keys = {}
+            , resources = ["Entry", "Entity", "Classifier", "Dataset"]
+            , resourceOperations = ["list", "get", "filter", "distinct"]
+            , CLB = "?callback=?"
+            ;
+        
+        var d = {
+            config: customConfig || defaultConfig
+            , list: function(resource, callback){
+                $.getJSON(this.config.endpoint+resource+CLB, callback);
+            }
+            
+            , get: function(resource, objectId, callback){
+                $.getJSON(this.config.endpoint+resource+"/"+objectId+CLB, callback);
+            }
+            , filter: function(resource, filters, callback){
+                $.getJSON(this.config.endpoint+resource+CLB, filters, callback);
+            }
+            , distinct: function(resource, key, callback){
+                $.getJSON(this.config.endpoint+"schema/"+resource+"/domain/"+key+CLB, callback);
+            }
+            , aggregate: function(slice, breakdownKeys, callback) {
+                var breakdown = {"slice": slice}
+                    , keys = [];
+                if (breakdownKeys){
+                    keys = breakdownKeys.slice();
+                }
+                // sort the keys as order does not matter for aggregation
+                // canonical string for cache?
+                keys.sort();
 
-this.WDMMG.datastore = {
-	config: {
-		dataStoreApi: 'http://data.wheredoesmymoneygo.org/api',
-	},
-
-	'breakdown': {
-	},
-	'keys': {
-	},
-
-	getAggregate: function(aggregateSpec) {
-		return this.breakdown[this.breakdownIdentifierString(aggregateSpec)];
-	},
-
-	breakdownIdentifierString: function(breakdownIdentifier) {
-		var out = 'slice=' + breakdownIdentifier.dataset;
-		// deep copy
-		var keys = [].concat(breakdownIdentifier.breakdownKeys? breakdownIdentifier.breakdownKeys : []);
-		// sort the keys as order does not matter for aggregation
-		keys.sort();
-		for(var i in keys) {
-			out += '&breakdown-' + keys[i] + '=yes';
-		}
-		return out;
-	},
-	
-	apiUrl: function(breakdownIdentifier) {
-		var api_url = this.config.dataStoreApi + '/aggregate?' + aggregateString + '&callback=?';
-	},
-
-	loadData: function(aggregateSpec, callback) {
-		var aggregateString = this.breakdownIdentifierString(aggregateSpec);
-		// already have a cached value
-		if(aggregateString in this.breakdown) {
-			callback();
-		} else {
-            var self = this;
-			var api_url = this.config.dataStoreApi + '/aggregate?' + aggregateString + '&callback=?';
-			$.getJSON(api_url, function(data) {
-				self.breakdown[aggregateString] = data;
-				// need to do work to ensure we only call render after *all* data loaded
-				var done = data.metadata.axes.length; // number of total requests
-				$.each(data.metadata.axes, function(i,key) {
-					var api_url = self.config.dataStoreApi + '/rest/key/' + key + '?callback=?';
-					$.getJSON(api_url, function(data) {
-						self.keys[key] = data['enumeration_values'];
-						done -= 1;
-						if(done == 0) {
-							callback();
-						}
-					});
-				});
-			});
-		}
-	}
-};
-
-if (DEBUG) {
-	WDMMG.datastore.breakdown['slice=cra&breakdown-from=yes&breakdown-region=yes'] = dept_region;
-	// TODO: make this generic ...
-	WDMMG.datastore.keys['from'] = key_from['enumeration_values'];
-	WDMMG.datastore.keys['region'] = key_region['enumeration_values'];
-
-	WDMMG.datastore.breakdown['slice=cra&breakdown-cofog1=yes&breakdown-cofog2=yes'] = breakdown_cofog1_cofog2;
-	WDMMG.datastore.keys['cofog1'] = key_cofog1['enumeration_values'];
-	WDMMG.datastore.keys['cofog2'] = key_cofog2['enumeration_values'];
-}
-
-})();
+                for (var i=0; i< keys.length; i++){
+                    breakdown["breakdown-"+keys[i]] = "yes";
+                }
+                // probably better API URL:
+                // $.getJSON(this.config+resource+"/aggregate"+CLB, breakdown, callback);
+                $.getJSON(this.config.endpoint + "api/aggregate"+CLB, breakdown, callback);
+            }
+        };
+        
+        /* Curry fancy shortcut methods like getEntry, filterClassifier etc. */
+        for(var i=0; i<resources.length; i++){
+            for (var j=0; j<resourceOperations.length; j++){
+                (function(resource, operation){
+                d[operation+resource] = function(){
+                    return d[operation].apply(d, [resource.toLowerCase()].concat(Array.prototype.slice.call(arguments)));
+                };
+                }(resources[i], resourceOperations[j]));
+            }
+        }
+        return d;
+    };
+}(jQuery));
