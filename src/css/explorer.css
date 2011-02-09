@@ -5,7 +5,7 @@ body {
 #vis {
 }
 
-#fig {
+.fig {
   width: 75%;
   min-width: 300px;
   margin: auto;
@@ -38,11 +38,11 @@ div#controls {
   top: -0.45em;
 }
 
-div#data #data-table {
+div#data .data-table {
   font-size: 70%;
 }
 
-div#data #data-json {
+div#data .data-json {
   display: block;
   font-size: 70%;
   width: 90%;
