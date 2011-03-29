@@ -28,9 +28,23 @@ ColDisplayTypes['growth']=2;
 ColDisplayTypes['inflation']=2;
 ColDisplayTypes['deficitpgdp']=2;
 // number of alternative models to be loaded
-var ExpectedResponses=3;
+var ExpectedResponses=5;
 var BudgetConfig = {
 	models: [
+		{
+			'title': 'Model 5',
+			'notes': '2011 March pre-budget',
+			'columns': _COLS,
+			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od8/public/values?alt=json-in-script&callback=?',
+			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=6'
+		},
+		{
+			'title': 'Model 4',
+			'notes': '2010 November statement',
+			'columns': _COLS,
+			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/odb/public/values?alt=json-in-script&callback=?',
+			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=5'
+		},
 		{
 			'title': 'Model 3',
 			'notes': '2010 June post-budget',
@@ -59,5 +73,6 @@ if (DEBUG) {
 	BudgetConfig.models[0].spreadsheet_url = 'json-budgetizer-1.js';
 	BudgetConfig.models[1].spreadsheet_url = 'json-budgetizer-2.js';
 	BudgetConfig.models[2].spreadsheet_url = 'json-budgetizer-3.js';
+	BudgetConfig.models[3].spreadsheet_url = 'json-budgetizer-4.js';
 }
 
