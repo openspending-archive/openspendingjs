@@ -16,31 +16,38 @@ WDMMG.Datastore = (function($){
             'endpoint': 'http://localhost:5000/'
     };
     return function(customConfig){
-        var breakdown = {}
-            , keys = {}
-            , resources = ["Entry", "Entity", "Classifier", "Dataset"]
-            , resourceOperations = ["list", "get", "filter", "distinct"]
-            , CLB = "?callback=?"
-            ;
+        var breakdown = {},
+            keys = {},
+            resources = ["Entry", "Entity", "Classifier", "Dataset"],
+            resourceOperations = ["list", "get", "filter", "distinct"],
+            CLB = "?callback=?";
         
         var d = {
-            config: customConfig || defaultConfig
-            , list: function(resource, callback){
-                $.getJSON(this.config.endpoint+resource+CLB, callback);
-            }
-            
-            , get: function(resource, objectId, callback){
-                $.getJSON(this.config.endpoint+resource+"/"+objectId+CLB, callback);
-            }
-            , filter: function(resource, filters, callback){
-                $.getJSON(this.config.endpoint+resource+CLB, filters, callback);
-            }
-            , distinct: function(resource, key, callback){
-                $.getJSON(this.config.endpoint+"schema/"+resource+"/domain/"+key+CLB, callback);
-            }
-            , aggregate: function(slice, breakdownKeys, callback) {
-                var breakdown = {"slice": slice}
-                    , keys = [];
+            getData: function(path, data, callback){
+                return $.ajax({
+                  url: this.config.endpoint + path + CLB,
+                  dataType: 'json',
+                  data: data,
+                  success: callback,
+                  cache: true
+                });
+            },
+            config: customConfig || defaultConfig,
+            list: function(resource, callback){
+                this.getData(resource, {}, callback);
+            },
+            get: function(resource, objectId, callback){
+                this.getData(resource + "/" + objectId, {}, callback);
+            },
+            filter: function(resource, filters, callback){
+                this.getData(resource, filters, callback);
+            },
+            distinct: function(resource, key, filters, callback){
+                this.getData(resource + "/distinct/" + key, filters, callback);
+            },
+            aggregate: function(slice, breakdownKeys, callback) {
+                var breakdown = {"slice": slice},
+                    keys = [];
                 if (breakdownKeys){
                     keys = breakdownKeys.slice();
                 }
@@ -53,7 +60,7 @@ WDMMG.Datastore = (function($){
                 }
                 // probably better API URL:
                 // $.getJSON(this.config+resource+"/aggregate"+CLB, breakdown, callback);
-                $.getJSON(this.config.endpoint + "api/aggregate"+CLB, breakdown, callback);
+                this.getData("api/aggregate", breakdown, callback);
             }
         };
         
@@ -61,9 +68,9 @@ WDMMG.Datastore = (function($){
         for(var i=0; i<resources.length; i++){
             for (var j=0; j<resourceOperations.length; j++){
                 (function(resource, operation){
-                d[operation+resource] = function(){
-                    return d[operation].apply(d, [resource.toLowerCase()].concat(Array.prototype.slice.call(arguments)));
-                };
+                    d[operation+resource] = function(){
+                        return d[operation].apply(d, [resource.toLowerCase()].concat(Array.prototype.slice.call(arguments)));
+                    };
                 }(resources[i], resourceOperations[j]));
             }
         }
