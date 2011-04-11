@@ -1,0 +1,23 @@
+<html>
+<head>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/raphael.js"></script>
+	<script type="text/javascript" src="js/vis4.js"></script>
+	<script type="text/javascript" src="js/Tween.js"></script>
+	<script type="text/javascript" src="js/bubblechart.js"></script>
+	<style type="text/css">
+
+	html, body { background: #eee; margin: 0; height: 100%; width: 100%; overflow: hidden; padding: 0; }
+	#bubble-chart-wrapper { width: 700px; height: 700px;  }
+	#bubble-chart { background: #fff; margin: 20px; border: 3px solid #dedede; height: 90%; }
+	</style>
+	<script type="text/javascript">
+		var bubbleChart = new OSBubbleChart('#bubble-chart', 'data/example-tree-2.json');
+	</script>
+</head>
+<body>
+	<div id="bubble-chart-wrapper">
+		<div id="bubble-chart"></div>
+	</div>
+</body>
+</html>
