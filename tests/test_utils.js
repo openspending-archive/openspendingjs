@@ -1,6 +1,6 @@
 module('utils');
 
-test('numberAsString', function() {
+test('formatNumber', function() {
 	var testset = [
 		[9000, '9k'],
 		[9000000, '9m'],
@@ -9,7 +9,7 @@ test('numberAsString', function() {
 		[-9000000, '-9m'],
 	];
 	for(var i in testset) {
-		equals(numberAsString(testset[i][0]), testset[i][1]);
+		equals(OpenSpending.Utils.formatAmount(testset[i][0]), testset[i][1]);
 	}
 });
 
