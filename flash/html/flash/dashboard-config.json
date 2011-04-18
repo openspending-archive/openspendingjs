@@ -1,5 +1,5 @@
 {
-	"dataStore":"http://data.wheredoesmymoneygo.org/",
+	"dataStore":"http://cra.wheredoesmymoneygo.org/",
 	"mainSite":"http://www.wheredoesmymoneygo.org/",
 	"commentsLocation":"http://www.wheredoesmymoneygo.org/comments/dashboard/?page=",
 	"infoboxDisabled":true,
