@@ -1,4 +1,4 @@
-WDMMG = "WDMMG" in window ? WDMMG : {}
+OpenSpending = "OpenSpending" in window ? OpenSpending : {}
 
 ;(function ($) {
 
@@ -23,7 +23,7 @@ var formatCurrency = function (val, prec, sym, dec, sep) {
   return str
 }
 
-WDMMG.DailyBread = function (elem) {
+OpenSpending.DailyBread = function (elem) {
   var self = this
 
   this.$e = $(elem)
@@ -192,7 +192,7 @@ data = [ [ "Social Protection",                0.000969904666453826, [ [ "Old Ag
        ]
 
 $(function () {
-  var db = new WDMMG.DailyBread($('#dailybread'))
+  var db = new OpenSpending.DailyBread($('#dailybread'))
   db.setData(data)
   db.draw()
 })
