@@ -23,6 +23,7 @@
   <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/Parameter.js"></script>
   <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/ParameterStore.js"></script>
   <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/AbstractFacetWidget.js"></script>
   <script type="text/javascript" src="../../lib/vendor/ajax-solr/widgets/jquery/PagerWidget.js"></script>
   <!-- /Vendor Libraries -->
 
@@ -39,6 +40,23 @@
 .pager ul li {
   display: inline;
   padding-left: 5px;
+}
+
+.search-navigator {
+  margin-bottom: 20px;
+}
+
+.facets a {
+  margin-right: 10px;
+}
+
+.search-navigator .filters-current {
+  float: right;
+  width: 300px;
+}
+
+.search-navigator .form {
+  margin-right: 320px;
 }
   </style>
 </head>
@@ -58,10 +76,22 @@
           <!-- You will also need the jquery templates below -->
           <div class="browser">
             <div class="search-navigator">
-              <form>
-                <input name="supplier" type="text" value="" placeholder="Supplier e.g. Atos ..." />
-                <button type="submit" name="filter">Filter &raquo;</button>
-              </form>
+              <div class="filters-current">
+                <h2>Filters</h2>
+                <div class="list">
+                </div>
+              </div>
+              <div class="form">
+                <h2>Search</h2>
+                <form>
+                  <input name="supplier" type="text" value="" placeholder="Supplier e.g. Atos ..." />
+                  <button type="submit" name="filter">Search &raquo;</button>
+                </form>
+                
+                <div class="facets">
+                  <div class="department-facet"></div>
+                </div>
+              </div>
             </div>
 
             <div class="results">

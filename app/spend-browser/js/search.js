@@ -74,6 +74,16 @@ OpenSpending.Search = (function($, my) {
         target: '.pager'
       })
     );
+    Manager.addWidget(new my.DropDownFacetWidget({
+      id: 'department',
+      target: '.department-facet',
+      field: 'from.label_str'
+      })
+    );
+    Manager.addWidget(new my.CurrentSearchWidget({
+      id: 'currentsearch',
+      target: '.search-navigator .filters-current .list',
+    }));
     Manager.init();
     // default search query - all records
     // Manager.store.addByValue('q', '*:*');
@@ -145,6 +155,81 @@ OpenSpending.Search = (function($, my) {
           });
         $(this.target).append(res);
       }
+    }
+  });
+
+  my.DropDownFacetWidget = AjaxSolr.AbstractFacetWidget.extend({
+    afterRequest: function() {
+      if (this.manager.response.facet_counts.facet_fields[this.field] === undefined) {
+          $(this.target).html('No items found');
+          return;
+        }
+
+      var maxCount = 0;
+      var objectedItems = [];
+      for (var facet in this.manager.response.facet_counts.facet_fields[this.field]) {
+        var count = parseInt(this.manager.response.facet_counts.facet_fields[this.field][facet]);
+        objectedItems.push({ facet: facet, count: count });
+      }
+      objectedItems.sort(function (a, b) {
+        return a.facet < b.facet ? -1 : 1;
+      });
+
+      $(this.target).empty();
+      var _t = $(this.target);
+      _t.append('<h4>Filter by Department</h4>');
+      var select = $('<select name="department"></select>');
+      var _tmpl = '<option value="${facet}">${facet} (${count})</option>';
+      var out = $.tmpl(_tmpl, objectedItems);
+      select.append(out);
+      _t.append(select);
+      var self = this;
+      select.change(function(e) {
+        meth = self.multivalue ? 'add' : 'set';
+        var value = $(e.target).attr('value');
+        if (self[meth].call(self, value)) {
+          self.manager.doRequest(0);
+        }
+      });
+    }
+  });
+
+  my.CurrentSearchWidget =  AjaxSolr.AbstractWidget.extend({
+    afterRequest: function () {
+      var self = this;
+      var links = [];
+
+      var fq = this.manager.store.values('fq');
+
+      var data = $.map(fq, function(facet, idx) {
+        return {
+          facet: facet,
+          name: facet.split(':')[1]
+          };
+      });
+      var tmpl = '<a href="#${name}" facet="${facet}">[x] ${name}</a>';
+      $(this.target).html($.tmpl(tmpl, data));
+      if (fq.length == 0) {
+        $(this.target).html('<div>No filters applied.</div>');
+      }
+      var self = this;
+      $('.filters-current .list a').click(function(e) {
+        e.preventDefault();
+        facet = $(e.target).attr('facet');
+        if (self.manager.store.removeByValue('fq', facet)) {
+          self.manager.doRequest(0);
+        }
+      });
+    },
+
+    removeFacet: function (facet) {
+      var self = this;
+      return function () {
+        if (self.manager.store.removeByValue('fq', facet)) {
+          self.manager.doRequest(0);
+        }
+        return false;
+      };
     }
   });
 
