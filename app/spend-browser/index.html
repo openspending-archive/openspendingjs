@@ -28,6 +28,19 @@
 
   <script type="text/javascript" src="../../lib/utils/utils.js"></script>
   <script type="text/javascript" src="js/search.js"></script>
+
+  <style type="text/css">
+.pager ul {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.pager ul li {
+  display: inline;
+  padding-left: 5px;
+}
+  </style>
 </head>
 <body>
   <!-- All these initial divs are for OpenSpending Html -->
@@ -111,7 +124,8 @@
       <tfoot>
         <tr>
           <th colspan="5">
-            Pager or link to main site
+            <div class="pager">
+            </div>
           </th>
         </tr>
       </tfoot>
