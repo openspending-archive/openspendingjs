@@ -28,7 +28,18 @@
   <!-- /Vendor Libraries -->
 
   <script type="text/javascript" src="../../lib/utils/utils.js"></script>
+  <script type="text/javascript" src="../../lib/datastore.js"></script>
   <script type="text/javascript" src="js/search.js"></script>
+
+  <script type="text/javascript">
+jQuery(document).ready(function($) {
+  var config = {
+    endpoint: 'http://uat.openspending.org/',
+    target: '.browser'
+  };
+  OpenSpending.App.SpendBrowser.initialize(config);
+});
+  </script>
 
   <style type="text/css">
 .pager ul {
