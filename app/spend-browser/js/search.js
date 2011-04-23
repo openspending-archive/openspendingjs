@@ -1,5 +1,10 @@
 /**********************************************************
   Javascript library for OpenSpending search.
+
+OpenSpending's search interface mimics that of Solr, see
+http://openspending.org/api.
+
+This JS library's API is therefore also similar to Solr.
 ***********************************************************/
 
 
@@ -12,11 +17,34 @@
 
     $('form').submit(function(e) {
       e.preventDefault();
+
+      // Get data from our form and normalize
       var f = $(e.target);
       var to = f.find('input[name=supplier]').val();
       to = to.toLowerCase();
-      OpenSpending.Search.searchTo(to);
+
+      // Perform the search
+      // Set up our search parameters
+      // These are as for solr with exception of
+      // qparams which is a convenient way of searching by field in data
+      // (internally we add these to 'q' parameter)
+      var params = {
+        q: '',
+        qparams: {
+          to: '*' + to + '*',
+          dataset: 'departments'
+        },
+        sort: 'amount desc',
+        facet: true,
+        'facet.field': [ 'from.label_str' ],
+        'facet.limit': 20,
+        'facet.mincount': 1,
+        'json.nl': 'map'
+      };
+      OpenSpending.Search.search(params);
     });
+
+    // start us off with a simple search
     $('form').submit();
   });
 })(jQuery);
@@ -69,12 +97,20 @@ OpenSpending.Search = (function($, my) {
     // Manager.doRequest();
   }
 
-	my.searchTo = function(to) {
-    var q = 'to:*' + to + '* dataset:departments'
-    Manager.store.addByValue('q', q);
-    Manager.store.addByValue('sore', 'amount desc');
+  my.search = function(params) {
+    _params = $.extend(true, {}, params);
+    _params.q = _params.q || '';
+    if ('qparams' in _params) {
+      for (var k in _params.qparams) {
+        _params.q += ' ' + k + ':' + _params.qparams[k];
+      }
+    }
+    delete _params['qparams'];
+    for (var name in _params) {
+      Manager.store.addByValue(name, _params[name]);
+    }
     Manager.doRequest();
-	};
+  };
 
   my.entryUrl = function(entry) {
     if ('name' in entry) {
@@ -83,7 +119,7 @@ OpenSpending.Search = (function($, my) {
       var entry_id = entry._id;
     }
     return my._config.endpoint + 'entry/' + entry_id;
-  }
+  };
 
   my.ResultWidget = AjaxSolr.AbstractWidget.extend({
     init: function () {
