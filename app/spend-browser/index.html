@@ -4,12 +4,14 @@
   <title>Spending Browser</title>
 
   <!-- OpenSpending Styles: replace these if you wish. -->
-  <link rel="stylesheet" href="http://openspending.org/css/reset.css" /> 
   <script src="http://openspending.org/js/libs/modernizr-1.6.min.js"></script>
+  <link rel="stylesheet" href="http://openspending.org/css/reset.css" /> 
   <link rel="stylesheet" href="http://openspending.org/css/blueprint/screen.css" type="text/css" media="screen, projection" /> 
   <link rel="stylesheet" href="http://openspending.org/css/blueprint/print.css" type="text/css" media="print" /> 
   <!--[if lt IE 8]><link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
   <link rel="stylesheet" href="http://openspending.org/css/style.css" /> 
+    <!-- local mods/additions -->
+  <link rel="stylesheet" href="css/style.css" /> 
   <!-- /OpenSpending Styles -->
 
   <!-- Vendor Libraries -->
@@ -35,41 +37,13 @@
 jQuery(document).ready(function($) {
   var config = {
     endpoint: 'http://uat.openspending.org/',
-    target: '.browser'
+    target: '.browser',
+    dataset: 'departments'
   };
-  OpenSpending.App.SpendBrowser.initialize(config);
+  var browser = new OpenSpending.App.SpendBrowser(config);
+  browser.initialize();
 });
   </script>
-
-  <style type="text/css">
-.pager ul {
-  list-style: none;
-  margin: 0;
-  padding-left: 0;
-}
-
-.pager ul li {
-  display: inline;
-  padding-left: 5px;
-}
-
-.search-navigator {
-  margin-bottom: 20px;
-}
-
-.facets a {
-  margin-right: 10px;
-}
-
-.search-navigator .filters-current {
-  float: right;
-  width: 300px;
-}
-
-.search-navigator .form {
-  margin-right: 320px;
-}
-  </style>
 </head>
 <body>
   <!-- All these initial divs are for OpenSpending Html -->
@@ -82,40 +56,8 @@ jQuery(document).ready(function($) {
       <div id="main">
         <div id="content">
 
-          <!-- The Search HTML -->
-          <!-- Copy and paste this in your own app -->
-          <!-- You will also need the jquery templates below -->
-          <div class="browser">
-            <div class="search-navigator">
-              <div class="filters-current">
-                <h2>Filters</h2>
-                <div class="list">
-                </div>
-              </div>
-              <div class="form">
-                <h2>Search</h2>
-                <form>
-                  <input name="supplier" type="text" value="" placeholder="Supplier e.g. Atos ..." />
-                  <button type="submit" name="filter">Search &raquo;</button>
-                </form>
-                
-                <div class="facets">
-                  <div class="department-facet"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="results">
-              <div class="messages">
-              </div>
-              <div class="num-entries">
-                <span>
-                </span>
-              </div>
-              <div class="result-list"></div>
-            </div>
-          </div><!-- /browser -->
-          <!-- /The Search HTML -->
+          <!-- The Element we attach to -->
+          <div class="browser"></div>
 
         </div>
       </div>
@@ -125,53 +67,6 @@ jQuery(document).ready(function($) {
       <p>Created by the Open Knowledge Foundation</p>
     </footer>
   </div>
-
-
-<!-- #########################################
-   jQuery Templates 
--->
-
-<script id="tmpl-entries-list" type="x-jquery-tmpl">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Department</th>
-          <th>Supplier</th>
-          <th class="num">Amount</th>
-          <th>&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{each(index, entry) docs}}
-        <tr>
-          <td>${entry['time.unparsed']}</td>
-          <td>
-            ${entry['from.label']}
-          </td>
-          <td>
-            ${entry['to.label']}
-          </td>
-          <td class="num">
-            ${entry.currency}
-            ${OpenSpending.Utils.formatAmountWithCommas(entry.amount, 2)}
-          </td>
-          <td>
-            <a href="${OpenSpending.Search.entryUrl(entry)}">full entry &raquo;</a>
-          </td>
-        </tr>
-        {{/each}}
-      </tbody>
-      <tfoot>
-        <tr>
-          <th colspan="5">
-            <div class="pager">
-            </div>
-          </th>
-        </tr>
-      </tfoot>
-    </table>
-</script>
 </body>
 </html>
 
