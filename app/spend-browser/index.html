@@ -3,47 +3,66 @@
 <head>
   <title>Spending Browser</title>
 
+  <!-- OpenSpending Styles: replace these if you wish. -->
   <link rel="stylesheet" href="http://openspending.org/css/reset.css" /> 
-  <script src="http://openspending.org/js/libs/modernizr-1.6.min.js"></script> 
+  <script src="http://openspending.org/js/libs/modernizr-1.6.min.js"></script>
   <link rel="stylesheet" href="http://openspending.org/css/blueprint/screen.css" type="text/css" media="screen, projection" /> 
   <link rel="stylesheet" href="http://openspending.org/css/blueprint/print.css" type="text/css" media="print" /> 
   <!--[if lt IE 8]><link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
   <link rel="stylesheet" href="http://openspending.org/css/style.css" /> 
+  <!-- /OpenSpending Styles -->
 
+  <!-- Vendor Libraries -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
+    <!-- /ajax-solr Libraries -->
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/Core.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/AbstractManager.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/managers/Manager.jquery.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/Parameter.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/ParameterStore.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/core/AbstractWidget.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/ajax-solr/widgets/jquery/PagerWidget.js"></script>
+  <!-- /Vendor Libraries -->
+
   <script type="text/javascript" src="../../lib/utils/utils.js"></script>
   <script type="text/javascript" src="js/search.js"></script>
-
-  <style type="text/css">
-
-  </style>
 </head>
-<body class="nav-datset">
+<body>
+  <!-- All these initial divs are for OpenSpending Html -->
   <div id="wrap">
     <div id="page" class="container">
       <header>
-        <h1>Spending Browser Demo</h1>
+        <h1 id="site-title">Spending Browser Demo</h1>
       </header>
 
       <div id="main">
         <div id="content">
-          <div class="search-form">
-            <form>
-              <input name="supplier" type="text" value="Atos" placeholder="Supplier e.g. Atos ..." />
-              <button type="submit" name="filter">Filter &raquo;</button>
-            </form>
-          </div>
-          <div >
-          <div class="results">
-            <div class="num-entries">
-              <span>
-              </span>
+
+          <!-- The Search HTML -->
+          <!-- Copy and paste this in your own app -->
+          <!-- You will also need the jquery templates below -->
+          <div class="browser">
+            <div class="search-navigator">
+              <form>
+                <input name="supplier" type="text" value="Atos" placeholder="Supplier e.g. Atos ..." />
+                <button type="submit" name="filter">Filter &raquo;</button>
+              </form>
             </div>
-            <div id="entries">
+
+            <div class="results">
+              <div class="messages">
+              </div>
+              <div class="num-entries">
+                <span>
+                </span>
+              </div>
+              <div class="result-list"></div>
             </div>
-          </div>
+          </div><!-- /browser -->
+          <!-- /The Search HTML -->
+
         </div>
       </div>
     </div>
@@ -59,7 +78,6 @@
 -->
 
 <script id="tmpl-entries-list" type="x-jquery-tmpl">
-  <div class="entries-list">
     <table>
       <thead>
         <tr>
@@ -98,7 +116,6 @@
         </tr>
       </tfoot>
     </table>
-  </div>
 </script>
 </body>
 </html>
