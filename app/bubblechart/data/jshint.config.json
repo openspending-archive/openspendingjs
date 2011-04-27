@@ -1,6 +1,0 @@
-{
-	"predef": [
-		"jquery", "console"
-	],
-	"undef": true
-}
