@@ -140,7 +140,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 
 			if (node == root) {
 				me.bubbleScale = 1.0;
-				bubble = me.createBubble(node, t, o, 0, 0, node.color);
+				bubble = me.createBubble(node, t, new ns.Vector(o.x, o.y), 0, 0, node.color);
 				me.createRing(t, bubble.origin, 240, l1attr);
 				
 				for (i in children) {
@@ -221,7 +221,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 	};
 	
 	this.createBubble = function(node, t, origin, rad, angle, color) {
-		var me = this, ns = me.ns, bubble = new ns.Bubble(node, me, new ns.Vector(origin.x, origin.y), 0, 0, color);
+		var me = this, ns = me.ns, bubble = new ns.Bubble(node, me, origin, 0, 0, color);
 		me.bubbles.push(bubble);
 		t.$(bubble.origin).x = origin.x;
 		t.$(bubble.origin).y = origin.y;

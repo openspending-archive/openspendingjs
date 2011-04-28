@@ -22,14 +22,15 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	 */
 	this.getXY = function() {
 		var me = this, o = me.origin, a = me.angle, r = me.rad;
-		me.x = o.x + Math.cos(a) * r;
-		me.y = o.y - Math.sin(a) * r;
+		me.pos.x = o.x + Math.cos(a) * r;
+		me.pos.y = o.y - Math.sin(a) * r;
 	};
 	
 	this.init = function() {
 		var me = this;
+		me.pos = new OpenSpendings.BubbleChart.Vector(0,0);
 		me.getXY();
-		me.circle = me.paper.circle(me.x, me.y, me.bubbleRad * me.bc.bubbleScale)
+		me.circle = me.paper.circle(me.pos.x, me.pos.y, me.bubbleRad * me.bc.bubbleScale)
 			.attr({ stroke: false, fill: me.colour });
 		me.dirty = false;
 		$(me.circle.node).click(me.onclick.bind(me));
@@ -37,12 +38,12 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		
 		var showIcon = false; //this.bubbleRad * this.bc.bubbleScale > 30;
 		// create label
-		this.label = me.paper.text(me.x, me.y + (showIcon ? me.bubbleRad * 0.4: 0), utils.formatNumber(me.node.data.amount)+'\n'+me.node.label)
+		this.label = me.paper.text(me.pos.x, me.pos.y + (showIcon ? me.bubbleRad * 0.4: 0), utils.formatNumber(me.node.data.amount)+'\n'+me.node.label)
 			.attr({ 'font-family': 'Graublau,Georgia,serif', fill: '#fff', 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
 		
 		if (showIcon) {
 			me.icon = me.paper.path("M17.081,4.065V3.137c0,0,0.104-0.872-0.881-0.872c-0.928,0-0.891,0.9-0.891,0.9v0.9C4.572,3.925,2.672,15.783,2.672,15.783c1.237-2.98,4.462-2.755,4.462-2.755c4.05,0,4.481,2.681,4.481,2.681c0.984-2.953,4.547-2.662,4.547-2.662c3.769,0,4.509,2.719,4.509,2.719s0.787-2.812,4.557-2.756c3.262,0,4.443,2.7,4.443,2.7v-0.058C29.672,4.348,17.081,4.065,17.081,4.065zM15.328,24.793c0,1.744-1.8,1.801-1.8,1.801c-1.885,0-1.8-1.801-1.8-1.801s0.028-0.928-0.872-0.928c-0.9,0-0.957,0.9-0.957,0.9c0,3.628,3.6,3.572,3.6,3.572c3.6,0,3.572-3.545,3.572-3.545V13.966h-1.744V24.793z")
-				.translate(this.x, this.y).attr({fill: "#fff", stroke: "none"});
+				.translate(me.pos.x, me.pos.y).attr({fill: "#fff", stroke: "none"});
 		}
 		me.initialized = true;
 	};
@@ -53,10 +54,10 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	};
 	
 	this.draw = function() {
-		var me = this, devnull = me.getXY(), ox = me.x, oy = me.y;
-		me.circle.attr({ cx: me.x, cy: me.y, r: me.bubbleRad * me.bc.bubbleScale });
-		me.label.attr({ x: me.x, y: me.y, 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
-		if (me.icon) me.icon.translate(me.x - ox, me.y - oy);
+		var me = this, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
+		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: me.bubbleRad * me.bc.bubbleScale });
+		me.label.attr({ x: me.pos.x, y: me.pos.y, 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
+		if (me.icon) me.icon.translate(me.pos.x - ox, me.pos.y - oy);
 	};
 	
 	this.remove = function() {
