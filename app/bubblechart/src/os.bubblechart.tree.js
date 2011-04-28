@@ -37,8 +37,6 @@ var getTree = function(api_url, dataset, cuts, drilldowns, test_data_path) {
      *  Add a node for each drilldown to the 'nodes' object
      *  Process the nodes to have:
      *  * The summed up amount
-     *  * A parent pointer
-     *  * A pointer to the prev/next sibeling
      *  * A children array
      *  * A color property
      *  * An unique id
@@ -58,34 +56,38 @@ var getTree = function(api_url, dataset, cuts, drilldowns, test_data_path) {
                 node;
             level = level + 1;
             current = entry[drilldown];
-            if(current === undefined) {
+
+            // Don't process the drilldowns further if a
+            // drilldown has no value
+            if(! current) {
                 return;
             }
+
             node = nodes[current.name];
             if(node === undefined) {
+                // Initialize a new node and add it to the parent node
                 node = {id: current.name,
-                       parent: parent,
-                       children: [],
-                       amount: entry.amount,
-                       color: current.color};
+                        children: [],
+                        amount: entry.amount,
+                        label: current.label,
+                        color: current.color,
+                        level: level};
 
-                if (node.color === undefined){
-                    // fixme: set color
-                }
-
-                if (parent.children.length > 0) {
-                    var left_sib = parent.children[parent.children.length - 1];
-                    left_sib.right = node;
-                    node.left = left_sib;
-                }
-                node.parent.children.push(node);
+                parent.children.push(node);
                 nodes[current.name] = node;
 
             } else {
+                // update the ammount for existing nodes.
                 node.amount = node.amount + entry.amount;
             }
-            parent = node;
 
+            // Add the current amount to the root node
+            // to have a total.
+            if(level === 1) {
+                nodes.root.amount = nodes.root.amount + entry.amount;
+            }
+
+            parent = node;
         });
     };
 
@@ -110,12 +112,13 @@ var getTree = function(api_url, dataset, cuts, drilldowns, test_data_path) {
                       color: '#555',
                       amount: 0.0,
                       children: [],
-                      parent: undefined};
+                      level: 0};
 
         entries.forEach(function(entry) {
             processEntry(entry, nodes);
         });
 
+        // sum up the amount for the root node
         tree_root = nodes.root;
     };
 
