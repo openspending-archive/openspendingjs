@@ -21,6 +21,10 @@ do
   cat $f >> $TMPFILE
 done
 
-echo "Minifying JS files"
-uglifyjs -o $OUTFILE $TMPFILE
+if [ "$1" == "debug" ]; then
+  cp $TMPFILE $OUTFILE
+else
+  echo "Minifying JS files"
+  uglifyjs -o $OUTFILE $TMPFILE
+fi
 rm -Rf $TMP
