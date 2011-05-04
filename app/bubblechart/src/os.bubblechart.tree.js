@@ -15,7 +15,7 @@
  * a json sample file for tests.
  **/
 
-var getTree = function(api_url, dataset, cuts, drilldowns, test_data_path) {
+OpenSpendings.BubbleChart.getTree = function(api_url, dataset, cuts, drilldowns, test_data_path) {
 
     //construct the url
     var url = api_url,
