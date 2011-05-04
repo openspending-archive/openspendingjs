@@ -34,12 +34,15 @@ OpenSpending.App.SpendBrowser = (function($) {
         }));
         manager.init();
 
-        $(config.target + ' form').submit(function(e) {
+        var $form = $(config.target + ' form');
+        var $to = $form.find('input[name=recipient]');
+
+        $form.submit(function(e) {
           e.preventDefault();
 
           // Get data from our form and normalize
           var f = $(e.target);
-          var to = f.find('input[name=recipient]').val();
+          var to = $to.val();
           to = to.toLowerCase();
 
           // Perform the search
@@ -62,6 +65,11 @@ OpenSpending.App.SpendBrowser = (function($) {
           };
           OpenSpending.Search.search(params);
         });
+        $(config.target + ' form .clear-search').click(function(e) {
+          e.preventDefault();
+          $to.val('');
+          $form.submit();
+        });
 
         // start us off with a simple search
         $('form').submit();
@@ -78,7 +86,8 @@ OpenSpending.App.SpendBrowser = (function($) {
             <h2>Search</h2> \
             <form> \
               <input name="recipient" type="text" value="" placeholder="Recipient ..." /> \
-              <button type="submit" name="filter">Search &raquo;</button> \
+              <button type="submit" name="search">Search &raquo;</button> \
+              <a href="#" class="clear-search">Clear Search</a> \
             </form> \
              \
             <div class="facets"> \
