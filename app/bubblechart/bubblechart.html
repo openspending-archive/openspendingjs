@@ -4,6 +4,7 @@
 	<script type="text/javascript" src="../../lib/vendor/raphael.js"></script>
 	<script type="text/javascript" src="../../lib/vendor/vis4.js"></script>
 	<script type="text/javascript" src="../../lib/vendor/Tween.js"></script>
+        <script type="text/javascript" src="src/os.bubblechart.tree.js"></script>
 	<script type="text/javascript" src="bubblechart.min.js"></script>
 	<style type="text/css">
 
@@ -12,6 +13,11 @@
 	#bubble-chart { background: #fff; margin: 20px; border: 3px solid #dedede; height: 100%; }
 	</style>
 	<script type="text/javascript">
+          var data = getTree('http://localhost:5000/api', 
+                             'cra', 
+                             ['time.from.year:2009'],
+                             ['cofog1', 'cofog2', 'cofog3'],
+                             'data/example-aggregate.json'); 
 		var bubbleChart = new OpenSpendings.BubbleChart('#bubble-chart', 'data/example-tree-2.json');
 	</script>
 </head>
