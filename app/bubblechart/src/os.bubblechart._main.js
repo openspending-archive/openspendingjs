@@ -10,29 +10,34 @@ OpenSpendings.BubbleChart.Main = function(container) {
 	// load the data, url should be provided 
 	// init the bubbles
 	
-	this.$container = $(container);	
+	var me = this;
 	
-	this.ns = OpenSpendings.BubbleChart;
+	me.$container = $(container);	
 	
-	this.nodesById = {};
+	me.ns = OpenSpendings.BubbleChart;
 	
-	this.bubbles = [];
+	me.nodesById = {};
 	
-	this.bubbleScale = 1;
+	me.bubbles = [];
+	
+	me.bubbleScale = 1;
 	
 	/*
 	 * @public loadData
 	 * 
 	 */
-	this.loadData = function(url) {
+	me.loadData = function(url) {
 		$.ajax({
 			url: url,
 			dataType: 'json',
-			success: this.dataLoaded.bind(this)
+			success: this.setData.bind(this)
 		});
 	};
 	
-	this.dataLoaded = function(data) {
+	/*
+	 * is either called directly or by $.ajax when data json file is loaded
+	 */
+	me.setData = function(data) {
 		var me = this;
 		me.initData(data);
 		me.initPaper();
@@ -55,15 +60,15 @@ OpenSpendings.BubbleChart.Main = function(container) {
 	this.traverse = function(node, index) {
 		var c, child, pc;
 		// set node color
-		if (node.data.level === 0) node.color = '#555';
-		else if (node.data.level == 1) {
+		if (node.level === 0) node.color = '#555';
+		else if (node.level == 1) {
 			pc = node.parent.children;
 			node.color = 'hsb('+(index/pc.length)+',.8, .8)';
 		} else {
 			// inherit color form parent node
 			node.color = node.parent.color;
 		}
-		if (node.data.level > 0) {
+		if (node.level > 0) {
 			pc = node.parent.children;
 			if (pc.length > 1) {	
 				node.left = pc[(index-1+pc.length) % pc.length];
@@ -77,8 +82,8 @@ OpenSpendings.BubbleChart.Main = function(container) {
 			while (this.nodesById.hasOwnProperty(node.id)) {
 				node.id += '_';
 			}
-			this.nodesById[node.id] = node;
-		}
+		} 
+		this.nodesById[node.id] = node;
 		for (c in node.children) {
 			child = node.children[c];
 			child.parent = node;
@@ -145,12 +150,12 @@ OpenSpendings.BubbleChart.Main = function(container) {
 				
 				for (i in children) {
 					c = children[i];
-					childRadSum += a2rad(c.data.amount);
+					childRadSum += a2rad(c.amount);
 				}
 				
 				for (i in children) {
 					c = children[i];
-					da = a2rad(c.data.amount) / childRadSum * twopi;
+					da = a2rad(c.amount) / childRadSum * twopi;
 					ca = oa + da*0.5;
 					oa += da;
 					me.createBubble(c, t, o, 240, ca, c.color);
@@ -162,10 +167,10 @@ OpenSpendings.BubbleChart.Main = function(container) {
 				// just children and me
 			} else {
 			
-				me.bubbleScale = a2rad(root.data.amount) / a2rad(node.data.amount);
+				me.bubbleScale = a2rad(root.amount) / a2rad(node.amount);
 				
 				var sibling, po = new ns.Vector(me.paper.width * 0.5 - 280 - 
-					me.bubbleScale * (a2rad(node.parent.data.amount)+a2rad(node.data.amount)), o.y);
+					me.bubbleScale * (a2rad(node.parent.amount)+a2rad(node.amount)), o.y);
 				// parent
 				bubble = me.createBubble(node.parent, t, po, 0, 0, node.parent.color);
 				me.createRing(t, po, o.x - po.x, l2attr);
@@ -174,15 +179,15 @@ OpenSpendings.BubbleChart.Main = function(container) {
 				// left and right sibling
 				if (node.left) {
 					sibling = node.left;
-					da = (a2rad(sibling.data.amount)*me.bubbleScale - 100)/(twopi*((o.x-po.x)));
+					da = (a2rad(sibling.amount)*me.bubbleScale - 100)/(twopi*((o.x-po.x)));
 					me.createBubble(sibling, t, bubble.origin, o.x - po.x, 
 						0-Math.asin((me.paper.height)*0.5/(o.x-po.x))-da, sibling.color);
 				}
 				if (node.right) {
 					sibling = node.right;
-					da = (a2rad(sibling.data.amount)*me.bubbleScale - 100)/(twopi*((o.x-po.x)));
+					da = (a2rad(sibling.amount)*me.bubbleScale - 100)/(twopi*((o.x-po.x)));
 					me.createBubble(sibling, t, bubble.origin, o.x - po.x, 
-						da+Math.asin((me.paper.height+a2rad(sibling.data.amount)*me.bubbleScale)*0.5/(o.x-po.x)), sibling.color);
+						da+Math.asin((me.paper.height+a2rad(sibling.amount)*me.bubbleScale)*0.5/(o.x-po.x)), sibling.color);
 				}
 				
 				// center
@@ -192,14 +197,14 @@ OpenSpendings.BubbleChart.Main = function(container) {
 				
 				for (i in children) {
 					c = children[i];
-					childRadSum += a2rad(c.data.amount);
+					childRadSum += a2rad(c.amount);
 				}
 	
 				oa -= Math.PI;
 	
 				for (i in children) {
 					c = children[i];
-					da = a2rad(c.data.amount) / childRadSum * twopi;
+					da = a2rad(c.amount) / childRadSum * twopi;
 					ca = oa + da*0.5;
 					oa += da;
 					me.createBubble(c, t, o, 240, ca, node.color);
@@ -262,15 +267,15 @@ OpenSpendings.BubbleChart.Main = function(container) {
 		
 		for (i in root.children) {
 			for (j in root.children[i].children) {
-				l2radsumt += a2rad(root.children[i].children[j].data.amount);
+				l2radsumt += a2rad(root.children[i].children[j].amount);
 			}
 		}
 		
-		//for (i in root.children) l1radsum += a2rad(root.children[i].data.amount);
+		//for (i in root.children) l1radsum += a2rad(root.children[i].amount);
 		
 		var cmpNodes = function(a,b) {
-			if (a.data.amount == b.data.amount) return 0;
-			return a.data.amount > b.data.amount ? -1 : 1;
+			if (a.amount == b.amount) return 0;
+			return a.amount > b.amount ? -1 : 1;
 		};
 		
 		this.innerRing = [];
@@ -286,7 +291,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 			var l2radsum = 0;
 			var node = root.children[i];
 			
-			for (j in node.children) l2radsum += a2rad(node.children[j].data.amount);
+			for (j in node.children) l2radsum += a2rad(node.children[j].amount);
 			
 			da1 = (l2radsum / l2radsumt) * Math.PI * 2;
 			ca1 = l1a + da1*0.5;
@@ -294,7 +299,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 			
 			this.innerRing.push(new OpenSpendings.BubbleChart.Bubble(node, this, origin, l1rad, ca1, col));
 			
-			this.innerLines.push(new OpenSpendings.BubbleChart.Line(this, lcircAttrs, origin, ca1, l1rad + a2rad(node.data.amount), l2rad));
+			this.innerLines.push(new OpenSpendings.BubbleChart.Line(this, lcircAttrs, origin, ca1, l1rad + a2rad(node.amount), l2rad));
 			
 			
 			// cycle through level 2 children
@@ -314,7 +319,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 			for (j in node.children) {
 				
 				var subnode = node.children[j];
-				var brad = OpenSpendings.BubbleChart.amount2rad(subnode.data.amount);
+				var brad = OpenSpendings.BubbleChart.amount2rad(subnode.amount);
 				var barc = Math.atan(brad / l2rad)*2;
 				
 				if (j === 0) {
@@ -331,7 +336,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 				
 				//console.log(j, ca2, barc, cUp, cLow);
 				
-				//da2 = (a2rad(subnode.data.amount) / l2radsum) * tmp; 
+				//da2 = (a2rad(subnode.amount) / l2radsum) * tmp; 
 				
 				//ca2 = l2a + da2 * 0.5;
 				

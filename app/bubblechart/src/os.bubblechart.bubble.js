@@ -15,7 +15,7 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	this.angle = angle;
 	this.colour = colour;
 	this.dirty = true;
-	this.bubbleRad = utils.amount2rad(this.node.data.amount);
+	this.bubbleRad = utils.amount2rad(this.node.amount);
 	
 	/*
 	 * convertes polar coordinates to x,y
@@ -38,7 +38,7 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		
 		var showIcon = false; //this.bubbleRad * this.bc.bubbleScale > 30;
 		// create label
-		this.label = me.paper.text(me.pos.x, me.pos.y + (showIcon ? me.bubbleRad * 0.4: 0), utils.formatNumber(me.node.data.amount)+'\n'+me.node.label)
+		this.label = me.paper.text(me.pos.x, me.pos.y + (showIcon ? me.bubbleRad * 0.4: 0), utils.formatNumber(me.node.amount)+'\n'+me.node.label)
 			.attr({ 'font-family': 'Graublau,Georgia,serif', fill: '#fff', 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
 		
 		if (showIcon) {

@@ -8,7 +8,7 @@ OpenSpendings.BubbleChart.Utils.log = function() {
 };
 
 OpenSpendings.BubbleChart.Utils.amount2rad = function(a) {
-	return Math.pow(a/2300000000, 0.6);
+	return Math.pow(a/200000000, 0.6);
 };
 
 OpenSpendings.BubbleChart.Utils.formatNumber = function(n) {
