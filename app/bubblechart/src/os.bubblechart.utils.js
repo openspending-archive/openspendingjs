@@ -4,11 +4,13 @@
 OpenSpendings.BubbleChart.Utils = {};
 
 OpenSpendings.BubbleChart.Utils.log = function() {
-	if (window.console) console.log.apply(this, arguments);
+	try {
+		if (window.hasOwnProperty('console')) console.log.apply(this, arguments);
+	} catch (e) {}	
 };
 
 OpenSpendings.BubbleChart.Utils.amount2rad = function(a) {
-	return Math.pow(a/200000000, 0.6);
+	return Math.pow(a/150000000, 0.6);
 };
 
 OpenSpendings.BubbleChart.Utils.formatNumber = function(n) {
