@@ -161,9 +161,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 					me.createBubble(c, t, o, 240, ca, c.color);
 
 				}
-				
-				
-				
+
 				// just children and me
 			} else {
 			
@@ -214,8 +212,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 			}
 			
 			utils.log('ready');
-			new ns.SimpleTransitioner().changeLayout(t);
-			utils.log('re');
+			new ns.AnimatedTransitioner().changeLayout(t);
 				
 		} else {
 			utils.log('node '+id+' not found');
@@ -242,7 +239,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 		t.$(ring).rad = rad;
 		return ring;
 	};
-	
+	/*
 	this.quickPrototype = function(root) {
 		
 		var origin = this.origin, // center
@@ -350,12 +347,12 @@ OpenSpendings.BubbleChart.Main = function(container) {
 			l1a += da1;
 		}
 			
-	};
+	};*/
 	
 	/*
 	 * is called either by click on one of the bubbles
 	 * or by url change (later)
-	 */
+	 *
 	this.scrollTo = function(bubble) {
 		var delta = -bubble.angle, i, b, outerRad, ox = this.paper.width * 0.5, 
 			scale, innerRad, ease = TWEEN.Easing.Exponential.EaseOut;
@@ -416,17 +413,11 @@ OpenSpendings.BubbleChart.Main = function(container) {
 		t.$(this.l1Circ).rad = innerRad;
 		t.$(this.l2Circ).rad = outerRad;
 		t.start();
-	};
+	};*/
 	
 	this.loop = function() {
 		TWEEN.update();
 	};
 	
-	this.updateLayout = function() {
-		var curLayout = this.currentLayout;
-		var nextLayout = this.nextLayout;
-		
-		
-	};
 };
 

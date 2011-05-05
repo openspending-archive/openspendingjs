@@ -11,7 +11,7 @@
 OpenSpendings.BubbleChart.SimpleTransitioner = function() {
 	
 	this.changeLayout = function(layout) {
-		console.log("hello", layout);
+
 		var i, o, props, p;
 		for (i in layout.objects) {
 			o = layout.objects[i];
@@ -24,6 +24,29 @@ OpenSpendings.BubbleChart.SimpleTransitioner = function() {
 		}
 	};
 	
+};
+
+OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 	
+	this.changeLayout = function(layout) {
+
+		var i, o, props, p;
+		for (i in layout.objects) {
+			o = layout.objects[i];
+			if (o === undefined || o === null) continue;
+			props = layout.props[i];
+			
+			var tween = new TWEEN.Tween(o), toProps = {};
+			
+			for (p in props) {
+				//o[p] = props[p];
+				toProps[p] = props[p];
+			}
+			tween.to(toProps, 1000);
+			if ($.isFunction(o.draw)) tween.onUpdate(o.draw.bind(o));
+			tween.easing(TWEEN.Easing.Exponential.EaseOut);
+			tween.start();
+		}
+	};
 	
 };
