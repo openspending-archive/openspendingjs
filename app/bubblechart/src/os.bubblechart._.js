@@ -28,17 +28,34 @@ OpenSpendings.BubbleChart = function(container, urlOrTree) {
 
 
 OpenSpendings.BubbleChart.Vector = function(x,y) {
-	this.x = x; this.y = y;
+	var me = this;
+	me.x = x; 
+	me.y = y;
 	
+	/*
+	 * calculates the length of the vector
+	 */
 	this.length = function() {
-		return Math.sqrt(this.x*this.x + this.y * this.y);
+		var me = this;
+		return Math.sqrt(me.x*me.x + me.y * me.y);
 	};
 	
+	/*
+	 * changes the length of the vector
+	 */
 	this.normalize = function(len) {
+		var me = this, l = me.length();
 		if (!len) len = 1.0;
-		var l = this.length();
-		this.x *= len/l;
-		this.y *= len/l;
+		me.x *= len/l;
+		me.y *= len/l;
+	};
+	
+	/*
+	 * creates an exact copy of this vector
+	 */
+	this.clone = function() {
+		var me = this;
+		return new OpenSpendings.BubbleChart.Vector(me.x, me.y);
 	};
 };
 

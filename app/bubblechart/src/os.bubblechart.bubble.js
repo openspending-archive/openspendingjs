@@ -15,6 +15,7 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	me.angle = angle;
 	me.colour = colour;
 	me.dirty = true;
+	me.alpha = 1;
 	me.bubbleRad = utils.amount2rad(this.node.amount);
 	
 	/*
@@ -58,10 +59,9 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	
 	this.draw = function() {
 		var me = this, r= me.bubbleRad * me.bc.bubbleScale, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
-		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r });
+		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r, 'fill-opacity': me.alpha });
 		//me.label.attr({ x: me.pos.x, y: me.pos.y, 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
-		me.label.css({ width: 2*r+'px' });
-		
+		me.label.css({ width: 2*r+'px', opacity: me.alpha });
 		me.label.css({ left: (me.pos.x-r)+'px', top: (me.pos.y-me.label.height()*0.5)+'px' });
 		if (me.icon) me.icon.translate(me.pos.x - ox, me.pos.y - oy);
 	};

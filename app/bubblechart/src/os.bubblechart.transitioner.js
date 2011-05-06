@@ -28,9 +28,10 @@ OpenSpendings.BubbleChart.SimpleTransitioner = function() {
 
 OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 	
-	this.changeLayout = function(layout) {
-
-		var i, o, props, p;
+	var me = this;
+	
+	me.changeLayout = function(layout) {
+		var i, o, props, p, me = this;
 		for (i in layout.objects) {
 			o = layout.objects[i];
 			if (o === undefined || o === null) continue;
@@ -45,8 +46,34 @@ OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 			tween.to(toProps, 1000);
 			if ($.isFunction(o.draw)) tween.onUpdate(o.draw.bind(o));
 			tween.easing(TWEEN.Easing.Exponential.EaseOut);
+			if (o.removable) {
+				if (me.garbage.length === 0) {
+					// at least one tween should trigger the gc
+					tween.onComplete(me.collectGarbage.bind(me));
+				}
+				me.garbage.push(o);
+			}
+			
 			tween.start();
 		}
 	};
+	
+	me.garbage = [];
+	
+	/*
+	 * calls the remove() function on every object marked for
+	 * removal. will run right after the tween ends
+	 */
+	me.collectGarbage = function() {
+		OpenSpendings.BubbleChart.Utils.log('collecting garbage', this.garbage);
+		var i, o, me = this;
+		for (i in me.garbage) {
+			o = me.garbage[i];
+			if ($.isFunction(o.remove)) o.remove();
+		}
+		me.garbage = [];
+	};
+	
+	
 	
 };
