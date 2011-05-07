@@ -5,7 +5,7 @@ var log = window.console ? console.log : function(a,b,c,d) {};
 /*
  * is constructed after the container page has been loaded
  */
-OpenSpendings.BubbleChart.Main = function(container) {
+OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	// init the page content (create divs, init Raphael paper etc)
 	// load the data, url should be provided 
 	// init the bubbles
@@ -13,6 +13,13 @@ OpenSpendings.BubbleChart.Main = function(container) {
 	var me = this;
 	
 	me.$container = $(container);	
+	
+	/*
+	 * this function is called when the user hovers a bubble
+	 */
+	me.onHover = onHover;
+	
+	me.onUnHover = onUnHover;
 	
 	me.ns = OpenSpendings.BubbleChart;
 	
@@ -238,7 +245,7 @@ OpenSpendings.BubbleChart.Main = function(container) {
 				bubble = me.bubbles[i];
 				if (bubble.removable) {
 					t.$(bubble).alpha = 0;
-					t.$(bubble).rad = 0;
+					// t.$(bubble).rad = 0;
 				} else {
 					tmpBubbles.push(bubble);
 				}
