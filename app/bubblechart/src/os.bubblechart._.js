@@ -9,13 +9,16 @@
 
 var OpenSpendings = OpenSpendings ? OpenSpendings : {}; 
 
-OpenSpendings.BubbleChart = function(container, urlOrTree) {
-	this.container = container;
-	this.urlOrTree = urlOrTree;
+OpenSpendings.BubbleChart = function(container, urlOrTree, hoverCallback, unhoverCallback) {
+	var me = this;
+	me.container = container;
+	me.urlOrTree = urlOrTree;
+	me.hoverCallback = hoverCallback;
+	me.unhoverCallback = unhoverCallback;
 		
 	$(document).ready(function() {
 		var me = this;
-		me.app = new OpenSpendings.BubbleChart.Main(this.container);
+		me.app = new OpenSpendings.BubbleChart.Main(me.container, me.hoverCallback, me.unhoverCallback);
 		if (typeof(me.urlOrTree) == "string") {
 			me.app.loadData(me.urlOrTree);
 		} else {
