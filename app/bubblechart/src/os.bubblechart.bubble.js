@@ -53,13 +53,13 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 				.translate(me.pos.x, me.pos.y).attr({fill: "#fff", stroke: "none"});
 		}
 		
-		//$(me.circle.node).hover(me.onHover.bind(me), me.onUnHover.bind(me));
-		//$(me.circle.node).click(me.onclick.bind(me));
+		$(me.circle.node).hover(me.onhover.bind(me), me.onunhover.bind(me));
+		//$(me.circle.node).click(me.onclick.bind(me))u
 		
 		var mgroup = new me.ns.MouseEventGroup(me, [me.circle.node, me.label]);
 		mgroup.click(me.onclick.bind(me));
-		mgroup.hover(me.onhover.bind(me));
-		mgroup.unhover(me.onunhover.bind(me));
+		//mgroup.hover(me.onhover.bind(me));
+		//mgroup.unhover(me.onunhover.bind(me));
 		
 		me.initialized = true;
 	};
