@@ -76,20 +76,17 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	me.onhover = function(e) {
 		var me = this;
 		me.ns.Utils.log('hover!', e);
-		me.bc.onHover({
-			node: me.node,
-			position: { x:me.pos.x, y: me.pos.y },
-			mouseEventGroup: e.mouseEventGroup
-		});
+		e.node = me.node;
+		e.position = { x:me.pos.x, y: me.pos.y };
+		me.bc.onHover(e);
 	};
 	
 	me.onunhover = function(e) {
 		var me = this;
 		me.ns.Utils.log('unhover!', e);
-		me.bc.onUnHover({
-			node: me.node,
-			mouseEventGroup: e.mouseEventGroup
-		});
+		e.node = me.node;
+		e.position = { x:me.pos.x, y: me.pos.y };
+		me.bc.onUnHover(e);
 	};
 	
 	
