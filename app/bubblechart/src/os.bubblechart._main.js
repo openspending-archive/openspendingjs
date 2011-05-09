@@ -261,7 +261,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 				bubble = me.bubbles[i];
 				if (bubble.removable) {
 					t.$(bubble).alpha = 0;
-					// t.$(bubble).rad = 0;
+					if (bubble.node.level > 1) t.$(bubble).rad = 0;
 				} else {
 					tmpBubbles.push(bubble);
 				}
