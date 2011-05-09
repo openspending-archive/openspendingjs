@@ -29,6 +29,10 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	
 	me.bubbleScale = 1;
 	
+	me.globRotation = 0;
+	
+	me.currentCenter = undefined;
+	
 	/*
 	 * @public loadData
 	 * 
@@ -148,9 +152,18 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 			me.rings = [];
 
 
-			var childRadSum = 0, children = node.children, c, ca, da, oa = 0, twopi = Math.PI * 2;
+			var childRadSum = 0, children = node.children,
+				c, ca, da, oa, twopi = Math.PI * 2;
+
+			// store the last centered bubbles angle if it's on level 1
+			if (me.currentCenter && me.currentCenter.node.level == 1) {
+				me.globRotation = 0-me.currentCenter.node.centerAngle;
+			}
+			
+			oa = me.globRotation;
 
 			if (node == root) {
+			
 				t.$(me).bubbleScale = 1.0;
 				
 				// create root
@@ -174,6 +187,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 					c = children[i];
 					da = a2rad(c.amount) / childRadSum * twopi;
 					ca = oa + da*0.5;
+					if (!c.hasOwnProperty('centerAngle')) c.centerAngle = ca;
 					oa += da;
 					// children will reference to the same origin
 					bubble = me.createBubble(c, t, 240, ca, c.color);
@@ -220,6 +234,8 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 				bubble.origin = parentBubble.pos;
 				me.createRing(t, bubble.origin, 240, l1attr);
 				
+				// store the center bubble
+				me.currentCenter = bubble;
 				
 				for (i in children) {
 					c = children[i];
