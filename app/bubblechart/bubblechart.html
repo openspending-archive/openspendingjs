@@ -33,38 +33,48 @@
                              'data/example-aggregate.json'); 
        
 		$(function() {
-			// hashmap to store all tooltip instances by node id
-			var tooltips = {};
-			// init tooltip
+			
+			var tooltipTimer;
+			/*
+			 * this function is called by the bubbles if the user hovers over them
+			 */
 			var setTooltip = function(event) {
-				
-				var tt, tthtml = '<div class="desc">You\'re hovering over the <b>'
+				var tt = $('#bubble-chart .tooltip'), tthtml = '<div class="desc">You\'re hovering over the <b>'
 					+event.node.label+'</b> bubble. It represents a budget item with an amount of '
 					+OpenSpendings.BubbleChart.Utils.formatNumber(event.node.amount)+'&euro;</div>';
 				
-				if (tooltips.hasOwnProperty(event.node.id)) {
-					tt = tooltips[event.node.id].$;
+				if (tt.length > 0) {
 					tt.html(tthtml);
 				} else {
 					tt = $('<div class="tooltip">'+tthtml+'</div>');
 					$('#bubble-chart').append(tt);
-					tooltips[event.node.id] = { $: tt };
-					event.mouseEventGroup.addMember(tt);
 				}
+				event.mouseEventGroup.addMember(tt);
 				tt.css({ left: (event.position.x-tt.width()*0.5)+'px', top: (event.position.y+ 10)+'px', opacity: 0 });
-				tooltips[event.node.id].timer = new vis4.DelayedTask(500, this, showTooltip, tt);
+				tooltipTimer = new vis4.DelayedTask(500, this, showTooltip, tt);
 			};
+			
+			/*
+			 * shows a tooltip, is called delayed
+			 */
 			var showTooltip = function(tt) {
 				tt.animate({ opacity: 1 }, { duration: 300 });
 				tt.show();
 			};
+			
+			/*
+			 * hides the tooltip for a specific node
+			 */
 			var hideTooltip = function(event) {
-				var tt = tooltips[event.node.id].$;
+				var tt = $('#bubble-chart .tooltip');
 				tt.css({ opacity: 0, left: '-500px' });
 				tt.hide();
-				tooltips[event.node.id].timer.cancel();
+				event.mouseEventGroup.removeMember(tt);
+				tooltipTimer.cancel();
 			};
-			var bubbleChart = new OpenSpendings.BubbleChart('#bubble-chart', data, setTooltip, hideTooltip);       
+			
+			// initialize bubble chart
+			window.bubbleChart = new OpenSpendings.BubbleChart('#bubble-chart', data, setTooltip, hideTooltip);       
        	});
         
 
