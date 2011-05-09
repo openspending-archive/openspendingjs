@@ -118,8 +118,23 @@ OpenSpendings.BubbleChart.MouseEventGroup = function(target, members) {
 	 * this function is used for later addition of member objects like dynamic tooltips
 	 */
 	me.addMember = function(mem) {
+		var me = this;
 		if (me.clickCallback) $(mem).click(me.handleClick.bind(me));
 		if (me.hoverCallback) $(mem).hover(me.handleMemberHover.bind(me), me.handleMemberUnHover.bind(me));
 		me.members.push(mem);
+	};
+	
+	/*
+	 * this function is used for later removal of member objects like dynamic tooltips
+	 */
+	me.removeMember = function(mem) {
+		var me = this, members = me.members, i, tmp = [];
+		if (me.clickCallback) $(mem).unbind('click');
+		if (me.hoverCallback) $(mem).unbind('mouseenter mouseleave');
+		for (i in members) {
+			if (members[i] != mem) tmp.push(members[i]);
+		}
+		me.members = tmp;
+		
 	};
 };
