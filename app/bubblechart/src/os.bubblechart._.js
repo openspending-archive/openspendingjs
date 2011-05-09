@@ -16,15 +16,14 @@ OpenSpendings.BubbleChart = function(container, urlOrTree, hoverCallback, unhove
 	me.hoverCallback = hoverCallback;
 	me.unhoverCallback = unhoverCallback;
 		
-	$(document).ready(function() {
-		var me = this;
+	//$(document).ready(function() {
 		me.app = new OpenSpendings.BubbleChart.Main(me.container, me.hoverCallback, me.unhoverCallback);
 		if (typeof(me.urlOrTree) == "string") {
 			me.app.loadData(me.urlOrTree);
 		} else {
 			me.app.setData(me.urlOrTree);
 		}
-	}.bind(this));
+	//}.bind(this));
 	
 };
 

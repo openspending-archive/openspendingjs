@@ -53,13 +53,13 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 				.translate(me.pos.x, me.pos.y).attr({fill: "#fff", stroke: "none"});
 		}
 		
-		$(me.circle.node).hover(me.onhover.bind(me), me.onunhover.bind(me));
+		//$(me.circle.node).hover(me.onhover.bind(me), me.onunhover.bind(me));
 		//$(me.circle.node).click(me.onclick.bind(me))u
 		
 		var mgroup = new me.ns.MouseEventGroup(me, [me.circle.node, me.label]);
 		mgroup.click(me.onclick.bind(me));
-		//mgroup.hover(me.onhover.bind(me));
-		//mgroup.unhover(me.onunhover.bind(me));
+		mgroup.hover(me.onhover.bind(me));
+		mgroup.unhover(me.onunhover.bind(me));
 		
 		me.initialized = true;
 	};
@@ -78,7 +78,8 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		me.ns.Utils.log('hover!', e);
 		me.bc.onHover({
 			node: me.node,
-			position: { x:me.pos.x, y: me.pos.y }
+			position: { x:me.pos.x, y: me.pos.y },
+			mouseEventGroup: e.mouseEventGroup
 		});
 	};
 	
@@ -86,7 +87,8 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		var me = this;
 		me.ns.Utils.log('unhover!', e);
 		me.bc.onUnHover({
-			node: me.node
+			node: me.node,
+			mouseEventGroup: e.mouseEventGroup
 		});
 	};
 	

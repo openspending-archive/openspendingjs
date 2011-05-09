@@ -24,7 +24,7 @@ OpenSpendings.BubbleChart.MouseEventGroup = function(target, members) {
 	
 	me.handleClick = function(evt) {
 		var me = this;
-		me.clickCallback({ target: me.target, origEvent: evt });
+		me.clickCallback({ target: me.target, origEvent: evt, mouseEventGroup: me });
 	};
 	
 	/*
@@ -58,11 +58,13 @@ OpenSpendings.BubbleChart.MouseEventGroup = function(target, members) {
 	
 	me.handleMemberHover = function(evt) {
 		var me = this;
+		vis4.log('handleMemberHover', evt.target);
 		// since we don't know which event will receive first, the unhover of the member
 		// the mouse is leaving or the hover of the member the mouse is entering, we will
 		// delay the final check a bit
+		new vis4.DelayedTask(25, me, me.handleMemberHoverDelayed, evt);	
+		vis4.log('--- handleMemberHover');
 		
-		new vis4.DelayedTask(23, me, me.handleMemberHoverDelayed, evt);	
 	};
 
 	/*
@@ -73,14 +75,15 @@ OpenSpendings.BubbleChart.MouseEventGroup = function(target, members) {
 		// this will eventually override the false set by handleMemberUnHover a few
 		// milliseconds ok. Exactly what we want!
 		me.mouseIsOver = true;
-		
+		vis4.log('handleMemberHoverDelayed', evt);
+				
 		if (!me.wasHovering) {
 			// the target is newly hovered
 			vis4.log('mouseEventGroup - hover', me, evt);
 			
 			me.wasHovering = true;
 			if ($.isFunction(me.hoverCallback)) {
-				me.hoverCallback({ target: me.target, origEvent: evt });
+				me.hoverCallback({ target: me.target, origEvent: evt, mouseEventGroup: me });
 			}
 		} // else can be ignored, no news
 	};
@@ -89,24 +92,34 @@ OpenSpendings.BubbleChart.MouseEventGroup = function(target, members) {
 	me.handleMemberUnHover = function(evt) {
 		var me = this;
 		me.mouseIsOver = false;
+		vis4.log('handleMemberUnHover', evt.target);
 		// we need to wait a bit to find out if this is a real unhover event
 		// or just the change to another element in the member list
 		// so we need to delay the final check a bit (let's say 30ms)
-		new vis4.DelayedTask(30, me, me.handleMemberUnHoverDelayed, evt);	
+		new vis4.DelayedTask(40, me, me.handleMemberUnHoverDelayed, evt);	
 	};
 	
 	me.handleMemberUnHoverDelayed = function(evt) {
 		var me = this;
+		vis4.log('handleMemberUnHoverDelayed', evt);
 		if (!me.mouseIsOver) {
 			vis4.log('mouseEventGroup - unhover', me, evt);
 			// well, finally no nasty hover event has disturbed our good unhover
 			// process, so we can assume that this is a real unhover event
 			
 			me.wasHovering = false;
-			if ($.isFunction(me.unHoverCallback)) {
-				me.unHoverCallback({ target: me.target, origEvent: evt });
+			if ($.isFunction(me.unhoverCallback)) {
+				me.unhoverCallback({ target: me.target, origEvent: evt, mouseEventGroup: me });
 			}
 		}
 	};
-	
+		
+	/*
+	 * this function is used for later addition of member objects like dynamic tooltips
+	 */
+	me.addMember = function(mem) {
+		if (me.clickCallback) $(mem).click(me.handleClick.bind(me));
+		if (me.hoverCallback) $(mem).hover(me.handleMemberHover.bind(me), me.handleMemberUnHover.bind(me));
+		me.members.push(mem);
+	};
 };
