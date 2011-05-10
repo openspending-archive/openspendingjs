@@ -1,5 +1,5 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings */
+/*global Raphael, TWEEN, OpenSpendings, vis4 */
 
 /*
  * transforms the current display to a new layout
@@ -30,8 +30,11 @@ OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 	
 	var me = this;
 	
+	me.running = false;
+	
 	me.changeLayout = function(layout) {
 		var i, o, props, p, me = this;
+		me.running = true;
 		for (i in layout.objects) {
 			o = layout.objects[i];
 			if (o === undefined || o === null) continue;
@@ -53,7 +56,7 @@ OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 				}
 				me.garbage.push(o);
 			}
-			
+			if (i == layout.objects.length-1) tween.onComplete(me._completed.bind(me));
 			tween.start();
 		}
 	};
@@ -65,7 +68,7 @@ OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 	 * removal. will run right after the tween ends
 	 */
 	me.collectGarbage = function() {
-		OpenSpendings.BubbleChart.Utils.log('collecting garbage', this.garbage);
+		vis4.log('collecting garbage', this.garbage);
 		var i, o, me = this;
 		for (i in me.garbage) {
 			o = me.garbage[i];
@@ -74,6 +77,19 @@ OpenSpendings.BubbleChart.AnimatedTransitioner = function() {
 		me.garbage = [];
 	};
 	
+	me.completeCallbacks = [];
 	
+	me.onComplete = function(callback) {
+		if ($.isFunction(callback)) me.completeCallbacks.push(callback);
+	};
+	
+	me._completed = function() {
+		vis4.log('AnimatedTransition: onComplete');
+		var me = this, callbacks = me.completeCallbacks, i;
+		me.running = false;
+		for (i in callbacks) {
+			callbacks[i]();
+		}
+	};
 	
 };

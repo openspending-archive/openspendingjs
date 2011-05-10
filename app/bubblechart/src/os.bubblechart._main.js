@@ -31,7 +31,11 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	
 	me.globRotation = 0;
 	
+	me.currentYear = 2010;
+	
 	me.currentCenter = undefined;
+	
+	me.currentTransition = undefined;
 	
 	/*
 	 * @public loadData
@@ -53,14 +57,16 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 		me.initData(data);
 		me.initPaper();
 		me.initTween();
-		me.changeView(me.treeRoot.id);
+		//me.navigateTo(me.treeRoot);
+		me.initHistory();
+		
 		//this.quickPrototype(data);
 	};
 	
 	/*
 	 * initializes the data tree, adds links to parent node for easier traversal etc
 	 */
-	this.initData = function(root) {
+	me.initData = function(root) {
 		var me = this;
 		me.traverse(root, 0);
 		me.treeRoot = root;
@@ -69,15 +75,14 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	/*
 	 * used for recursive tree traversal
 	 */
-	this.traverse = function(node, index) {
+	me.traverse = function(node, index) {
 		var c, child, pc, me = this;
 		// set node color
 		if (node.level === 0) node.color = '#555';
 		else if (node.level == 1) {
 			pc = node.parent.children;
-			node.color = 'hsl('+(index/pc.length)+',.8, .8)';
+			//node.color = 'hsl('+(index/pc.length)+',.8, .8)';
 			node.color = vis4color.fromHSL(index/pc.length*360, 0.7, 0.45).x;
-			vis4.log(node.color);
 		} else {
 			// inherit color form parent node
 			node.color = node.parent.color;
@@ -91,13 +96,13 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 			}
 		}
 		
-		if (!node.id) {
-			node.id = node.label.toLowerCase().replace(/\W/g, "_");
-			while (me.nodesById.hasOwnProperty(node.id)) {
-				node.id += '_';
+		if (!node.token) {
+			node.token = node.label.toLowerCase().replace(/\W/g, "-");
+			while (me.nodesById.hasOwnProperty(node.token)) {
+				node.token += '-';
 			}
 		} 
-		me.nodesById[node.id] = node;
+		me.nodesById[node.token] = node;
 		node.maxChildAmount = 0;
 		for (c in node.children) {
 			child = node.children[c];
@@ -110,7 +115,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	/*
 	 * initializes all that RaphaelJS stuff
 	 */
-	this.initPaper = function() {
+	me.initPaper = function() {
 		var me = this, $c = me.$container, rt = me.treeRoot,
 			paper = Raphael($c[0], $c.width(), $c.height()),
 			maxRad = Math.min(paper.width, paper.height) * 0.50,
@@ -129,7 +134,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	/*
 	 * initializes the Tweening engine
 	 */
-	this.initTween = function() {
+	me.initTween = function() {
 		this.tweenTimer = setInterval(this.loop, 1000/120);
 	};
 	
@@ -137,7 +142,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	 * is called every time the user changes the view
 	 * each view is defined by the selected node (which is displayed 
 	 */
-	this.changeView = function(id) {
+	me.changeView = function(token) {
 		
 		var me = this, i, paper = me.paper,
 			ns = me.ns, 
@@ -148,10 +153,9 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 			a2rad = utils.amount2rad,
 			root = me.treeRoot, 
 			nodesById = me.nodesById, 
-			node = nodesById.hasOwnProperty(id) ? nodesById[id] : null,
+			node = nodesById.hasOwnProperty(token) ? nodesById[token] : null,
 			t = new ns.Layout(), bubble;
 		
-
 		if (node !== null) {
 			
 			utils.log('changing view to ', node);
@@ -181,6 +185,8 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 				bubble = me.createBubble(root, t, 0, 0, root.color);
 				bubble.origin = o;
 			
+				me.currentCenter = bubble;
+			
 				ringRad = a2rad(root.amount) + a2rad(root.maxChildAmount) + 20;
 				
 				// move origin to center
@@ -206,7 +212,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 					bubble = me.createBubble(c, t, ringRad, ca, c.color);
 					bubble.origin = o;
 				}
-
+				
 				// just children and me
 			} else {
 			
@@ -270,7 +276,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 			}
 			
 			// remove any bubbles that are marked for removal
-			var tmpBubbles = [];
+			var tmpBubbles = [], tr;
 			for (i in me.bubbles) {
 				bubble = me.bubbles[i];
 				if (bubble.removable) {
@@ -284,10 +290,13 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 			
 			
 			utils.log('ready');
-			new ns.AnimatedTransitioner().changeLayout(t);
-				
+			tr = new ns.AnimatedTransitioner();
+			tr.changeLayout(t);
+			me.currentTransition = tr;
+			
+			
 		} else {
-			utils.log('node '+id+' not found');
+			utils.log('node '+token+' not found');
 		}
 		// step1: 
 		
@@ -297,7 +306,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	/*
 	 * either creates a new bubble or re-uses a bubble which already exists
 	 */
-	this.createBubble = function(node, t, rad, angle, color) {
+	me.createBubble = function(node, t, rad, angle, color) {
 		var me = this, ns = me.ns, i, b, bubble;
 		
 		for (i in me.bubbles) {
@@ -318,7 +327,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 		return bubble;
 	};
 	
-	this.createRing = function(t, origin, rad, attr) {
+	me.createRing = function(t, origin, rad, attr) {
 		var me = this, ns = me.ns, 
 			ring = new ns.Ring(me, origin, attr, rad);
 		ring.toBack();
@@ -326,6 +335,69 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 		t.$(ring).rad = rad;
 		return ring;
 	};
+	
+	me.initHistory = function() {
+		$.history.init(me.urlChanged.bind(me), { unescape: ",/" });
+	};
+	
+	me.freshUrl = '';
+	
+	/*
+	 * callback for every url change, either initiated by user or
+	 * by this class itself
+	 */
+	me.urlChanged = function(hash) {
+		var me = this, tr = me.currentTransition;
+		
+		me.freshUrl = hash;
+		
+		if (tr && tr.running) {
+			vis4.log('transition is running at the moment, adding listener');
+			tr.onComplete(me.changeUrl.bind(me));
+		} else {
+			me.changeUrl();
+		}
+	};
+	
+	/*
+	 * this function initiate the action which follows the url change
+	 */
+	me.changeUrl = function() {
+		var me = this, parts = me.freshUrl.split('/'), yr = parts[1], token = parts[parts.length-1], url;
+		
+		if (me.freshUrl === "") me.navigateTo(me.treeRoot);
+		
+		if (me.nodesById.hasOwnProperty(token)) {
+			url = me.getUrlForNode(me.nodesById[token]);
+			if (me.freshUrl != url) {
+				// node found but url not perfect
+				$.history.load(url);
+			} else {
+				me.navigateTo(me.nodesById[token], true);
+			}
+		}
+	};
+	
+	me.navigateTo = function(node, fromUrlChange) {
+		var me = this;
+		if (fromUrlChange) me.changeView(node.token);
+		else $.history.load(me.getUrlForNode(node));
+	};
+	
+	/*
+	 * creates a valid url for a given node, e.g. /2010/health/medical-supplies
+	 */
+	me.getUrlForNode = function(node) {
+		var parts = [];
+		parts.push(node.token);
+		while (node.parent) {
+			parts.push(node.parent.token);
+			node = node.parent;
+		}
+		parts.reverse();
+		return '/'+me.currentYear+'/'+parts.join('/');
+	};
+	
 	/*
 	this.quickPrototype = function(root) {
 		
