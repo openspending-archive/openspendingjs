@@ -10,7 +10,7 @@ OpenSpendings.BubbleChart.Utils.log = function() {
 };
 
 OpenSpendings.BubbleChart.Utils.amount2rad = function(a) {
-	return Math.pow(a/150000000, 0.6);
+	return Math.pow(a/OpenSpendings.BubbleChart.a2radBase, 0.6);
 };
 
 OpenSpendings.BubbleChart.Utils.formatNumber = function(n) {
