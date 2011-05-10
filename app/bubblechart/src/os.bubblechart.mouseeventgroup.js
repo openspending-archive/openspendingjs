@@ -112,7 +112,7 @@ OpenSpendings.BubbleChart.MouseEventGroup = function(target, members) {
 	 */
 	me.addMember = function(mem) {
 		var me = this;
-		if (me.clickCallback) $(mem).click(me.handleClick.bind(me));
+		// if (me.clickCallback && noClick) $(mem).click(me.handleClick.bind(me));
 		if (me.hoverCallback) $(mem).hover(me.handleMemberHover.bind(me), me.handleMemberUnHover.bind(me));
 		me.members.push(mem);
 	};
