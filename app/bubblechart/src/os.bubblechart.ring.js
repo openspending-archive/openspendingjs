@@ -28,5 +28,13 @@ OpenSpendings.BubbleChart.Ring = function(bc, o, attr, rad) {
 		me.circle.remove();
 	};
 	
+	/*
+	 * wrapper for raphaels toBack() function which moves an element to the background
+	 */ 
+	this.toBack = function() {
+		var me = this;
+		me.circle.toBack();
+	};
+	
 	this.init();
 };
