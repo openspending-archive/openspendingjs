@@ -1,5 +1,5 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings */
+/*global Raphael, TWEEN, OpenSpendings, vis4, vis4color */
 
 var log = window.console ? console.log : function(a,b,c,d) {};
 /*
@@ -61,20 +61,23 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	 * initializes the data tree, adds links to parent node for easier traversal etc
 	 */
 	this.initData = function(root) {
-		this.traverse(root, 0);
-		this.treeRoot = root;
+		var me = this;
+		me.traverse(root, 0);
+		me.treeRoot = root;
 	};
 	
 	/*
 	 * used for recursive tree traversal
 	 */
 	this.traverse = function(node, index) {
-		var c, child, pc;
+		var c, child, pc, me = this;
 		// set node color
 		if (node.level === 0) node.color = '#555';
 		else if (node.level == 1) {
 			pc = node.parent.children;
-			node.color = 'hsb('+(index/pc.length)+',.8, .8)';
+			node.color = 'hsl('+(index/pc.length)+',.8, .8)';
+			node.color = vis4color.fromHSL(index/pc.length*360, 0.7, 0.45).x;
+			vis4.log(node.color);
 		} else {
 			// inherit color form parent node
 			node.color = node.parent.color;
@@ -90,15 +93,17 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 		
 		if (!node.id) {
 			node.id = node.label.toLowerCase().replace(/\W/g, "_");
-			while (this.nodesById.hasOwnProperty(node.id)) {
+			while (me.nodesById.hasOwnProperty(node.id)) {
 				node.id += '_';
 			}
 		} 
-		this.nodesById[node.id] = node;
+		me.nodesById[node.id] = node;
+		node.maxChildAmount = 0;
 		for (c in node.children) {
 			child = node.children[c];
 			child.parent = node;
-			this.traverse(child, c);
+			node.maxChildAmount = Math.max(node.maxChildAmount, child.amount);
+			me.traverse(child, c);
 		}
 	};
 	
@@ -106,13 +111,19 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	 * initializes all that RaphaelJS stuff
 	 */
 	this.initPaper = function() {
-		var $c = this.$container,
+		var me = this, $c = me.$container, rt = me.treeRoot,
 			paper = Raphael($c[0], $c.width(), $c.height()),
-			Vector = OpenSpendings.BubbleChart.Vector,
+			maxRad = Math.min(paper.width, paper.height) * 0.50,
+			base, Vector = OpenSpendings.BubbleChart.Vector,
 			origin = new Vector(paper.width * 0.5, paper.height * 0.5); // center
 			
-		this.paper = paper;
-		this.origin = origin;
+		me.paper = paper;
+		base = Math.pow((Math.pow(rt.amount*2, 0.6) + Math.pow(rt.maxChildAmount*2, 0.6)) / maxRad, 1.6666666667);
+		me.a2radBase = OpenSpendings.BubbleChart.a2radBase = base;
+		
+		me.origin = origin;
+		vis4.log('maxRad = ',maxRad, '  ',Math.pow(rt.amount, 0.6) + Math.pow(rt.maxChildAmount));
+		vis4.log('a2rad base = ',me.a2radBase);
 	};
 	
 	/*
@@ -152,7 +163,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 			me.rings = [];
 
 
-			var childRadSum = 0, children = node.children,
+			var childRadSum = 0, children = node.children, ringRad, 
 				c, ca, da, oa, twopi = Math.PI * 2;
 
 			// store the last centered bubbles angle if it's on level 1
@@ -169,12 +180,14 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 				// create root
 				bubble = me.createBubble(root, t, 0, 0, root.color);
 				bubble.origin = o;
+			
+				ringRad = a2rad(root.amount) + a2rad(root.maxChildAmount) + 20;
 				
 				// move origin to center
 				t.$(o).x = paper.width * 0.5;
 				t.$(o).y = paper.height * 0.5;
 				
-				me.createRing(t, bubble.origin, 240, l1attr);
+				me.createRing(t, bubble.origin, ringRad, l1attr);
 				
 				// sum radii of all children
 				for (i in children) {
@@ -190,7 +203,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 					if (!c.hasOwnProperty('centerAngle')) c.centerAngle = ca;
 					oa += da;
 					// children will reference to the same origin
-					bubble = me.createBubble(c, t, 240, ca, c.color);
+					bubble = me.createBubble(c, t, ringRad, ca, c.color);
 					bubble.origin = o;
 				}
 
@@ -200,8 +213,9 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 				var parentBubble, tgtScale = a2rad(root.amount) / a2rad(node.amount);
 				t.$(me).bubbleScale = tgtScale;
 				
-				var sibling, po = new ns.Vector(me.paper.width * 0.5 - 280 - 
-					tgtScale * (a2rad(node.parent.amount)+a2rad(node.amount)), o.y);
+				var sibling, po = new ns.Vector(Math.max(me.paper.width * 0.5 - 280 - 
+					tgtScale * (a2rad(node.parent.amount)+a2rad(node.amount)), 
+					tgtScale*a2rad(node.parent.amount)*-1+30), o.y);
 				
 				// create parent node and give it the new parent origin
 				parentBubble = me.createBubble(node.parent, t, 0, 0, node.parent.color);
@@ -307,6 +321,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	this.createRing = function(t, origin, rad, attr) {
 		var me = this, ns = me.ns, 
 			ring = new ns.Ring(me, origin, attr, rad);
+		ring.toBack();
 		me.rings.push(ring);
 		t.$(ring).rad = rad;
 		return ring;

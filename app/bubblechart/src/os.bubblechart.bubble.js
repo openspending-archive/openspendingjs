@@ -4,7 +4,7 @@
 /*
  * represents a bubble
  */
-OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, angle, colour) {
+OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, angle, color) {
 
 	var ns = OpenSpendings.BubbleChart, utils = ns.Utils, me = this;
 	me.node = node;
@@ -13,7 +13,7 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	me.bc = bubblechart;
 	me.rad = radius;
 	me.angle = angle;
-	me.colour = colour;
+	me.color = color;
 	me.dirty = true;
 	me.alpha = 1;
 	me.ns = ns;
@@ -36,7 +36,7 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		me.pos = new OpenSpendings.BubbleChart.Vector(0,0);
 		me.getXY();
 		me.circle = me.paper.circle(me.pos.x, me.pos.y, me.bubbleRad * me.bc.bubbleScale)
-			.attr({ stroke: false, fill: me.colour });
+			.attr({ stroke: false, fill: me.color });
 		me.dirty = false;
 		$(me.circle.node).css({ cursor: 'pointer'});
 		
@@ -95,9 +95,22 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		var me = this, r= me.bubbleRad * me.bc.bubbleScale, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
 		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r, 'fill-opacity': me.alpha });
 		//me.label.attr({ x: me.pos.x, y: me.pos.y, 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
+		if (r < 20) me.label.hide();
+		else {
+			me.label.show();
+		
+			if (r < 40) {
+				me.label.find('.desc').hide();
+			} else {
+				// full label
+				me.label.find('.desc').show();
+			}
+		}
 		me.label.css({ width: 2*r+'px', opacity: me.alpha });
 		me.label.css({ left: (me.pos.x-r)+'px', top: (me.pos.y-me.label.height()*0.5)+'px' });
+	
 		if (me.icon) me.icon.translate(me.pos.x - ox, me.pos.y - oy);
+	
 	};
 	
 	this.remove = function() {
