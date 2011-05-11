@@ -54,7 +54,7 @@ OpenSpending.App.SpendBrowser = (function($) {
             q: '',
             qparams: {
               to: '*' + to + '*',
-              dataset: 'departments'
+              dataset: config.dataset
             },
             sort: 'amount desc',
             facet: true,
