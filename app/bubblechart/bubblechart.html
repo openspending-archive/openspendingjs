@@ -8,24 +8,29 @@
 	<script type="text/javascript" src="bubblechart.min.js"></script>
 	<style type="text/css">
 
-	html, body { background: #eee; margin: 0; height: 100%; width: 100%; overflow: hidden; padding: 0; }
-	#bubble-chart-wrapper { width: 100%; height: 95%;  }
-	#bubble-chart { background: #fff; margin: 20px; border: 3px solid #dedede; position: relative; height: 100%; }
+	html, body { background: #ddd; margin: 0; height: 100%; width: 100%; padding: 0; }
+	
+	#demo-frame {
+		width: 1035px; margin: 0 auto; height: 900px; background: url(os-frame.png) no-repeat; position: relative;
+	}
+	
+	#bubble-chart-wrapper { width: 723px; height: 616px; position: absolute; left: 44px; top: 182px; }
+	#bubble-chart { background: #fff; position: relative; height: 100%; overflow: hidden; }
 	#bubble-chart .label { position: absolute; color: #fff; text-align: center; cursor: pointer; }
 	#bubble-chart .amount { font-family: Graublau, Georgia, sans; font-size: 16px; }
 	#bubble-chart .desc { font-family: sans-serif; font-size: 11px }
 	
-	#bubble-chart .tooltip { max-width: 220px;  border: 1px solid #999; 
+	#bubble-chart-wrapper .tooltip { max-width: 220px;  border: 1px solid #999; 
 		position: absolute; background: #fff; z-index: 9999;
 		box-shadow: 3px 3px 0px rgba(0,0,0,.2); border-radius: 2px;
 		font-family: sans-serif; font-size: 11px;
 	}
 	
-	#bubble-chart .tooltip .header {
+	#bubble-chart-wrapper .tooltip .header {
 		padding: 6px;
 	}
 	
-	#bubble-chart .tooltip .header .icon {
+	#bubble-chart-wrapper .tooltip .header .icon {
 		width: 38px;
 		height: 38px;
 		float: left;
@@ -34,7 +39,7 @@
 		margin-right: 8px;
 	}
 	
-	#bubble-chart .tooltip .row {
+	#bubble-chart-wrapper .tooltip .row {
 		clear: both;
 		border-top: 1px solid #999; padding: 6px;
 	}
@@ -54,13 +59,49 @@
        
 		$(function() {
 			
+			var style = {
+				'root': { // Total
+					color: '#999999'
+				},
+				'10': { // Helping Others
+					color: '#f4714c'
+				},
+				'02': { // Defence
+					color: '#999933'
+				},
+				'05': { // Environment
+					color: '#006633'
+				},
+				'07': { // Health
+					color: '#cc0066'
+				},
+				'03': { // Order & Safety
+					color: '#0099cc'
+				},
+				'06': { // Our Streets
+					color: '#cc6666'
+				},
+				'08': { // Culture
+					color: '#cccc00'
+				},
+				'01': { // Running Government
+					color: '#9900cc'
+				},
+				'09': { // Education
+					color: '#3333cc'
+				},
+				'04': { // Country, Social Systems
+					color: '#33cc33'
+				}
+			};
+			
 			var tooltipTimer;
 			/*
 			 * this function is called by the bubbles if the user hovers over them
 			 */
 			var setTooltip = function(event) {
-				var tt = $('#bubble-chart .tooltip'), tthtml = '<div class="header"><div class="icon"></div><div class="title">'
-					+event.node.label+'</div><div class="amount">'
+				var tt = $('#bubble-chart-wrapper .tooltip'), tthtml = '<div class="header"><div class="icon"></div><div class="title">'
+					+event.node.label+' ('+event.node.id+')</div><div class="amount">'
 					+OpenSpendings.BubbleChart.Utils.formatNumber(event.node.amount)+'&euro;</div></div>'
 					+'<div class="row"><a>More Information</a></div>'
 					+'<div class="row"><a>Add to Compare-O-Tron</a></div>';
@@ -69,9 +110,9 @@
 					tt.html(tthtml);
 				} else {
 					tt = $('<div class="tooltip">'+tthtml+'</div>');
-					$('#bubble-chart').append(tt);
+					$('#bubble-chart-wrapper').append(tt);
 				}
-				$('#bubble-chart .tooltip .icon').css({ background: event.target.color });
+				$('#bubble-chart-wrapper .tooltip .icon').css({ background: event.target.color });
 				vis4.log(event.target.color);
 				event.mouseEventGroup.addMember(tt);
 				tt.css({ left: (event.position.x-tt.width()*0.5)+'px', top: (event.position.y+ 10)+'px', opacity: 0 });
@@ -90,7 +131,7 @@
 			 * hides the tooltip for a specific node
 			 */
 			var hideTooltip = function(event) {
-				var tt = $('#bubble-chart .tooltip');
+				var tt = $('#bubble-chart-wrapper .tooltip');
 				tt.css({ opacity: 0, left: '-500px' });
 				tt.hide();
 				event.mouseEventGroup.removeMember(tt);
@@ -98,15 +139,23 @@
 			};
 			
 			// initialize bubble chart
-			window.bubbleChart = new OpenSpendings.BubbleChart('#bubble-chart', data, setTooltip, hideTooltip);       
+			window.bubbleChart = new OpenSpendings.BubbleChart(
+				'#bubble-chart', 
+				data, 
+				setTooltip, 
+				hideTooltip,
+				style
+			);       
        	});
         
 
 	</script>
 </head>
 <body>
-	<div id="bubble-chart-wrapper">
-		<div id="bubble-chart"></div>
+	<div id="demo-frame">
+		<div id="bubble-chart-wrapper">
+			<div id="bubble-chart"></div>
+		</div>
 	</div>
 </body>
 </html>

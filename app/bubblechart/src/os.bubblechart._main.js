@@ -5,7 +5,7 @@ var log = window.console ? console.log : function(a,b,c,d) {};
 /*
  * is constructed after the container page has been loaded
  */
-OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
+OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) {
 	// init the page content (create divs, init Raphael paper etc)
 	// load the data, url should be provided 
 	// init the bubbles
@@ -20,6 +20,11 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	me.onHover = onHover;
 	
 	me.onUnHover = onUnHover;
+	
+	/*
+	 * stylesheet JSON that contains colors and icons for the bubbles
+	 */
+	me.style = style;
 	
 	me.ns = OpenSpendings.BubbleChart;
 	
@@ -78,14 +83,17 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover) {
 	me.traverse = function(node, index) {
 		var c, child, pc, me = this;
 		// set node color
-		if (node.level === 0) node.color = '#555';
+		if (node.level === 0) node.color = '#999';
 		else if (node.level == 1) {
 			pc = node.parent.children;
 			//node.color = 'hsl('+(index/pc.length)+',.8, .8)';
-			node.color = vis4color.fromHSL(index/pc.length*360, 0.7, 0.45).x;
+			if (me.style.hasOwnProperty(node.id)) {
+				node.color = me.style[node.id].color;	
+			} 
 		} else {
+			node.color = '#040';
 			// inherit color form parent node
-			node.color = node.parent.color;
+			//node.color = vis4color.fromHex(node.parent.color).lightness('+0.2').x;// : node.parent.color;
 		}
 		if (node.level > 0) {
 			pc = node.parent.children;

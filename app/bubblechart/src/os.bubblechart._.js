@@ -9,25 +9,21 @@
 
 var OpenSpendings = OpenSpendings ? OpenSpendings : {}; 
 
-OpenSpendings.BubbleChart = function(container, urlOrTree, hoverCallback, unhoverCallback) {
+OpenSpendings.BubbleChart = function(container, urlOrTree, hoverCallback, unhoverCallback, style) {
 	var me = this;
 	me.container = container;
 	me.urlOrTree = urlOrTree;
-	me.hoverCallback = hoverCallback;
-	me.unhoverCallback = unhoverCallback;
 		
 	//$(document).ready(function() {
-		me.app = new OpenSpendings.BubbleChart.Main(me.container, me.hoverCallback, me.unhoverCallback);
-		if (typeof(me.urlOrTree) == "string") {
-			me.app.loadData(me.urlOrTree);
-		} else {
-			me.app.setData(me.urlOrTree);
-		}
+	me.app = new OpenSpendings.BubbleChart.Main(me.container, hoverCallback, unhoverCallback, style);
+	if (typeof(me.urlOrTree) == "string") {
+		me.app.loadData(me.urlOrTree);
+	} else {
+		me.app.setData(me.urlOrTree);
+	}
 	//}.bind(this));
 	
 };
-
-
 
 OpenSpendings.BubbleChart.Vector = function(x,y) {
 	var me = this;
