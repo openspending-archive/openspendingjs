@@ -30,7 +30,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 	
 	me.nodesById = {};
 	
-	me.bubbles = [];
+	me.displayObjects = [];
 	
 	me.bubbleScale = 1;
 	
@@ -61,6 +61,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 		var me = this;
 		me.initData(data);
 		me.initPaper();
+		me.initBubbles();
 		me.initTween();
 		//me.navigateTo(me.treeRoot);
 		me.initHistory();
@@ -91,9 +92,9 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 				node.color = me.style[node.id].color;	
 			} 
 		} else {
-			node.color = '#040';
+			//node.color = '#040';
 			// inherit color form parent node
-			//node.color = vis4color.fromHex(node.parent.color).lightness('+0.2').x;// : node.parent.color;
+			node.color = vis4color.fromHex(node.parent.color).lightness('*1.1').x;// : node.parent.color;
 		}
 		if (node.level > 0) {
 			pc = node.parent.children;
@@ -145,12 +146,77 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 	};
 	
 	/*
+	 * creates instances for all bubbles in the dataset. the bubbles will
+	 * remain invisble until they enter the stage via changeView()
+	 */
+	me.initBubbles = function() {
+		vis4.log('initBubbles');
+		var me = this, rt = me.treeRoot;
+		
+		var rootBubble = me.createBubble(rt, me.origin, 0, 0, rt.color);
+		me.traverseBubbles(rootBubble);
+	};
+	
+	me.traverseBubbles = function(parentBubble) {
+		var me = this, ring,
+			a2rad = me.ns.Utils.amount2rad,
+			i, c, children, childBubble, childRadSum = 0, oa = 0, da, ca, twopi = Math.PI * 2;
+		children = parentBubble.node.children;
+		
+		// sum radii of all children
+		for (i in children) {
+			c = children[i];
+			childRadSum += a2rad(c.amount);
+		}
+		
+		if (children.length > 0) {
+			// create ring
+			ring = me.createRing(parentBubble.node, parentBubble.pos, 0, { stroke: '#ccc', 'stroke-dasharray': "- " });
+		}
+		
+		for (i in children) {
+			c = children[i];
+		
+			da = a2rad(c.amount) / childRadSum * twopi;
+			ca = oa + da*0.5;
+		
+			c.centerAngle = ca;
+		
+			childBubble = me.createBubble(c, parentBubble.pos, 0, ca, c.color);
+			// für jedes kind einen bubble anlegen und mit dem parent verbinden
+			oa += da;
+			
+			me.traverseBubbles(childBubble);
+		}
+
+	};
+	
+		
+	/*
+	 * creates a new bubble 
+	 */
+	me.createBubble = function(node, origin, rad, angle, color) {
+		var me = this, ns = me.ns, i, b, bubble;
+		bubble = new ns.Bubble(node, me, origin, rad, angle, color);
+		//me.bubbles.push(bubble);
+		me.displayObjects.push(bubble);
+		// vis4.log('created bubble for', node.label);
+		return bubble;
+	};
+	
+	me.createRing = function(node, origin, rad, attr) {
+		var me = this, ns = me.ns, ring;
+		ring = new ns.Ring(node, me, origin, rad, attr);
+		me.displayObjects.push(ring);
+		return ring;
+	};
+	
+	/*
 	 * is called every time the user changes the view
 	 * each view is defined by the selected node (which is displayed 
 	 */
 	me.changeView = function(token) {
-		
-		var me = this, i, 
+		var me = this, 
 			paper = me.paper,
 			maxRad = Math.min(paper.height, paper.width) * 0.5 - 60,
 			ns = me.ns, 
@@ -162,10 +228,147 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 			root = me.treeRoot, 
 			nodesById = me.nodesById, 
 			node = nodesById.hasOwnProperty(token) ? nodesById[token] : null,
-			t = new ns.Layout(), bubble;
+			t = new ns.Layout(), 
+			bubble, tr, i,
+			getBubble = me.getBubble.bind(me), getRing = me.getRing.bind(me);
 		
 		if (node !== null) {
+		
+			// what do you we have to do here?
+			// - find out the origin position
+			// -
+		
+			var parent, grandpa, sibling, c, cn, rad1, rad2, rad, srad, sang, ring, tgtScale, radSum;
+		
+		
+			// initially we will mark all bubbles and rings for hiding
+			// get....() will set this flag to false 
+			for (i in me.displayObjects) me.displayObjects[i].hideFlag = true;
 			
+		
+			if (node == root) {
+			
+				
+				t.$(me).bubbleScale = 1.0;
+				
+				// move origin to center
+				t.$(o).x = paper.width * 0.5;
+				t.$(o).y = paper.height * 0.5;
+
+				// make the root bubble visible
+				parent = getBubble(root);
+				//parent.childRotation = 0;
+				
+				rad1 = a2rad(node.amount) + a2rad(node.maxChildAmount) + 20;
+
+				ring = getRing(root);
+				t.$(ring).rad = rad1;
+
+				for (i in node.children) {
+					cn = node.children[i];
+					// adjust rad and angle for children
+					bubble = getBubble(cn);
+					t.$(bubble).angle = cn.centerAngle + parent.childRotation;
+					t.$(bubble).rad = rad1;
+				}
+				
+			} else {
+				// node is not the root node
+				
+				tgtScale = maxRad / (a2rad(node.amount) + a2rad(node.maxChildAmount)*2);
+				t.$(me).bubbleScale = tgtScale;
+				
+				parent = getBubble(node);
+				
+				t.$(parent).angle = 0;
+				
+				// find the sum of all radii from node to root
+				rad1 = a2rad(node.amount) * tgtScale + a2rad(node.maxChildAmount) * tgtScale + 20;
+
+				ring = getRing(node);
+				t.$(ring).rad = rad1;
+
+				grandpa = getBubble(node.parent);
+				grandpa.childRotation = -node.centerAngle;
+				
+				// 
+				rad2 = paper.width * 0.5 - Math.max(paper.width * 0.5 - 280 - 
+					tgtScale * (a2rad(node.parent.amount)+a2rad(node.amount)), 
+					tgtScale*a2rad(node.parent.amount)*-1+60);
+
+				radSum = rad1 + rad2;
+				
+				t.$(o).x = paper.width * 0.5 - rad2;
+				t.$(o).y = paper.height * 0.5;
+				
+				rad2 += paper.width * 0.1;
+				
+				ring = getRing(node.parent);
+				t.$(ring).rad = rad2;
+				
+				t.$(parent).rad = rad2;
+				
+				// children
+				for (i in node.children) {
+					cn = node.children[i];
+					// adjust rad and angle for children
+					bubble = getBubble(cn);
+					t.$(bubble).angle = cn.centerAngle + parent.childRotation;
+					t.$(bubble).rad = rad1;
+				}
+				
+				// left and right sibling
+				if (node.left) {
+					sibling = node.left;
+					srad = a2rad(sibling.amount)*tgtScale;
+					sang = -1*Math.asin((me.paper.height*0.5 + srad - 50) / rad2);
+					
+					bubble = getBubble(sibling);
+					t.$(bubble).rad = rad2;
+					t.$(bubble).angle = sang;
+					vis4.log('left = ',sang/Math.PI*180);
+				}
+				if (node.right) {
+					sibling = node.right;
+					srad = a2rad(sibling.amount)*tgtScale;
+					sang = Math.asin((me.paper.height*0.5 + srad - 50) / rad2);
+					
+					bubble = getBubble(sibling);
+					t.$(bubble).rad = rad2;
+					t.$(bubble).angle = sang;
+					vis4.log('right = ',sang/Math.PI*180);
+				}
+			}
+			
+			// now we're going to check all hides and shows
+			for (i in me.displayObjects) {
+				var obj = me.displayObjects[i];
+				if (obj.hideFlag && obj.visible) {
+					// bubble is on stage but shouldn't
+					t.$(obj).alpha = 0; // let it disappear
+					if (obj.className == "bubble" && obj.node.level > 1) t.$(obj).rad = 0; // move to center
+					t.hide(obj); // remove from stage afterwards
+				} else if (!obj.hideFlag) {
+					// bubble is not on stage but should
+					t.$(obj).alpha = 1; 
+					if (!obj.visible) {
+						obj.alpha = 0;
+						t.show(obj);
+					}
+				} 
+			}
+
+			tr = new ns.AnimatedTransitioner(1000);
+			tr.changeLayout(t);
+			me.currentTransition = tr;
+		
+		
+		
+		
+			// old code below this line
+		
+			/***
+		
 			utils.log('changing view to ', node);
 								
 			// mark all existing objects for removal here, will be
@@ -180,7 +383,9 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 
 			// store the last centered bubbles angle if it's on level 1
 			if (me.currentCenter && me.currentCenter.node.level == 1) {
-				me.globRotation = 0-me.currentCenter.node.centerAngle;
+				if (me.currentCenter.node.hasOwnProperty('centerAngle')) {
+					me.globRotation = 0-me.currentCenter.node.centerAngle;
+				}
 			}
 			
 			oa = me.globRotation;
@@ -221,7 +426,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 					bubble.origin = o;
 				}
 				
-				// just children and me
+b				// just children and me
 			} else {
 			
 				var parentBubble, tgtScale = maxRad / (a2rad(node.amount) + a2rad(node.maxChildAmount)*2);
@@ -229,11 +434,11 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 				
 				var sibling, po = new ns.Vector(Math.max(paper.width * 0.5 - 280 - 
 					tgtScale * (a2rad(node.parent.amount)+a2rad(node.amount)), 
-					tgtScale*a2rad(node.parent.amount)*-1+30), o.y), srad, sang;
+					tgtScale*a2rad(node.parent.amount)*-1+60), o.y), srad, sang;
 				
 				// create parent node and give it the new parent origin
 				parentBubble = me.createBubble(node.parent, t, 0, 0, node.parent.color);
-				parentBubble.origin = o;
+				parentBubble.origin = o; // why? only root should have this origin. 
 				
 				// move origin to the left
 				t.$(o).x = po.x;
@@ -304,11 +509,12 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 			
 			
 			utils.log('ready');
-			tr = new ns.AnimatedTransitioner();
+			
+
+			tr = new ns.AnimatedTransitioner(1000);
 			tr.changeLayout(t);
-			me.currentTransition = tr;
-			
-			
+			me.currentTransition = tr;*/
+						
 		} else {
 			utils.log('node '+token+' not found');
 		}
@@ -316,31 +522,36 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 		
 		// step2: 
 	};
+
 	
 	/*
-	 * either creates a new bubble or re-uses a bubble which already exists
+	 * returns the instance of a bubble for a given node
 	 */
-	me.createBubble = function(node, t, rad, angle, color) {
-		var me = this, ns = me.ns, i, b, bubble;
-		
-		for (i in me.bubbles) {
-			b = me.bubbles[i];
-			if (b.node == node) {
-				bubble = b;
-				continue;
-			}
-		}
-		if (!bubble) {
-			// we need to create a new bubble
-			bubble = new ns.Bubble(node, me, new ns.Vector(0,0), 0, 0, color);
-			me.bubbles.push(bubble);
-		}
-		bubble.removable = false;
-		t.$(bubble).rad = rad;
-		t.$(bubble).angle = angle;
-		return bubble;
+	me.getBubble = function(node) {
+		return this.getDisplayObject('bubble', node);
 	};
 	
+	/*
+	 * 
+	 */
+	me.getRing = function(node) {
+		return this.getDisplayObject('ring', node);
+	};
+	
+	me.getDisplayObject = function(className, node) {
+		var me = this, i, o;
+		for (i in me.displayObjects) {
+			o = me.displayObjects[i];
+			if (o.className != className) continue;
+			if (o.node == node) {
+				o.hideFlag = false;
+				return o;
+			}
+		}
+		vis4.log(className+' not found for node', node);
+	};
+	
+	/*
 	me.createRing = function(t, origin, rad, attr) {
 		var me = this, ns = me.ns, 
 			ring = new ns.Ring(me, origin, attr, rad);
@@ -349,6 +560,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 		t.$(ring).rad = rad;
 		return ring;
 	};
+	*/
 	
 	me.initHistory = function() {
 		$.history.init(me.urlChanged.bind(me), { unescape: ",/" });
@@ -381,7 +593,7 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 		
 		if (me.freshUrl === "") me.navigateTo(me.treeRoot);
 		
-		if (me.nodesById.hasOwnProperty(token)) {
+		if (me.nodesById.hasOwnProperty(token) && me.nodesById[token].children.length > 0) {
 			url = me.getUrlForNode(me.nodesById[token]);
 			if (me.freshUrl != url) {
 				// node found but url not perfect
@@ -389,6 +601,8 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 			} else {
 				me.navigateTo(me.nodesById[token], true);
 			}
+		} else {
+			me.navigateTo(me.treeRoot);
 		}
 	};
 	

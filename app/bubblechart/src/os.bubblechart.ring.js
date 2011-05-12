@@ -4,37 +4,44 @@
 /*
  * represents a ring
  */
-OpenSpendings.BubbleChart.Ring = function(bc, o, attr, rad) {
-	this.rad = rad;
-	this.bubblechart = bc;
-	this.attr = attr;
-	this.origin = o;
+OpenSpendings.BubbleChart.Ring = function(node, bc, o, rad, attr) {
 	
-	this.init = function() {
-		var o = this.origin;
-		this.circle = this.bubblechart.paper.circle(o.x, o.y, this.rad).attr(this.attr);
+	var me = this;
+	me.className = "ring";
+	me.rad = rad;
+	me.bc = bc;
+	me.attr = attr;
+	me.origin = o;
+	me.alpha = 1;
+	me.visible = false;
+	me.node = node;
+	
+	me.init = function() {
+		//var o = me.origin;
 	};
 	
-	this.draw = function() {
-		var o = this.origin;
-		this.circle.attr({ cx: o.x, cy: o.y, r: this.rad });
+	me.draw = function() {
+		var me = this, o = me.origin;
+		if (!me.visible) return;
+		me.circle.attr({ cx: o.x, cy: o.y, r: me.rad, 'stroke-opacity': me.alpha });
 	};
 	
 	/*
 	 * removes all raphael nodes from stage
 	 */
-	this.remove = function() {
+	me.hide = function() {
 		var me = this;
 		me.circle.remove();
+		me.visible = false;
 	};
 	
-	/*
-	 * wrapper for raphaels toBack() function which moves an element to the background
-	 */ 
-	this.toBack = function() {
+	me.show = function() {
 		var me = this;
+		me.circle = me.bc.paper.circle(o.x, o.y, me.rad).attr(me.attr);
+		me.visible = true;
 		me.circle.toBack();
 	};
 	
-	this.init();
+	
+	me.init();
 };
