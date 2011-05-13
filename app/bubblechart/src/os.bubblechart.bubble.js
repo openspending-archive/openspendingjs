@@ -1,5 +1,5 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings */
+/*global Raphael, TWEEN, OpenSpendings, vis4 */
 
 /*
  * represents a bubble
@@ -43,6 +43,19 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		me.pos = new OpenSpendings.BubbleChart.Vector(0,0);
 		me.getXY();
 		
+		var breakdown = [], sum = 0, i, val;
+		for (i=0; i<3; i++) {
+			val = Math.random();
+			breakdown.push(val);
+			sum += val;
+		}
+		for (i in breakdown) {
+			breakdown[i] = breakdown[i] / sum;
+		}
+		vis4.log(breakdown);
+		me.breakdown = breakdown;
+		
+		me.breakdownOpacities = [0.25, 0.59, 0.4];
 		
 		var showIcon = false; //this.bubbleRad * this.bc.bubbleScale > 30;
 		// create label
@@ -65,7 +78,8 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	 */
 	me.onclick = function(e) {
 		var me = this;
-		if (me.node.children.length > 0) me.bc.navigateTo(me.node);
+		if (me.node.children.length > 0) 
+		me.bc.navigateTo(me.node);
 	};
 	
 	me.onhover = function(e) {
@@ -89,6 +103,29 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 		if (!me.visible) return;
 		
 		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r, 'fill-opacity': me.alpha });
+		if (me.node.children.length > 0) me.dashedBorder.attr({ cx: me.pos.x, cy: me.pos.y, r: r*0.85, 'stroke-opacity': me.alpha * 0.8 });
+		else me.dashedBorder.attr({ 'stroke-opacity': 0 });
+
+		// draw breakdown chart
+		var i,x=me.pos.x,y=me.pos.y,x0,x1,x2,x3,y0,y1,y2,y3,ir = r*0.85, oa = -Math.PI * 0.5, da;
+		for (i in me.breakdown) {
+			da = me.breakdown[i] * Math.PI * 2;
+			x0 = x+Math.cos((oa))*ir; 
+			y0 = y+Math.sin((oa))*ir;
+			x1 = x+Math.cos((oa+da))*ir;
+			y1 = y+Math.sin((oa+da))*ir;
+			x2 = x+Math.cos((oa+da))*r;
+			y2 = y+Math.sin((oa+da))*r;
+			x3 = x+Math.cos((oa))*r;
+			y3 = y+Math.sin((oa))*r;
+			oa += da;
+			
+			var path = "M"+x0+" "+y0+" A"+ir+","+ir+" 0 "+(da > Math.PI ? "1,1" : "0,1")+" "+x1+","+y1+" L"+x2+" "+y2+" A"+r+","+r+" 0 "+(da > Math.PI ? "1,0" : "0,0")+" "+x3+" "+y3+" Z";
+			
+			me.breakdownArcs[i].attr({ path: path, 'stroke-opacity': me.alpha*0.2, 'fill-opacity': me.breakdownOpacities[i]*me.alpha });
+		}
+		
+
 		//me.label.attr({ x: me.pos.x, y: me.pos.y, 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
 		if (r < 20) me.label.hide();
 		else {
@@ -112,11 +149,16 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	 * removes all visible elements from the page
 	 */
 	this.hide = function() {
-		var me = this;
+		var me = this, i;
 		me.circle.remove();
+		me.dashedBorder.remove();
 		me.label.remove();
 		//$('#bubble-chart')
 		me.visible = false;
+		for (i in me.breakdownArcs) {
+			me.breakdownArcs[i].remove();
+		}
+		
 		//if (me.icon) me.icon.remove();
 	};
 	
@@ -124,22 +166,41 @@ OpenSpendings.BubbleChart.Bubble = function(node, bubblechart, origin, radius, a
 	 * adds all visible elements to the page
 	 */
 	this.show = function() {
-		var me = this;
+		var me = this, i;
 		
 		me.circle = me.paper.circle(me.pos.x, me.pos.y, me.bubbleRad * me.bc.bubbleScale)
 			.attr({ stroke: false, fill: me.color });
 
-		$(me.circle.node).css({ cursor: 'pointer'});
-
+		me.dashedBorder = me.paper.circle(me.pos.x, me.pos.y,  me.bubbleRad * me.bc.bubbleScale-3)
+			.attr({ stroke: '#fff', 'stroke-opacity': me.alpha * 0.4,  'stroke-dasharray': "- ", fill: false });
+		
 		me.label = $('<div class="label"><div class="amount">'+utils.formatNumber(me.node.amount)+'</div><div class="desc">'+me.node.label+'</div></div>');
 		$('#bubble-chart').append(me.label);
 		
-		var mgroup = new me.ns.MouseEventGroup(me, [me.circle.node, me.label]);
+		if (me.node.children.length > 0) {
+			$(me.circle.node).css({ cursor: 'pointer'});
+			$(me.label).css({ cursor: 'pointer'});
+		}	
+		
+		me.breakdownArcs = [];
+		
+		for (i in me.breakdown) {
+			var arc = me.paper.path("M 0 0 L 2 2")
+				.attr({ fill: '#fff', 'fill-opacity': Math.random()*0.4 + 0.3, stroke: '#fff'});
+			me.breakdownArcs.push(arc);
+		}
+		
+		var list = [me.circle.node, me.label];
+		for (i in me.breakdownArcs) {
+			list.push(me.breakdownArcs[i].node);
+		}
+		var mgroup = new me.ns.MouseEventGroup(me, list);
 		mgroup.click(me.onclick.bind(me));
 		mgroup.hover(me.onhover.bind(me));
 		mgroup.unhover(me.onunhover.bind(me));
 		
 		me.visible = true;
+		
 	};
 	
 	this.init();
