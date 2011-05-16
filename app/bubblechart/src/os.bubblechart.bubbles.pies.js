@@ -79,8 +79,9 @@ OpenSpendings.BubbleChart.Bubbles.Pies = function(node, bubblechart, origin, rad
 	 */
 	me.onclick = function(e) {
 		var me = this;
-		if (me.node.children.length > 0) 
-		me.bc.navigateTo(me.node);
+		if (me.node.children.length > 0) {
+			me.bc.navigateTo(me.node);
+		}
 	};
 	
 	me.onhover = function(e) {
