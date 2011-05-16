@@ -1,38 +1,33 @@
+/*jshint undef: true, browser:true, jquery: true, devel: true */
+/*global OpenSpendings, vis4 */
 
 /*
  * loads the data and initializes the bubblechart
  * you need to include the bubblechart.min.js first
  */
-OpenSpendings.BubbleChart.Loader = function() {
+OpenSpendings.BubbleChart.Loader = function(config) {
 
 	var me = this;
 	
-	me.drilldowns = ['cofog1', 'cofog2', 'cofog3'];
-	
-	me.rootNode = rootNode = {label: 'Grant Total'};
-	
+	me.config = config;
+		
 	/*
 	 * is called by the constructor of the Loader
 	 */
 	me.loadData = function() {
-        var me = this,
-        	api_url = 'http://127.0.0.1:5000/api/',
-        	dataset = 'cra',
-        	cuts = ['time.from.year:2009'],
-        	// We test with test data. To use it with a  wdmmg instance.
-        	// set testDataPath to undefined. and use change the
-        	// buildBubbleChartCallback to 'buildBubbleChartCallback'
-        	testDataPath = undefined;//'data/example-aggregate.json';
+        var me = this;
+        
+        me.rootNode = { label: me.config.rootNodeLabel };
 		                                         
-         OpenSpendings.BubbleChart.getTree(
-         	api_url, 
-         	dataset,
-            me.drilldowns, 
-            cuts,
-            me.dataLoaded.bind(me),
-            me.rootNode, 
-            testDataPath
-        );
+		OpenSpendings.BubbleChart.getTree(
+			me.config.apiUrl, 
+			me.config.dataset,
+			me.config.drilldowns, 
+			me.config.cuts,
+			me.dataLoaded.bind(me),
+			me.rootNode, 
+			me.config.testDataPath
+		);
 	};
 	
 	/*
@@ -40,7 +35,7 @@ OpenSpendings.BubbleChart.Loader = function() {
 	 */
 	me.dataLoaded = function(data) {
 		var me = this, 
-			tree = OpenSpendings.BubbleChart.buildTree(data, me.drilldowns, me.rootNode);
+			tree = OpenSpendings.BubbleChart.buildTree(data, me.config.drilldowns, me.rootNode);
 		me.run(tree);
 	};
 	
@@ -93,11 +88,7 @@ OpenSpendings.BubbleChart.Loader = function() {
 	 * this function is called by the bubbles if the user hovers over them
 	 */
 	me.setTooltip = function(event) {
-		var tt = $('#bubble-chart-wrapper .tooltip'), tthtml = '<div class="header"><div class="icon"></div><div class="title">'
-			+event.node.label+' ('+event.node.id+')</div><div class="amount">'
-			+OpenSpendings.BubbleChart.Utils.formatNumber(event.node.amount)+'&euro;</div></div>'
-			+'<div class="row"><a>More Information</a></div>'
-			+'<div class="row"><a>Add to Compare-O-Tron</a></div>';
+		var tt = $('#bubble-chart-wrapper .tooltip'), tthtml = '<div class="header"><div class="icon"></div><div class="title">'+event.node.label+' ('+event.node.id+')</div><div class="amount">'+OpenSpendings.BubbleChart.Utils.formatNumber(event.node.amount)+'&euro;</div></div>'+'<div class="row"><a>More Information</a></div>'+'<div class="row"><a>Add to Compare-O-Tron</a></div>';
 		
 		if (tt.length > 0) {
 			tt.html(tthtml);
@@ -108,7 +99,7 @@ OpenSpendings.BubbleChart.Loader = function() {
 		$('#bubble-chart-wrapper .tooltip .icon').css({ background: event.target.color });
 		event.mouseEventGroup.addMember(tt);
 		tt.css({ left: (event.position.x-tt.width()*0.5)+'px', top: (event.position.y+ 10)+'px', opacity: 0 });
-		tooltipTimer = new vis4.DelayedTask(2000, this, showTooltip, tt);
+		me.tooltipTimer = new vis4.DelayedTask(2000, this, me.showTooltip.bind(me), tt);
 	};
 	
 	/*
@@ -127,7 +118,7 @@ OpenSpendings.BubbleChart.Loader = function() {
 		tt.css({ opacity: 0, left: '-500px' });
 		tt.hide();
 		event.mouseEventGroup.removeMember(tt);
-		tooltipTimer.cancel();
+		me.tooltipTimer.cancel();
 	};
 
 	/*
@@ -137,7 +128,7 @@ OpenSpendings.BubbleChart.Loader = function() {
 		var me = this;
 		// initialize bubble chart
 		window.bubbleChart = new OpenSpendings.BubbleChart(
-			'#bubble-chart', 
+			me.config.container, 
 			data, 
 			me.setTooltip.bind(me), 
 			me.hideTooltip.bind(me),
@@ -148,11 +139,3 @@ OpenSpendings.BubbleChart.Loader = function() {
 	me.loadData();
 
 };
-
-
-$(function() {
-	// wait till jQuery is ready
-	
-	new OpenSpendings.BubbleChart.Loader();
-	
-});
