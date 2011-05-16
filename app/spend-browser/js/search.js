@@ -30,7 +30,7 @@ OpenSpending.App.SpendBrowser = (function($) {
         );
         manager.addWidget(new OpenSpending.Search.CurrentSearchWidget({
           id: 'currentsearch',
-          target: config.target + ' .navigator .filters-current .list',
+          target: config.target + ' .navigator .filters-current .list'
         }));
         manager.init();
 
@@ -75,39 +75,17 @@ OpenSpending.App.SpendBrowser = (function($) {
         $('form').submit();
       },
 
-      tmplNavigator: ' \
-        <div class="navigator"> \
-          <div class="filters-current"> \
-            <h2>Filters</h2> \
-            <div class="list"> \
-            </div> \
-          </div> \
-          <div class="form"> \
-            <h2>Search</h2> \
-            <form> \
-              <input name="recipient" type="text" value="" placeholder="Recipient ..." /> \
-              <button type="submit" name="search">Search &raquo;</button> \
-              <a href="#" class="clear-search">Clear Search</a> \
-            </form> \
-             \
-            <div class="facets"> \
-              <div class="department-facet"></div> \
-            </div> \
-          </div> \
-        </div> \
-        ',
+      tmplNavigator: (function(){
+        var html = $("#tmplNavigator").html();
+        $("#tmplNavigator").remove();
+        return html;
+      }()),
       
-      tmplResults: ' \
-        <div class="results"> \
-          <div class="messages"> \
-          </div> \
-          <div class="num-entries"> \
-            <span> \
-            </span> \
-          </div> \
-          <div class="result-list"></div> \
-        </div> \
-        '
+      tmplResults:  (function(){
+        var html = $("#tmplResults").html();
+        $("#tmplResults").remove();
+        return html;
+      }())
     };
 
     return my;
