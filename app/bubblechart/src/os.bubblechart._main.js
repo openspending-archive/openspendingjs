@@ -97,9 +97,9 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 		}
 		vis4.log(node.id, node.color, node);
 		// lighten up the color if there are no children
-		if (node.children.length === 0) {
+		if (node.children.length < 1) {
 			vis4.log(node.color);
-			node.color = vis4color.fromHex(node.color).lightness('*1.1').x;
+			node.color = vis4color.fromHex(node.color).saturation('*.86').x;
 		}
 		
 		if (node.level > 0) {
@@ -158,6 +158,9 @@ OpenSpendings.BubbleChart.Main = function(container, onHover, onUnHover, style) 
 	me.initBubbles = function() {
 		vis4.log('initBubbles');
 		var me = this, rt = me.treeRoot;
+		
+		// chosse one of them for the vis
+		OpenSpendings.BubbleChart.Bubble = OpenSpendings.BubbleChart.Bubbles.Multi;
 		
 		var rootBubble = me.createBubble(rt, me.origin, 0, 0, rt.color);
 		me.traverseBubbles(rootBubble);
