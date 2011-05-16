@@ -143,8 +143,26 @@
 			);       
        	};
 
-        OpenSpendings.BubbleChart.getTree('http://127.0.0.1:5000/api/', 'departments',
-                                        ['volume', 'title', 'chapter'], ['year:2010'], 'buildBubbleChart');
+        var api_url = 'http://127.0.0.1:5000/api/';
+        var dataset = 'cra'
+        var drilldowns = ['cofog1', 'cofog2', 'cofog3'];
+        var cuts = ['time.from.year:2009'];
+        var rootNode = {label: 'Grant Total'};
+        // We test with test data. To use it with a  wdmmg instance.
+        // set testDataPath to undefined. and use change the
+        // buildBubbleChartCallback to 'buildBubbleChartCallback'
+        var testDataPath = undefined;//'data/example-aggregate.json';
+                                        
+        var buildBubbleChartCallback = function(data) {
+            var tree = OpenSpendings.BubbleChart.buildTree(data, drilldowns,
+                                                           rootNode);
+            buildBubbleChart(tree);
+        };
+
+        OpenSpendings.BubbleChart.getTree(api_url, dataset,
+                                          drilldowns, cuts,
+                                          buildBubbleChartCallback,
+                                          rootNode, testDataPath);
                                         
 	</script>
 </head>
