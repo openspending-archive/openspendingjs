@@ -55,8 +55,8 @@ OpenSpendings.BubbleChart.Bubbles.Multi = function(node, bubblechart, origin, ra
 		}
 		me.breakdown = breakdown;
 		me.breakdownColors = [
-			me.node.color, vis4color.fromHex(me.node.color).lightness('*1.2').x,
-			vis4color.fromHex(me.node.color).lightness('*1.4').x
+			me.node.color, vis4color.fromHex(me.node.color).lightness(0.8).x,
+			vis4color.fromHex(me.node.color).lightness(0.9).x
 		];
 		
 		me.govRad = utils.amount2rad(me.node.amount * breakdown[0]);
