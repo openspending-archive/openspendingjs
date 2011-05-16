@@ -51,13 +51,8 @@
 	
 	</style>
 	<script type="text/javascript">
-        var data = OpenSpendings.BubbleChart.getTree('http://localhost:5000/api', 
-                             'cra', 
-                             ['time.from.year:2009'],
-                             ['cofog1', 'cofog2', 'cofog3'],
-                             'data/example-aggregate.json'); 
        
-		$(function() {
+		var buildBubbleChart = function(data) {
 			
 			var style = {
 				'root': { // Total
@@ -146,9 +141,11 @@
 				hideTooltip,
 				style
 			);       
-       	});
-        
+       	};
 
+        OpenSpendings.BubbleChart.getTree('http://127.0.0.1:5000/api/', 'departments',
+                                        ['volume', 'title', 'chapter'], ['year:2010'], 'buildBubbleChart');
+                                        
 	</script>
 </head>
 <body>

@@ -7,31 +7,95 @@
  * @param {string} api_url The url to the api,
  * e.g. 'http://openspending.org/api'
  * @param {string} dataset The name of the dataset, e.g. 'cra'
- * @param {array} cuts The array with cuts, each element in the
- * format 'key:value', e.g. ['time.from.year:2010']
  * @param {array} drilldowns the dimensions to drill down to, e.g.
  * ['cofog1', 'cofog2', 'cofog3']
- * @param {string} test_data_path (optional) Pass the path to
- * a json sample file for tests.
+ * @param {array} cuts (optional) The array with cuts, each element in the
+ * format 'key:value', e.g. ['time.from.year:2010']
+ * @param {function} callback A function that will accept the root node
+ * and builds the bubble chart.
+ * @param {object} rootNode (optional) Pass an object with properties
+ * for the root node. Maybe you want to set 'color' (default: #555) or
+ * the 'label' (default: 'Total')
+ * @param {object} testDataPath (optional) An object with json (not jsonp)
+ * test data. For testing only.
  **/
 
-OpenSpendings.BubbleChart.getTree = function(api_url, dataset, cuts, drilldowns, test_data_path) {
+OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
+                                             cuts, callback, rootNode,
+                                             testDataPath) {
 
     //construct the url
     var url = api_url,
-        data = '',
-        tree_root;
+        data = '';
+
     url = url + '/2/aggregate';
-
     data = 'dataset=' + dataset;
+    data = data + "&drilldown=" + drilldowns.join('|');
 
-    cuts.forEach(function(cut){
-        data = data + "&cut=" + cut;
-    });
+    if (cuts !== undefined) {
+        cuts = cuts.join('|');
+        data = data + "&cut=" + cuts;
+    }
 
-    drilldowns.forEach(function(drilldown){
-        data = data + "&drilldown=" + drilldown;
-    });
+    if (test_data_path !== undefined) {
+        url = test_data_path;
+    }
+
+    var buildTreeCallback = function(data) {
+        tree_root = OpenSpendings.bubblechart.buildTree(data, drilldowns,
+                                                        rootNode);
+        callback(tree_root);};
+
+    if (testDataPath !== undefined) {
+        $.ajax({
+            url: testDataPath,
+            data: data,
+            dataType: 'json',
+            error: function() {allert(error);},
+            success: buildTreeCallback});
+    } else {
+        $.ajax({
+            url: url,
+            data: data,
+            dataType: 'jsonp',
+            error: function() {alert(error);},
+            jsonpCallback: buildTreeCallback });
+    }
+};
+
+
+/**
+ * Build a tree form the drill down entries
+ *
+ * @public buildTree
+ *
+ * @param {object} data The json object responded from the
+ * aggregate api.
+ * @param {array} drilldowns List of drilldown criterial (strings)
+ * @param {object} rootNode (optional) Pass an object with properties
+ * for the root node. Maybe you want to set 'color' (default: #555) or
+ * the 'label' (default: 'Total')
+ **/
+
+OpenSpendings.bubblechart.buildTree = function(data, drilldowns, rootNode) {
+
+    var entries = data.drilldown,
+        nodes = {},
+        root = {id: 'root',
+                label: 'Total',
+                color: '#555',
+                amount: 0.0,
+                children: [],
+                level: 0};
+
+    if (rootNode !== undefined) {
+        // extend root with the properties of rootNode
+        $.extend(true, root, rootNode);
+    }
+
+    if(data.errors !== undefined) {
+        throw "Error";
+    }
 
     /**
      *  Add a node for each drilldown to the 'nodes' object
@@ -91,48 +155,11 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, cuts, drilldowns,
         });
     };
 
-    /**
-     * Build a tree form the drill down entries
-     *
-     * @param {object} The json object responded from the
-     * aggregate api.
-     *
-     */
-    var buildTree = function(data) {
+    entries.forEach(function(entry) {
+        processEntry(entry, nodes);
+    });
 
-        var entries = data.drilldown,
-            nodes = {};
-
-        if(data.errors !== undefined) {
-            throw "Error";
-            }
-
-        nodes.root = {id: 'root',
-                      label: 'Total',
-                      color: '#555',
-                      amount: 0.0,
-                      children: [],
-                      level: 0};
-
-        entries.forEach(function(entry) {
-            processEntry(entry, nodes);
-        });
-
-        // sum up the amount for the root node
-        tree_root = nodes.root;
-    };
-
-    if (test_data_path !== undefined) {
-        url = test_data_path;
-    }
-
-    $.ajax({
-        url: url,
-        data: data,
-        async: false,
-        dataType: 'json',
-        error: function() {alert(error);},
-        success: buildTree});
-
-    return tree_root;
+    return nodes.root;
 };
+
+
