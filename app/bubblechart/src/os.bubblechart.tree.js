@@ -13,16 +13,12 @@
  * format 'key:value', e.g. ['time.from.year:2010']
  * @param {function} callback A function that will accept the root node
  * and builds the bubble chart.
- * @param {object} rootNode (optional) Pass an object with properties
- * for the root node. Maybe you want to set 'color' (default: #555) or
- * the 'label' (default: 'Total')
  * @param {object} testDataPath (optional) An object with json (not jsonp)
  * test data. For testing only.
  **/
 
 OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
-                                             cuts, callback, rootNode,
-                                             testDataPath) {
+                                             cuts, callback, testDataPath) {
 
     //construct the url
     var url = api_url,
@@ -37,29 +33,18 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
         data = data + "&cut=" + cuts;
     }
 
-    if (test_data_path !== undefined) {
-        url = test_data_path;
-    }
-
-    var buildTreeCallback = function(data) {
-        tree_root = OpenSpendings.bubblechart.buildTree(data, drilldowns,
-                                                        rootNode);
-        callback(tree_root);};
-
     if (testDataPath !== undefined) {
         $.ajax({
             url: testDataPath,
             data: data,
             dataType: 'json',
-            error: function() {allert(error);},
-            success: buildTreeCallback});
+            success: callback});
     } else {
         $.ajax({
             url: url,
             data: data,
             dataType: 'jsonp',
-            error: function() {alert(error);},
-            jsonpCallback: buildTreeCallback });
+            jsonpCallback: callback });
     }
 };
 
@@ -77,7 +62,7 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
  * the 'label' (default: 'Total')
  **/
 
-OpenSpendings.bubblechart.buildTree = function(data, drilldowns, rootNode) {
+OpenSpendings.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
 
     var entries = data.drilldown,
         nodes = {},
