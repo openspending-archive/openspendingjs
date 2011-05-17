@@ -14,12 +14,13 @@ DATE=`date +%s`
 TMP=tmp_$DATE
 TMPFILE=$TMP/tmp.js
 mkdir $TMP
-for f in $SRC
+touch $TMPFILE
+
+while read LINE
 do
-  #echo "Checking $f"
-  touch $TMPFILE
-  cat $f >> $TMPFILE
-done
+    cat $LINE >> $TMPFILE
+done < includes.txt
+
 
 if [ "$1" == "debug" ]; then
   cp $TMPFILE $OUTFILE
