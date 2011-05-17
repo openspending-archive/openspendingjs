@@ -15,9 +15,9 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	 * is called by the constructor of the Loader
 	 */
 	me.loadData = function() {
-            var me = this;
+        var me = this;
 
-            me.rootNode = { label: me.config.rootNodeLabel };
+        me.rootNode = { label: me.config.rootNodeLabel };
 
 	    OpenSpendings.BubbleChart.getTree(
 			me.config.apiUrl,
@@ -126,14 +126,20 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	me.run = function(data) {
 		var me = this;
 		// initialize bubble chart
-		window.bubbleChart = new OpenSpendings.BubbleChart(
-			me.config.container,
-			data,
+		var bubbleChart = new OpenSpendings.BubbleChart(
+			me.config,
 			me.setTooltip.bind(me),
-			me.hideTooltip.bind(me),
-			me.bubbleStyles
+			me.hideTooltip.bind(me)
 		);
+		bubbleChart.setData(data);
+		// we'll store the instance for debugging purposes
+		window.bubblechart = bubbleChart;
 	};
+
+	// override bubble styles
+	if (me.config.hasOwnProperty('bubbleStyles')) {
+		me.bubbleStyles = me.config.bubbleStyles;
+	}
 
 	me.loadData();
 

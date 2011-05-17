@@ -1,6 +1,5 @@
 src/os.bubblechart.js
 src/os.bubblechart.loader.js
-src/os.bubblechart.main.js
 src/os.bubblechart.bubble.js
 src/os.bubblechart.bubbles.donut.js
 src/os.bubblechart.bubbles.multi.js

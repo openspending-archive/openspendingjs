@@ -54,6 +54,10 @@
        
 		$(function() {
 			
+			var yearChange = function(year) {
+				window.alert('year changed to '+year);
+			};
+			
 			var config = {
 				// todo: we should really document all the settings
 				apiUrl: 'http://127.0.0.1:5000/api/',
@@ -68,7 +72,14 @@
 				// todo: we should really document all the settings
 				rootNodeLabel: 'Grant total',
 				// jquery selector code to identify the container div 
-				container: '#bubble-chart'
+				container: '#bubble-chart',
+				// 
+				initYear: 2010,
+				// this callback is invoked as soon as the year changes by url
+				yearChangeHandler: yearChange,
+				// defines what class is used to render the bubbles
+				// possible values are pie,donut,plain,multi
+				bubbleType: 'pie'
 			}
 			
 			new OpenSpendings.BubbleChart.Loader(config);
