@@ -1,3 +1,6 @@
+/*jshint undef: true, browser:true, jquery: true, devel: true */
+/*global Raphael, TWEEN, OpenSpendings, vis4 */
+
 /**
  * Call the wdmmg aggregate api function (/api/2/aggregate)
  * and build a tree that can be used by for the bubble charts
@@ -22,7 +25,8 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
 
     //construct the url
     var url = api_url,
-        data = '';
+        data = '',
+        dataType = 'jsonp';
 
     url = url + '/2/aggregate';
     data = 'dataset=' + dataset;
@@ -34,18 +38,15 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
     }
 
     if (testDataPath !== undefined) {
-        $.ajax({
-            url: testDataPath,
-            data: data,
-            dataType: 'json',
-            success: callback});
-    } else {
-        $.ajax({
-            url: url,
-            data: data,
-            dataType: 'jsonp',
-            jsonpCallback: callback });
+        url = testDataPath;
+        dataType = 'json';
     }
+    $.ajax({
+        url: url,
+        data: data,
+        dataType: dataType,
+        success: callback });
+
 };
 
 
@@ -56,7 +57,7 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
  *
  * @param {object} data The json object responded from the
  * aggregate api.
- * @param {array} drilldowns List of drilldown criterial (strings)
+ * @param {array} drilldowns List of drilldown criteria (strings)
  * @param {object} rootNode (optional) Pass an object with properties
  * for the root node. Maybe you want to set 'color' (default: #555) or
  * the 'label' (default: 'Total')
@@ -77,6 +78,7 @@ OpenSpendings.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
         // extend root with the properties of rootNode
         $.extend(true, root, rootNode);
     }
+    nodes.root = root;
 
     if(data.errors !== undefined) {
         throw "Error";
@@ -146,5 +148,3 @@ OpenSpendings.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
 
     return nodes.root;
 };
-
-
