@@ -59,7 +59,8 @@
 				apiUrl: 'http://127.0.0.1:5000/api/',
 				// todo: ...
 				testDataPath: 'data/example-aggregate.json',
-				// todo: we should really document all the settings		
+				// Set testDataPath to undefined to do real calls
+                                // to the api.
 				dataset: 'cra',
 				// todo: we should really document all the settings		
 				drilldowns: ['cofog1', 'cofog2', 'cofog3'],
@@ -70,7 +71,7 @@
 				// jquery selector code to identify the container div 
 				container: '#bubble-chart'
 			}
-			
+
 			new OpenSpendings.BubbleChart.Loader(config);
 			
 		});
