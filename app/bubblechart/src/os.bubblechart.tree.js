@@ -1,5 +1,5 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings, vis4 */
+/*global Raphael, TWEEN, OpenSpending, vis4 */
 
 /**
  * Call the wdmmg aggregate api function (/api/2/aggregate)
@@ -20,7 +20,7 @@
  * test data. For testing only.
  **/
 
-OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
+OpenSpending.BubbleChart.getTree = function(api_url, dataset, drilldowns,
                                              cuts, callback, testDataPath) {
 
     //construct the url
@@ -63,7 +63,7 @@ OpenSpendings.BubbleChart.getTree = function(api_url, dataset, drilldowns,
  * the 'label' (default: 'Total')
  **/
 
-OpenSpendings.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
+OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
 
     var entries = data.drilldown,
         nodes = {},
@@ -100,18 +100,21 @@ OpenSpendings.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
     var processEntry = function(entry, nodes) {
 
         var parent = nodes.root,
-            level = 0;
+            level = 0,
+            i, drilldown,
+            current,
+            node;
 
-        drilldowns.forEach(function(drilldown) {
-            var current,
-                node;
+		for (i in drilldowns) {
+			drilldown = drilldowns[i];
+
             level = level + 1;
             current = entry[drilldown];
 
             // Don't process the drilldowns further if a
             // drilldown has no value
             if(! current) {
-                return;
+                break;
             }
 
             node = nodes[current.name];
@@ -139,7 +142,7 @@ OpenSpendings.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
             }
 
             parent = node;
-        });
+        }
     };
 
     entries.forEach(function(entry) {

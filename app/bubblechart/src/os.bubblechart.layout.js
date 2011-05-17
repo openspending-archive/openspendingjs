@@ -1,11 +1,11 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings */
+/*global Raphael, TWEEN, OpenSpending */
 
 /*
  * stores visual attributes of all elements in the visualization
  * 
  */
-OpenSpendings.BubbleChart.Layout = function() {
+OpenSpending.BubbleChart.Layout = function() {
 
 	var me = this;
 	me.objects = [];

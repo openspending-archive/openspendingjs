@@ -1,10 +1,10 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings */
+/*global Raphael, TWEEN, OpenSpending */
 
 /*
  * represents a ring
  */
-OpenSpendings.BubbleChart.Ring = function(node, bc, o, rad, attr) {
+OpenSpending.BubbleChart.Ring = function(node, bc, o, rad, attr) {
 	
 	var me = this;
 	me.className = "ring";

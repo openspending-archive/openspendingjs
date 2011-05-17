@@ -1,5 +1,5 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings, vis4 */
+/*global Raphael, TWEEN, OpenSpending, vis4 */
 
 /*
  * transforms the current display to a new layout
@@ -8,7 +8,7 @@
  * - a node appears at the beginning of the transition
  * - a node disappears at the end of the transtion
  */
-OpenSpendings.BubbleChart.SimpleTransitioner = function() {
+OpenSpending.BubbleChart.SimpleTransitioner = function() {
 	
 	var me = this;
 	
@@ -48,7 +48,7 @@ OpenSpendings.BubbleChart.SimpleTransitioner = function() {
 	
 };
 
-OpenSpendings.BubbleChart.AnimatedTransitioner = function(duration) {
+OpenSpending.BubbleChart.AnimatedTransitioner = function(duration) {
 	
 	var me = this;
 	

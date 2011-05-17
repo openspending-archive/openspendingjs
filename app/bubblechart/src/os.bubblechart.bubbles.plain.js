@@ -1,12 +1,12 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings, vis4 */
+/*global Raphael, TWEEN, OpenSpending, vis4 */
 
 /*
  * represents a bubble
  */
-OpenSpendings.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, radius, angle, color) {
+OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, radius, angle, color) {
 
-	var ns = OpenSpendings.BubbleChart, utils = ns.Utils, me = this;
+	var ns = OpenSpending.BubbleChart, utils = ns.Utils, me = this;
 	me.className = "bubble";
 	me.node = node;
 	me.paper = bubblechart.paper;
@@ -40,7 +40,7 @@ OpenSpendings.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, ra
 	 */
 	me.init = function() {
 		var me = this;
-		me.pos = new OpenSpendings.BubbleChart.Vector(0,0);
+		me.pos = me.ns.Vector(0,0);
 		me.getXY();
 		
 		var showIcon = false; //this.bubbleRad * this.bc.bubbleScale > 30;

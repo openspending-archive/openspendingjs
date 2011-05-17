@@ -1,15 +1,17 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global OpenSpendings, vis4 */
+/*global OpenSpending, vis4 */
 
 /*
  * loads the data and initializes the bubblechart
  * you need to include the bubblechart.min.js first
  */
-OpenSpendings.BubbleChart.Loader = function(config) {
+OpenSpending.BubbleChart.Loader = function(config) {
 
 	var me = this;
 
 	me.config = config;
+
+	me.ns = OpenSpending.BubbleChart;
 
 	/*
 	 * is called by the constructor of the Loader
@@ -19,7 +21,7 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 
         me.rootNode = { label: me.config.rootNodeLabel };
 
-	    OpenSpendings.BubbleChart.getTree(
+	    OpenSpending.BubbleChart.getTree(
 			me.config.apiUrl,
 			me.config.dataset,
 			me.config.drilldowns,
@@ -34,7 +36,7 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	 */
 	me.dataLoaded = function(data) {
 		var me = this,
-			tree = OpenSpendings.BubbleChart.buildTree(data, me.config.drilldowns, me.rootNode);
+			tree = OpenSpending.BubbleChart.buildTree(data, me.config.drilldowns, me.rootNode);
 		me.run(tree);
 	};
 
@@ -42,7 +44,7 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	 * defines the local bubble styles (which override and extend the
 	 * global styles that are passed along with the data nodes)
 	 */
-	me.bubbleStyles = {
+	me.defaultBubbleStyles = {
 		'root': { // Total
 			color: '#999999'
 		},
@@ -87,7 +89,7 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	 * this function is called by the bubbles if the user hovers over them
 	 */
 	me.setTooltip = function(event) {
-		var tt = $('#bubble-chart-wrapper .tooltip'), tthtml = '<div class="header"><div class="icon"></div><div class="title">'+event.node.label+' ('+event.node.id+')</div><div class="amount">'+OpenSpendings.BubbleChart.Utils.formatNumber(event.node.amount)+'&euro;</div></div>'+'<div class="row"><a>More Information</a></div>'+'<div class="row"><a>Add to Compare-O-Tron</a></div>';
+		var tt = $('#bubble-chart-wrapper .tooltip'), tthtml = '<div class="header"><div class="icon"></div><div class="title">'+event.node.label+' ('+event.node.id+')</div><div class="amount">'+me.ns.Utils.formatNumber(event.node.amount)+'&euro;</div></div>'+'<div class="row"><a>More Information</a></div>'+'<div class="row"><a>Add to Compare-O-Tron</a></div>';
 
 		if (tt.length > 0) {
 			tt.html(tthtml);
@@ -126,7 +128,7 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	me.run = function(data) {
 		var me = this;
 		// initialize bubble chart
-		var bubbleChart = new OpenSpendings.BubbleChart(
+		var bubbleChart = new OpenSpending.BubbleChart(
 			me.config,
 			me.setTooltip.bind(me),
 			me.hideTooltip.bind(me)
@@ -137,8 +139,8 @@ OpenSpendings.BubbleChart.Loader = function(config) {
 	};
 
 	// override bubble styles
-	if (me.config.hasOwnProperty('bubbleStyles')) {
-		me.bubbleStyles = me.config.bubbleStyles;
+	if (!me.config.hasOwnProperty('bubbleStyles')) {
+		me.config.bubbleStyles = me.defaultBubbleStyles;
 	}
 
 	me.loadData();

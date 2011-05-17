@@ -7,14 +7,16 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
 /*global Raphael, TWEEN, vis4, vis4color */
 
-var OpenSpendings = OpenSpendings ? OpenSpendings : {}; 
+var OpenSpending = OpenSpending ? OpenSpending : {}; 
 
 
-OpenSpendings.BubbleChart = function(config, onHover, onUnHover) {
+OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	
 	var me = this;
 	
 	me.$container = $(config.container);	
+	
+	me.config = config;
 	
 	/*
 	 * this function is called when the user hovers a bubble
@@ -28,7 +30,7 @@ OpenSpendings.BubbleChart = function(config, onHover, onUnHover) {
 	 */
 	me.style = config.bubbleStyles;
 	
-	me.ns = OpenSpendings.BubbleChart;
+	me.ns = OpenSpending.BubbleChart;
 	
 	me.nodesById = {};
 	
@@ -136,12 +138,12 @@ OpenSpendings.BubbleChart = function(config, onHover, onUnHover) {
 		var me = this, $c = me.$container, rt = me.treeRoot,
 			paper = Raphael($c[0], $c.width(), $c.height()),
 			maxRad = Math.min(paper.width, paper.height) * 0.5 - 40,
-			base, Vector = OpenSpendings.BubbleChart.Vector,
+			base, Vector = me.ns.Vector,
 			origin = new Vector(paper.width * 0.5, paper.height * 0.5); // center
 			
 		me.paper = paper;
 		base = Math.pow((Math.pow(rt.amount, 0.6) + Math.pow(rt.maxChildAmount, 0.6)*2) / maxRad, 1.6666666667);
-		me.a2radBase = OpenSpendings.BubbleChart.a2radBase = base;
+		me.a2radBase = me.ns.a2radBase = base;
 		
 		me.origin = origin;
 	};
@@ -159,10 +161,24 @@ OpenSpendings.BubbleChart = function(config, onHover, onUnHover) {
 	 */
 	me.initBubbles = function() {
 		vis4.log('initBubbles');
-		var me = this, rt = me.treeRoot;
+		var me = this, rt = me.treeRoot, Bubbles = me.ns.Bubbles, bubbleClass;
 		
 		// chosse one of them for the vis
-		OpenSpendings.BubbleChart.Bubble = OpenSpendings.BubbleChart.Bubbles.Multi;
+		switch (me.config.bubbleType) {
+			case 'pie':
+				bubbleClass = Bubbles.Pies;
+				break;
+			case 'donut':
+				bubbleClass = Bubbles.Donut;
+				break;
+			case 'multi':
+				bubbleClass = Bubbles.Multi;
+				break;
+			default:
+				bubbleClass = Bubbles.Plain;
+				break;
+		}
+		me.ns.Bubble = bubbleClass;	
 		
 		var rootBubble = me.createBubble(rt, me.origin, 0, 0, rt.color);
 		me.traverseBubbles(rootBubble);
@@ -534,181 +550,6 @@ OpenSpendings.BubbleChart = function(config, onHover, onUnHover) {
 		return '/'+me.currentYear+'/'+parts.join('/');
 	};
 	
-	/*
-	this.quickPrototype = function(root) {
-		
-		var origin = this.origin, // center
-			paper = this.paper,
-			l1rad = paper.height * 0.30, // radius for level 1 nodes
-			l2rad = paper.height * 0.45, // radius for level 2 nodes
-			lcircAttrs = { stroke: '#ccc', 'stroke-dasharray': "- " },
-			a2rad = OpenSpendings.BubbleChart.amount2rad,
-			l1alpha = Math.PI * 2 / root.children.length;
-			
-		// level 1 circle
-		
-		
-		this.l1Circ = new OpenSpendings.BubbleChart.Ring(this, lcircAttrs, l1rad);
-		this.l2Circ = new OpenSpendings.BubbleChart.Ring(this, lcircAttrs, l2rad);
-			
-		this.rootCircle = new OpenSpendings.BubbleChart.Bubble(root, this, 0, 0, '#555555' );
-			
-		var l1a = 0, da1, i, j, ca1, col, l1radsum = 0, l2radsumt = 0;
-		
-		var _r = function(a) { return Math.round(Raphael.deg(a)*10)/10; };
-		
-		for (i in root.children) {
-			for (j in root.children[i].children) {
-				l2radsumt += a2rad(root.children[i].children[j].amount);
-			}
-		}
-		
-		//for (i in root.children) l1radsum += a2rad(root.children[i].amount);
-		
-		var cmpNodes = function(a,b) {
-			if (a.amount == b.amount) return 0;
-			return a.amount > b.amount ? -1 : 1;
-		};
-		
-		this.innerRing = [];
-		this.outerRing = [];
-		this.innerLines = [];
-		
-		
-		
-		for (i in root.children) {
-			
-			
-			
-			var l2radsum = 0;
-			var node = root.children[i];
-			
-			for (j in node.children) l2radsum += a2rad(node.children[j].amount);
-			
-			da1 = (l2radsum / l2radsumt) * Math.PI * 2;
-			ca1 = l1a + da1*0.5;
-			col = 'hsb('+(i/root.children.length)+',.8, .8)';
-			
-			this.innerRing.push(new OpenSpendings.BubbleChart.Bubble(node, this, origin, l1rad, ca1, col));
-			
-			this.innerLines.push(new OpenSpendings.BubbleChart.Line(this, lcircAttrs, origin, ca1, l1rad + a2rad(node.amount), l2rad));
-			
-			
-			// cycle through level 2 children
-			var l2a = l1a, da2, ca2;
-			
-			var old = node.children;
-			
-			old.sort(cmpNodes);
-			
-			node.children = old;// [].concat(old.slice(0,old.length/2), old.slice(old.length/2).reverse());
-			
-			//var tmp = da1 * 0.8;
-			//l2a += (da1 - tmp) * 0.5;
-			
-			var cUp = l2a + da1 * 0.5, cLow = cUp, space = 0;// Math.atan(10/l2rad);
-			
-			for (j in node.children) {
-				
-				var subnode = node.children[j];
-				var brad = OpenSpendings.BubbleChart.amount2rad(subnode.amount);
-				var barc = Math.atan(brad / l2rad)*2;
-				
-				if (j === 0) {
-					ca2 = cUp;
-					cUp -= (barc + space);
-					cLow += (barc + space);
-				} else if (j % 2 === 0) {
-					ca2 = cUp - barc;
-					cUp -= barc + space;
-				} else {
-					ca2 = cLow + barc;
-					cLow += barc + space;
-				}
-				
-				//console.log(j, ca2, barc, cUp, cLow);
-				
-				//da2 = (a2rad(subnode.amount) / l2radsum) * tmp; 
-				
-				//ca2 = l2a + da2 * 0.5;
-				
-				
-				
-				this.outerRing.push(new OpenSpendings.BubbleChart.Bubble(subnode, this, l2rad, ca2, col));
-
-				//l2a += da2;
-			}
-			
-			l1a += da1;
-		}
-			
-	};*/
-	
-	/*
-	 * is called either by click on one of the bubbles
-	 * or by url change (later)
-	 *
-	this.scrollTo = function(bubble) {
-		var delta = -bubble.angle, i, b, outerRad, ox = this.paper.width * 0.5, 
-			scale, innerRad, ease = TWEEN.Easing.Exponential.EaseOut;
-		
-		//var t = new FlareJS.Transitioner(1000, ease);
-		var t = {};
-		
-		if (bubble == this.rootCircle) {
-			innerRad = this.paper.height * 0.3;
-			outerRad = this.paper.height * 0.45;
-			scale = 1.0;
-		} else if ($.inArray(bubble, this.innerRing)) {
-			innerRad = this.paper.height * 1.4;
-			outerRad = this.paper.height * 1.8;
-			scale = 8.0;
-			ox -= innerRad;
-		} else {
-			innerRad = this.paper.height * 0.5;
-			outerRad = this.paper.height * 0.8;
-			ox -= outerRad;
-			scale = 3.0;
-		}
-		
-		if (Math.abs(delta) > Math.PI) {
-			delta += delta > 0 ? -Math.PI*2 : Math.PI*2;
-		}
-		
-		t.$(this.origin).x = ox;
-		t.$(this).bubbleScale = scale;
-		t.$(this.rootCircle).foo = 1000;
-		
-		
-		for (i in this.innerRing) {
-			b = this.innerRing[i];
-			new TWEEN.Tween(b)
-				.to({ angle: b.angle+delta, rad: innerRad }, 1000)
-				.onUpdate(b.draw.bind(b))
-				.easing(ease)
-				.start();
-			var l = this.innerLines[i];
-			new TWEEN.Tween(l)
-				.to({ angle: b.angle+delta, fromRad: innerRad + b.bubbleRad * scale, toRad: outerRad }, 1000)
-				.onUpdate(l.draw.bind(l))
-				.easing(ease)
-				.start(); 
-		}
-		
-		for (i in this.outerRing) {
-			b = this.outerRing[i];
-			new TWEEN.Tween(b)
-				.to({ angle: b.angle+delta, rad: outerRad }, 1000)
-				.onUpdate(b.draw.bind(b))
-				.easing(ease)
-				.start();
-		}
-		this.rotation += delta;
-		
-		t.$(this.l1Circ).rad = innerRad;
-		t.$(this.l2Circ).rad = outerRad;
-		t.start();
-	};*/
 	
 	this.loop = function() {
 		TWEEN.update();

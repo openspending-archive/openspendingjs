@@ -11,5 +11,5 @@ src/os.bubblechart.mouseeventgroup.js
 src/os.bubblechart.ring.js
 src/os.bubblechart.transitioner.js
 src/os.bubblechart.tree.js
-src/os.bubblechart.tree.js.orig
 src/os.bubblechart.utils.js
+src/os.bubblechart.vector.js

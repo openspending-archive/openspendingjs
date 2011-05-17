@@ -1,9 +1,9 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings */
+/*global Raphael, TWEEN, OpenSpending */
 /*
  * represents a radial line
  */
-OpenSpendings.BubbleChart.Line = function(bc, attr, origin, angle, fromRad, toRad) {
+OpenSpending.BubbleChart.Line = function(bc, attr, origin, angle, fromRad, toRad) {
 	this.bc = bc;
 	this.o = origin;
 	this.angle = angle;

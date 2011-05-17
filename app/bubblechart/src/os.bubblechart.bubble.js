@@ -1,6 +1,6 @@
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, OpenSpendings, vis4 */
+/*global Raphael, TWEEN, OpenSpending, vis4 */
 
 // namespace for different bubble implementations
-OpenSpendings.BubbleChart.Bubbles = {};
+OpenSpending.BubbleChart.Bubbles = {};
 
