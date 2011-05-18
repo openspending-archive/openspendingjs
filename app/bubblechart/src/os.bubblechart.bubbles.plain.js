@@ -18,6 +18,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	me.alpha = 1;
 	me.visible = false;
 	me.ns = ns;
+	me.pos = ns.Vector(0,0);
 	me.bubbleRad = utils.amount2rad(this.node.amount);
 	
 	/*
@@ -31,6 +32,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	 */
 	me.getXY = function() {
 		var me = this, o = me.origin, a = me.angle, r = me.rad;
+		if (me.pos === undefined) me.pos = new me.ns.Vector(0,0);
 		me.pos.x = o.x + Math.cos(a) * r;
 		me.pos.y = o.y - Math.sin(a) * r;
 	};
@@ -40,7 +42,6 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	 */
 	me.init = function() {
 		var me = this;
-		me.pos = me.ns.Vector(0,0);
 		me.getXY();
 		
 		var showIcon = false; //this.bubbleRad * this.bc.bubbleScale > 30;
@@ -85,7 +86,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	
 	
 	
-	this.draw = function() {
+	me.draw = function() {
 		var me = this, r = me.bubbleRad * me.bc.bubbleScale, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
 		if (!me.visible) return;
 		
@@ -116,7 +117,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	/*
 	 * removes all visible elements from the page
 	 */
-	this.hide = function() {
+	me.hide = function() {
 		var me = this, i;
 		me.circle.remove();
 		me.dashedBorder.remove();
@@ -131,7 +132,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	/*
 	 * adds all visible elements to the page
 	 */
-	this.show = function() {
+	me.show = function() {
 		var me = this, i;
 		
 		me.circle = me.paper.circle(me.pos.x, me.pos.y, me.bubbleRad * me.bc.bubbleScale)
@@ -161,5 +162,5 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 		
 	};
 	
-	this.init();
+	me.init();
 };
