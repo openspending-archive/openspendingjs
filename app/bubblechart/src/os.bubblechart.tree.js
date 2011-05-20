@@ -26,7 +26,8 @@ OpenSpending.BubbleChart.getTree = function(config) {
     //construct the url
     var data = {},
         dataType = 'jsonp',
-        url = undefined;
+        url,
+        drilldowns;
 
     url = config.apiUrl + '/2/aggregate';
     data.dataset = config.dataset;
@@ -35,6 +36,14 @@ OpenSpending.BubbleChart.getTree = function(config) {
     if (config.cuts !== undefined) {
         data.cut = config.cuts.join('|');
     }
+
+    // add an optional breakdown to drilldowns to query the api
+    drilldowns = config.drilldowns.slice(); //copy
+
+    if (config.breakdown !== undefined) {
+        drilldowns.push(config.breakdown);
+    }
+    drilldowns = $.unique(drilldowns);
 
     if (config.testDataPath !== undefined) {
         url = config.testDataPath;
@@ -63,7 +72,8 @@ OpenSpending.BubbleChart.getTree = function(config) {
  * the 'label' (default: 'Total')
  **/
 
-OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
+OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
+                                              breakdown, rootNode) {
 
     var entries = data.drilldown,
         nodes = {},
@@ -72,7 +82,8 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
                 color: '#555',
                 amount: 0.0,
                 children: [],
-                level: 0};
+                level: 0,
+               breakdowns: {}};
 
     if (rootNode !== undefined) {
         // extend root with the properties of rootNode
@@ -97,6 +108,29 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
      *  @param {object} nodes Object used as a mapping for node ids to nodes
      *  @return {undefined}
      */
+    var addBreakdown = function(node, entry) {
+
+        if (breakdown === undefined) {
+            return;
+        }
+
+        var value = entry[breakdown];
+        if (value === undefined) {
+            return;
+        }
+
+        var name = value.name,
+            label = entry[breakdown].label,
+            amount = entry.amount;
+
+        if (node.breakdowns[name] === undefined) {
+            node.breakdowns[name] = {id: name,
+                                     label: label,
+                                     amount: 0.0};
+        };
+        node.breakdowns[name].amount = node.breakdowns[name].amount + amount;
+    };
+
     var processEntry = function(entry, nodes) {
 
         var parent = nodes.root,
@@ -125,7 +159,8 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
                         amount: entry.amount,
                         label: current.label,
                         color: current.color,
-                        level: level};
+                        level: level,
+                       breakdowns: {}};
 
                 parent.children.push(node);
                 nodes[current.name] = node;
@@ -135,12 +170,15 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
                 node.amount = node.amount + entry.amount;
             }
 
-            // Add the current amount to the root node
+            // Add the current amount and the breakdown to the root node
             // to have a total.
             if(level === 1) {
                 nodes.root.amount = nodes.root.amount + entry.amount;
+                addBreakdown(nodes.root, entry);
             }
 
+                    // update the breakdown for the current node
+                    addBreakdown(node, entry);
             parent = node;
         }
     };

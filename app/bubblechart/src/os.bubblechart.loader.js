@@ -17,14 +17,16 @@ OpenSpending.BubbleChart.Loader = function(config) {
 	 * is called by the constructor of the Loader
 	 */
 	me.loadData = function() {
-        var me = this;
+        var me = this,
+            drilldowns,
+            breakdown;
 
         me.rootNode = { label: me.config.rootNodeLabel };
-
 	    OpenSpending.BubbleChart.getTree(
 		{apiUrl: me.config.apiUrl,
 		 dataset: me.config.dataset,
 		 drilldowns: me.config.drilldowns,
+                 breakdown: me.config.breakdown,
 		 cuts: me.config.cuts,
 		 callback: me.dataLoaded.bind(me),
 		 testDataPath: me.config.testDataPath
@@ -36,7 +38,8 @@ OpenSpending.BubbleChart.Loader = function(config) {
 	 */
 	me.dataLoaded = function(data) {
 		var me = this,
-			tree = OpenSpending.BubbleChart.buildTree(data, me.config.drilldowns, me.rootNode);
+		tree = OpenSpending.BubbleChart.buildTree(data, me.config.drilldowns,
+                                                          me.config.breakdown, me.rootNode);
 		me.run(tree);
 	};
 
