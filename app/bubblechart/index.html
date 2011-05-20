@@ -8,13 +8,13 @@
 	<script type="text/javascript" src="bubblechart.min.js"></script>
 	<style type="text/css">
 
-	html, body { background: #ddd; margin: 0; height: 100%; width: 100%; padding: 0; }
+	html, body { background: #fff; margin: 0; height: 100%; width: 100%; padding: 0; overflow: hidden; }
 	
 	#demo-frame {
 		width: 1035px; margin: 0 auto; height: 900px; background: url(os-frame.png) no-repeat; position: relative;
 	}
 	
-	#bubble-chart-wrapper { width: 723px; height: 616px; position: absolute; left: 44px; top: 182px; }
+	#bubble-chart-wrapper { width: 100%; height: 100%; position: absolute;  }
 	#bubble-chart { background: #fff; position: relative; height: 100%; overflow: hidden; }
 	#bubble-chart .label { position: absolute; color: #fff; text-align: center; cursor: default; }
 	#bubble-chart .amount { font-family: Graublau, Georgia, sans; font-size: 16px; }
@@ -49,6 +49,31 @@
 		src: url('fonts/graublau/GraublauWeb.otf') format("opentype");
 	}
 	
+	#header {
+		font-family: Graublau;	
+		width: 150px;
+		position: absolute;
+		color: #333;
+		bottom: 20px;
+		
+		right: 20px;
+		z-index: 1000;
+		text-align: left;
+	}
+	#menu {
+		font-family: Graublau;
+		width: 150px;
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		font-size: 14px;
+		z-index: 1000;
+	}
+	#menu select { font-family: Graublau; font-size: 14px; } 
+	#header .title {
+		font-size: 24px;
+	}
+	
 	</style>
 	<script type="text/javascript">
        
@@ -79,10 +104,13 @@
 				yearChangeHandler: yearChange,
 				// defines what class is used to render the bubbles
 				// possible values are pie,donut,plain,multi
-				bubbleType: 'plain'
+				bubbleType: 'donut',
+				// fake breakdown values for each node
+				fakeBreakdowns: ['Government', 'General Bugdet Support', 'Aid']
 			}
 			
 			new OpenSpending.BubbleChart.Loader(config);
+			
 			
 		});
 
@@ -91,10 +119,12 @@
 	</script>
 </head>
 <body>
-	<div id="demo-frame">
-		<div id="bubble-chart-wrapper">
-			<div id="bubble-chart"></div>
-		</div>
+	<div id="header"><a class="title">OpenSpending</a><div class="subtitle">BubbleChart Demo</div></div>
+	<div id="menu">
+		Select year: <select id="year"></select>
+	</div>
+	<div id="bubble-chart-wrapper">
+		<div id="bubble-chart"></div>
 	</div>
 </body>
 </html>
