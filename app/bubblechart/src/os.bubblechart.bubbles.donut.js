@@ -45,8 +45,8 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		me.getXY();
 		
 		var breakdown = [], i, val;
-		for (i=0; i<me.node.breakdown.length; i++) {
-			val = me.node.breakdown[i].amount / me.node.amount;
+		for (i in me.node.breakdowns) {
+			val = me.node.breakdowns[i].amount / me.node.amount;
 			breakdown.push(val);
 		}
 		vis4.log(breakdown);

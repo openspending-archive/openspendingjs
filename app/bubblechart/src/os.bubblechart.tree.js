@@ -127,7 +127,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
             node.breakdowns[name] = {id: name,
                                      label: label,
                                      amount: 0.0};
-        };
+        }
         node.breakdowns[name].amount = node.breakdowns[name].amount + amount;
     };
 
@@ -177,8 +177,8 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
                 addBreakdown(nodes.root, entry);
             }
 
-                    // update the breakdown for the current node
-                    addBreakdown(node, entry);
+            // update the breakdown for the current node
+            addBreakdown(node, entry);
             parent = node;
         }
     };

@@ -131,16 +131,16 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 		}
 		
 		// fake breakdowns
-		if (me.config.fakeBreakdowns) {
-			node.breakdown = [];
+		if (me.config.fakeBreakdowns && !node.breakdowns) {
+			node.breakdowns = [];
 			var sum = 0, val;
 			for (c=0; c<me.config.fakeBreakdowns.length; c++) {
 				val = Math.random();
-				node.breakdown.push( { id: c, label: me.config.fakeBreakdowns[c], amount: val } );
+				node.breakdowns.push( { id: c, label: me.config.fakeBreakdowns[c], amount: val } );
 				sum += val;
 			}
-			for (c in node.breakdown) {
-				node.breakdown[c].amount = node.breakdown[c].amount / sum * node.amount;
+			for (c in node.breakdowns) {
+				node.breakdowns[c].amount = node.breakdowns[c].amount / sum * node.amount;
 			}
 		}
 	};
