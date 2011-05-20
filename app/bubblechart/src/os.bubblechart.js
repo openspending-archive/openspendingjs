@@ -40,7 +40,7 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	
 	me.globRotation = 0;
 	
-	me.currentYear = 2010;
+	me.currentYear = config.initYear;
 	
 	me.currentCenter = undefined;
 	
@@ -136,13 +136,17 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	 */
 	me.initPaper = function() {
 		var me = this, $c = me.$container, rt = me.treeRoot,
-			paper = Raphael($c[0], $c.width(), $c.height()),
-			maxRad = Math.min(paper.width, paper.height) * 0.5 - 40,
+			w = $c.width(), h = $c.height(),
+			paper = Raphael($c[0], w, h),
+			maxRad = Math.min(w, h) * 0.5 - 40,
 			base, Vector = me.ns.Vector,
-			origin = new Vector(paper.width * 0.5, paper.height * 0.5); // center
+			origin = new Vector(w * 0.5, h * 0.5); // center
 			
+		me.width = w;
+		me.height = h;
 		me.paper = paper;
 		base = Math.pow((Math.pow(rt.amount, 0.6) + Math.pow(rt.maxChildAmount, 0.6)*2) / maxRad, 1.6666666667);
+//		window.alert(maxRad+', '+paper.height+'  '+paper.width+'   '+$c.height()+'   '+$c.width());
 		me.a2radBase = me.ns.a2radBase = base;
 		
 		me.origin = origin;
@@ -245,7 +249,7 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	me.changeView = function(token) {
 		var me = this, 
 			paper = me.paper,
-			maxRad = Math.min(paper.height, paper.width) * 0.5 - 60,
+			maxRad = Math.min(me.width, me.height) * 0.5 - 60,
 			ns = me.ns, 
 			utils = ns.Utils, 
 			o = me.origin,
@@ -282,8 +286,8 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 				t.$(me).bubbleScale = 1.0;
 				
 				// move origin to center
-				t.$(o).x = paper.width * 0.5;
-				t.$(o).y = paper.height * 0.5;
+				t.$(o).x = me.width * 0.5;
+				t.$(o).y = me.height * 0.5;
 
 				// make the root bubble visible
 				parent = getBubble(root);
@@ -330,16 +334,16 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 				
 				t.$(grandpa).rad = 0;
 				// 
-				rad2 = paper.width * 0.5 - Math.max(paper.width * 0.5 - 280 - 
+				rad2 = me.width * 0.5 - Math.max(me.width * 0.5 - 280 - 
 					tgtScale * (a2rad(node.parent.amount)+a2rad(node.amount)), 
 					tgtScale*a2rad(node.parent.amount)*-1+60);
 
 				radSum = rad1 + rad2;
 				
-				t.$(o).x = paper.width * 0.5 - rad2;
-				t.$(o).y = paper.height * 0.5;
+				t.$(o).x = me.width * 0.5 - rad2;
+				t.$(o).y = me.height * 0.5;
 				
-				rad2 += paper.width * 0.1;
+				rad2 += me.width * 0.1;
 				
 				ring = getRing(node.parent);
 				t.$(ring).rad = rad2;
@@ -397,7 +401,7 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 				} 
 			}
 
-			tr = new ns.AnimatedTransitioner(1000);
+			tr = new ns.AnimatedTransitioner($.browser.msie ? 0 : 1000);
 			tr.changeLayout(t);
 			me.currentTransition = tr;
 			me.currentCenter = node;

@@ -145,9 +145,9 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns, rootNode) {
         }
     };
 
-    entries.forEach(function(entry) {
-        processEntry(entry, nodes);
-    });
+	for (var i in entries) {
+		processEntry(entries[i], nodes);
+	}
 
     return nodes.root;
 };

@@ -107,8 +107,10 @@ OpenSpending.BubbleChart.Loader = function(config) {
 	 * shows a tooltip, is called delayed by setTooltip
 	 */
 	me.showTooltip = function(tt) {
-		tt.animate({ opacity: 1 }, { duration: 300 });
-		tt.show();
+		if (tt) {
+			tt.animate({ opacity: 1 }, { duration: 300 });
+			tt.show();
+		}
 	};
 
 	/*

@@ -87,7 +87,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	
 	
 	me.draw = function() {
-		var me = this, r = me.bubbleRad * me.bc.bubbleScale, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
+		var me = this, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale), ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
 		if (!me.visible) return;
 		
 		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r, 'fill-opacity': me.alpha });
@@ -133,14 +133,15 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	 * adds all visible elements to the page
 	 */
 	me.show = function() {
-		var me = this, i;
+		var me = this, i, cx = me.pos.x, cy = me.pos.y, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale);
 		
-		me.circle = me.paper.circle(me.pos.x, me.pos.y, me.bubbleRad * me.bc.bubbleScale)
+		me.circle = me.paper.circle(cx, cy, r)
 			.attr({ stroke: false, fill: me.color });
 
-		me.dashedBorder = me.paper.circle(me.pos.x, me.pos.y,  me.bubbleRad * me.bc.bubbleScale-3)
-			.attr({ stroke: '#fff', 'stroke-opacity': me.alpha * 0.4,  'stroke-dasharray': "- ", fill: false });
-		
+		me.dashedBorder = me.paper.circle(cx, cy, r-3)
+			.attr({ stroke: '#ffffff', 'stroke-dasharray': "- " });
+	
+	
 		me.label = $('<div class="label"><div class="amount">'+utils.formatNumber(me.node.amount)+'</div><div class="desc">'+me.node.label+'</div></div>');
 		$('#bubble-chart').append(me.label);
 		
@@ -151,7 +152,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 		
 
 		
-		var list = [me.circle.node, me.label];
+		var list = [me.circle.node, me.label, me.dashedBorder.node];
 
 		var mgroup = new me.ns.MouseEventGroup(me, list);
 		mgroup.click(me.onclick.bind(me));

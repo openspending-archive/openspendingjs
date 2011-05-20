@@ -101,7 +101,7 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 	
 	
 	this.draw = function() {
-		var me = this, r = me.bubbleRad * me.bc.bubbleScale, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
+		var me = this, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale), ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
 		if (!me.visible) return;
 		
 		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r, 'fill-opacity': me.alpha });
@@ -168,12 +168,12 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 	 * adds all visible elements to the page
 	 */
 	this.show = function() {
-		var me = this, i;
+		var me = this, i, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale);
 		
-		me.circle = me.paper.circle(me.pos.x, me.pos.y, me.bubbleRad * me.bc.bubbleScale)
+		me.circle = me.paper.circle(me.pos.x, me.pos.y, r)
 			.attr({ stroke: false, fill: me.color });
 
-		me.dashedBorder = me.paper.circle(me.pos.x, me.pos.y,  me.bubbleRad * me.bc.bubbleScale-3)
+		me.dashedBorder = me.paper.circle(me.pos.x, me.pos.y,  r*0.85)
 			.attr({ stroke: '#fff', 'stroke-opacity': me.alpha * 0.4,  'stroke-dasharray': "- ", fill: false });
 		
 		me.label = $('<div class="label"><div class="amount">'+utils.formatNumber(me.node.amount)+'</div><div class="desc">'+me.node.label+'</div></div>');

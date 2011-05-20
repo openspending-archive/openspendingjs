@@ -87,9 +87,17 @@ OpenSpending.BubbleChart.AnimatedTransitioner = function(duration) {
 				for (p in props) {
 					o[p] = props[p];
 				}
+				if ($.isFunction(o.draw)) o.draw();
 			}
 		}
-		if (me.duration === 0) me._completed();
+		if (me.duration === 0) {
+			// redraw all
+			for (i in layout.objects) {
+				o = layout.objects[i];
+				if ($.isFunction(o.draw)) o.draw();
+			}
+			me._completed();
+		}
 	};
 	
 	me.onComplete = function(callback) {
