@@ -22,13 +22,13 @@ OpenSpending.BubbleChart.Loader = function(config) {
         me.rootNode = { label: me.config.rootNodeLabel };
 
 	    OpenSpending.BubbleChart.getTree(
-			me.config.apiUrl,
-			me.config.dataset,
-			me.config.drilldowns,
-			me.config.cuts,
-			me.dataLoaded.bind(me),
-			me.config.testDataPath
-		);
+		{apiUrl: me.config.apiUrl,
+		 dataset: me.config.dataset,
+		 drilldowns: me.config.drilldowns,
+		 cuts: me.config.cuts,
+		 callback: me.dataLoaded.bind(me),
+		 testDataPath: me.config.testDataPath
+		});
 	};
 
 	/*

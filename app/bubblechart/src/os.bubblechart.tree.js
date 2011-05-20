@@ -20,32 +20,32 @@
  * test data. For testing only.
  **/
 
-OpenSpending.BubbleChart.getTree = function(api_url, dataset, drilldowns,
-                                             cuts, callback, testDataPath) {
+OpenSpending.BubbleChart.getTree = function(config) {
 
+    //api_url, dataset, drilldowns, cuts, callback, testDataPath
     //construct the url
-    var url = api_url,
-        data = '',
-        dataType = 'jsonp';
+    var data = {},
+        dataType = 'jsonp',
+        url = undefined;
 
-    url = url + '/2/aggregate';
-    data = 'dataset=' + dataset;
-    data = data + "&drilldown=" + drilldowns.join('|');
+    url = config.apiUrl + '/2/aggregate';
+    data.dataset = config.dataset;
+    data.drilldown = config.drilldowns.join('|');
 
-    if (cuts !== undefined) {
-        cuts = cuts.join('|');
-        data = data + "&cut=" + cuts;
+    if (config.cuts !== undefined) {
+        data.cut = config.cuts.join('|');
     }
 
-    if (testDataPath !== undefined) {
-        url = testDataPath;
+    if (config.testDataPath !== undefined) {
+        url = config.testDataPath;
         dataType = 'json';
     }
+
     $.ajax({
         url: url,
         data: data,
         dataType: dataType,
-        success: callback });
+        success: config.callback });
 
 };
 
