@@ -44,19 +44,15 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		me.pos = new me.ns.Vector(0,0);
 		me.getXY();
 		
-		var breakdown = [], sum = 0, i, val;
-		for (i=0; i<3; i++) {
-			val = Math.random();
+		var breakdown = [], i, val;
+		for (i=0; i<me.node.breakdown.length; i++) {
+			val = me.node.breakdown[i].amount / me.node.amount;
 			breakdown.push(val);
-			sum += val;
-		}
-		for (i in breakdown) {
-			breakdown[i] = breakdown[i] / sum;
 		}
 		vis4.log(breakdown);
 		me.breakdown = breakdown;
 		
-		me.breakdownOpacities = [0.25, 0.59, 0.4];
+		me.breakdownOpacities = [0.2, 0.7, 0.45, 0.6, 0.35];
 		
 		var showIcon = false; //this.bubbleRad * this.bc.bubbleScale > 30;
 		// create label
@@ -140,8 +136,8 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 				me.label.find('.desc').show();
 			}
 		}
-		me.label.css({ width: 2*r+'px', opacity: me.alpha });
-		me.label.css({ left: (me.pos.x-r)+'px', top: (me.pos.y-me.label.height()*0.5)+'px' });
+		me.label.css({ width: 2*r*0.9+'px', opacity: me.alpha });
+		me.label.css({ left: (me.pos.x-r*0.9)+'px', top: (me.pos.y-me.label.height()*0.53)+'px' });
 	
 		//if (me.icon) me.icon.translate(me.pos.x - ox, me.pos.y - oy);
 	
@@ -174,7 +170,7 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 			.attr({ stroke: false, fill: me.color });
 
 		me.dashedBorder = me.paper.circle(me.pos.x, me.pos.y,  r*0.85)
-			.attr({ stroke: '#fff', 'stroke-opacity': me.alpha * 0.4,  'stroke-dasharray': "- ", fill: false });
+			.attr({ stroke: '#fff', 'stroke-opacity': me.alpha * 0.4,  'stroke-dasharray': ". ", fill: false });
 		
 		me.label = $('<div class="label"><div class="amount">'+utils.formatNumber(me.node.amount)+'</div><div class="desc">'+me.node.label+'</div></div>');
 		$('#bubble-chart').append(me.label);
@@ -194,7 +190,8 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		
 		var list = [me.circle.node, me.label];
 		for (i in me.breakdownArcs) {
-			list.push(me.breakdownArcs[i].node);
+			// list.push(me.breakdownArcs[i].node);
+			$(me.breakdownArcs[i].node).click(me.onclick.bind(me));
 		}
 		var mgroup = new me.ns.MouseEventGroup(me, list);
 		mgroup.click(me.onclick.bind(me));

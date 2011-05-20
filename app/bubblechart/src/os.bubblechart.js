@@ -129,6 +129,20 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 			node.maxChildAmount = Math.max(node.maxChildAmount, child.amount);
 			me.traverse(child, c);
 		}
+		
+		// fake breakdowns
+		if (me.config.fakeBreakdowns) {
+			node.breakdown = [];
+			var sum = 0, val;
+			for (c=0; c<me.config.fakeBreakdowns.length; c++) {
+				val = Math.random();
+				node.breakdown.push( { id: c, label: me.config.fakeBreakdowns[c], amount: val } );
+				sum += val;
+			}
+			for (c in node.breakdown) {
+				node.breakdown[c].amount = node.breakdown[c].amount / sum * node.amount;
+			}
+		}
 	};
 	
 	/*
