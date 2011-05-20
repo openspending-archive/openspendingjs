@@ -91,7 +91,7 @@
 				// todo: we should really document all the settings		
 				dataset: 'cra',
 				// todo: we should really document all the settings		
-				drilldowns: ['cofog1', 'cofog2', 'cofog3'],
+				drilldowns: ['cofog1', 'cofog2'],
 				// todo: we should really document all the settings
 				cuts: ['time.from.year:2009'],
 				// todo: we should really document all the settings
@@ -101,6 +101,7 @@
 				// 
 				initYear: 2010,
 				// this callback is invoked as soon as the year changes by url
+                                breakdown: 'cofog3',
 				yearChangeHandler: yearChange,
 				// defines what class is used to render the bubbles
 				// possible values are pie,donut,plain,multi
