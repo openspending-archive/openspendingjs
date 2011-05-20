@@ -59,7 +59,7 @@ OpenSpending.App.SpendBrowser = (function($) {
             sort: 'amount desc',
             facet: true,
             'facet.field': [ 'from.label_str' ],
-            'facet.limit': 20,
+            // 'facet.limit': 20,
             'facet.mincount': 1,
             'json.nl': 'map'
           };
