@@ -99,11 +99,13 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
     }
 
 
-	var toNode = function(value) {
+	var toNode = function(value, parent) {
 		var type = typeof(value),
 			id,
-	  		label;
+	  		label,
+			prefix;
 
+		prefix = parent ? parent.id + '__' : '';
 		if (value === undefined || value === null) {
 			id = 'undefined';
 			label = 'Undefined';
@@ -115,7 +117,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 				id = value._id;
 				label = value.label;
 			}
-		} else if ( type === boolean ) {
+		} else if ( type === 'boolean' ) {
 			if (value) {
 				id = 'yes';
 				label = 'Yes';
@@ -129,7 +131,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 		} else {
 			throw 'unsupported type: ' + type;
 		}
-		return {id: id, label: label, amount: 0.0};
+		return {id: prefix + id, label: label, amount: 0.0};
 	};
 
     /**
@@ -154,6 +156,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 		var breakdown_value,
 			breakdown_node,
 			node_template,
+			nodes = {},
 			_id;
 
 		breakdown_value = entry[breakdown];
@@ -182,10 +185,9 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 
             level = level + 1;
             current = entry[drilldown];
-			node_template = toNode(current);
+			node_template = toNode(current, parent);
 
-
-            node = nodes[drilldown][node_template.id];
+            node = nodes[node_template.id];
             if(node === undefined) {
                 // Initialize a new node and add it to the parent node
                 node = node_template;
@@ -194,11 +196,11 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 				node.color = current.color;
 				node.level = level;
 				node.breakdowns = {};
+				parent.children.push(node);
+				nodes[node.id] = node;
 			};
 
             node.amount = node.amount + entry.amount;
-            parent.children.push(node);
-            nodes[drilldown][node.id] = node;
 
             // Add the current amount and the breakdown to the root node
             // to have a total.
