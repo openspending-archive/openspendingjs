@@ -91,7 +91,11 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
     }
     nodes.root = root;
 
-    if(data.errors !== undefined) {
+	for (var i in drilldowns) {
+		var drilldown = drilldowns[i];
+		nodes[drilldown] = {};
+	}
+    if (data.errors !== undefined) {
         throw "Error";
     }
 
@@ -135,12 +139,12 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 
         var parent = nodes.root,
             level = 0,
-            i, drilldown,
+            drilldown,
             current,
             node;
 
-		for (i in drilldowns) {
-			drilldown = drilldowns[i];
+        for (var index in drilldowns) {
+            drilldown = drilldowns[index];
 
             level = level + 1;
             current = entry[drilldown];
@@ -151,7 +155,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
                 break;
             }
 
-            node = nodes[current.name];
+            node = nodes[drilldown][current.name];
             if(node === undefined) {
                 // Initialize a new node and add it to the parent node
                 node = {id: current.name,
@@ -163,7 +167,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
                        breakdowns: {}};
 
                 parent.children.push(node);
-                nodes[current.name] = node;
+                nodes[drilldown][current.name] = node;
 
             } else {
                 // update the ammount for existing nodes.
@@ -183,9 +187,9 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
         }
     };
 
-	for (var i in entries) {
-		processEntry(entries[i], nodes);
-	}
+    for (var index in entries) {
+        processEntry(entries[index], nodes);
+    }
 
     return nodes.root;
 };
