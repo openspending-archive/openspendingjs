@@ -193,7 +193,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
                 node = node_template;
 				node.children = [];
 				node.amount = 0.0;
-				node.color = current.color;
+				node.color = current ? current.color : undefined;
 				node.level = level;
 				node.breakdowns = {};
 				parent.children.push(node);
