@@ -33,7 +33,9 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	
 	me.ns = OpenSpending.BubbleChart;
 	
-	me.nodesById = {};
+	me.nodesByUrlToken = {};
+	
+	me.globalNodeCounter = 0;
 	
 	me.displayObjects = [];
 	
@@ -87,7 +89,7 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	 * used for recursive tree traversal
 	 */
 	me.traverse = function(node, index) {
-		var c, child, pc, me = this;
+		var c, child, pc, me = this, urlTokenSource;
 		// set node color
 		
 		node.famount = me.ns.Utils.formatNumber(node.amount);
@@ -117,14 +119,21 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 				if (node.right == node.left) node.right = undefined;
 			}
 		}
+		if (node.label !== undefined && node.label !== "") {
+			urlTokenSource = node.label;
+		} else if (node.token !== undefined && node.token !== "") {
+			urlTokenSource = node.token;
+		} else {
+			urlTokenSource = ''+me.globalNodeCounter;
+		}
 		
-		if (!node.token) {
-			node.token = node.label.toLowerCase().replace(/\W/g, "-");
-			while (me.nodesById.hasOwnProperty(node.token)) {
-				node.token += '-';
-			}
+		me.globalNodeCounter++;
+		
+		node.urlToken = urlTokenSource.toLowerCase().replace(/\W/g, "-");
+		while (me.nodesByUrlToken.hasOwnProperty(node.urlToken)) {
+			node.urlToken += '-';
 		} 
-		me.nodesById[node.token] = node;
+		me.nodesByUrlToken[node.urlToken] = node;
 		node.maxChildAmount = 0;
 		for (c in node.children) {
 			child = node.children[c];
@@ -274,8 +283,8 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 			l2attr = { stroke: '#ccc', 'stroke-dasharray': ". " },
 			a2rad = utils.amount2rad,
 			root = me.treeRoot, 
-			nodesById = me.nodesById, 
-			node = nodesById.hasOwnProperty(token) ? nodesById[token] : null,
+			nodesByUrlToken = me.nodesByUrlToken, 
+			node = nodesByUrlToken.hasOwnProperty(token) ? nodesByUrlToken[token] : null,
 			t = new ns.Layout(), 
 			bubble, tr, i, twopi = Math.PI * 2,
 			getBubble = me.getBubble.bind(me), getRing = me.getRing.bind(me),
@@ -538,13 +547,13 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 		
 		if (me.freshUrl === "") me.navigateTo(me.treeRoot);
 		
-		if (me.nodesById.hasOwnProperty(token)) {
-			url = me.getUrlForNode(me.nodesById[token]);
+		if (me.nodesByUrlToken.hasOwnProperty(token)) {
+			url = me.getUrlForNode(me.nodesByUrlToken[token]);
 			if (me.freshUrl != url) {
 				// node found but url not perfect
 				$.history.load(url);
 			} else {
-				me.navigateTo(me.nodesById[token], true);
+				me.navigateTo(me.nodesByUrlToken[token], true);
 			}
 		} else {
 			me.navigateTo(me.treeRoot);
@@ -553,7 +562,7 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	
 	me.navigateTo = function(node, fromUrlChange) {
 		var me = this;
-		if (fromUrlChange) me.changeView(node.token);
+		if (fromUrlChange) me.changeView(node.urlToken);
 		else $.history.load(me.getUrlForNode(node));
 	};
 	
@@ -562,9 +571,9 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	 */
 	me.getUrlForNode = function(node) {
 		var parts = [];
-		parts.push(node.token);
+		parts.push(node.urlToken);
 		while (node.parent) {
-			parts.push(node.parent.token);
+			parts.push(node.parent.urlToken);
 			node = node.parent;
 		}
 		parts.reverse();

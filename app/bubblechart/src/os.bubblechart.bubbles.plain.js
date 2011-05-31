@@ -65,7 +65,7 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	 */
 	me.onclick = function(e) {
 		var me = this;
-		if (me.node.children.length > 0) {
+		if (me.node.children.length > 1) {
 			me.bc.navigateTo(me.node);
 		}
 	};

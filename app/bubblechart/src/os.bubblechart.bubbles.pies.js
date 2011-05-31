@@ -79,7 +79,7 @@ OpenSpending.BubbleChart.Bubbles.Pies = function(node, bubblechart, origin, radi
 	 */
 	me.onclick = function(e) {
 		var me = this;
-		if (me.node.children.length > 0) {
+		if (me.node.children.length > 1) {
 			me.bc.navigateTo(me.node);
 		}
 	};
@@ -174,7 +174,7 @@ OpenSpending.BubbleChart.Bubbles.Pies = function(node, bubblechart, origin, radi
 		me.label = $('<div class="label"><div class="amount">'+utils.formatNumber(me.node.amount)+'</div><div class="desc">'+me.node.label+'</div></div>');
 		$('#bubble-chart').append(me.label);
 		
-		if (me.node.children.length > 0) {
+		if (me.node.children.length > 1) {
 			$(me.circle.node).css({ cursor: 'pointer'});
 			$(me.label).css({ cursor: 'pointer'});
 		}	

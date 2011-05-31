@@ -77,7 +77,7 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 	 */
 	me.onclick = function(e) {
 		var me = this;
-		if (me.node.children.length > 0) {
+		if (me.node.children.length > 1) {
 			me.bc.navigateTo(me.node);
 		}
 	};
@@ -105,7 +105,7 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		if (!me.visible) return;
 		
 		me.circle.attr({ cx: me.pos.x, cy: me.pos.y, r: r, 'fill-opacity': me.alpha });
-		if (me.node.children.length > 0) me.dashedBorder.attr({ cx: me.pos.x, cy: me.pos.y, r: r*0.85, 'stroke-opacity': me.alpha * 0.8 });
+		if (me.node.children.length > 1) me.dashedBorder.attr({ cx: me.pos.x, cy: me.pos.y, r: r*0.85, 'stroke-opacity': me.alpha * 0.8 });
 		else me.dashedBorder.attr({ 'stroke-opacity': 0 });
 
 		if (me.breakdown.length > 1) {
@@ -180,7 +180,7 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		me.label = $('<div class="label"><div class="amount">'+utils.formatNumber(me.node.amount)+'</div><div class="desc">'+me.node.label+'</div></div>');
 		$('#bubble-chart').append(me.label);
 		
-		if (me.node.children.length > 0) {
+		if (me.node.children.length > 1) {
 			$(me.circle.node).css({ cursor: 'pointer'});
 			$(me.label).css({ cursor: 'pointer'});
 		}	
