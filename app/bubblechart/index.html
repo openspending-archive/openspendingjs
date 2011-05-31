@@ -83,31 +83,46 @@
 				window.alert('year changed to '+year);
 			};
 			
+			var $tooltip = $('<div class="tooltip">Tooltip</div>');
+			$('#bubble-chart').append($tooltip);
+			
+			var tooltip = function(event) {
+				if (event.type == 'SHOW') {
+					// show tooltip
+					vis4.log(event);
+					$tooltip.css({ left: event.mousePos.x, top: event.mousePos.y });
+					$tooltip.show();
+				} else {
+					// hide tooltip
+					$tooltip.hide();
+				}
+			};
+			
+			
 			var config = {
 				// todo: we should really document all the settings
-				apiUrl: 'http://127.0.0.1:5000/api/',
-				// todo: ...
-				testDataPath: 'data/example-aggregate.json',
-				// todo: we should really document all the settings		
-				dataset: 'cra',
-				// todo: we should really document all the settings		
-				drilldowns: ['cofog1', 'cofog2'],
+				apiUrl: 'http://berlin.offenerhaushalt.de/api',
+				dataset: 'berlin',
 				// todo: we should really document all the settings
-				cuts: ['time.from.year:2009'],
+				drilldowns: ['hauptfunktion', 'oberfunktion'],
 				// todo: we should really document all the settings
-				rootNodeLabel: 'Grant total',
+				cuts: ['year:2008'],
+				// todo: we should really document all the settings
+				rootNodeLabel: 'Berlin', 
 				// jquery selector code to identify the container div 
 				container: '#bubble-chart',
 				// 
 				initYear: 2010,
 				// this callback is invoked as soon as the year changes by url
-                                breakdown: 'cofog3',
+                //breakdown: 'cofog3',
 				yearChangeHandler: yearChange,
 				// defines what class is used to render the bubbles
 				// possible values are pie,donut,plain,multi
-				bubbleType: 'donut',
+				bubbleType: 'plain',
 				// fake breakdown values for each node
-				fakeBreakdowns: ['Government', 'General Bugdet Support', 'Aid']
+				fakeBreakdowns: ['Government', 'General Bugdet Support', 'Aid'],
+				
+				tooltipCallback: tooltip
 			}
 			
 			new OpenSpending.BubbleChart.Loader(config);

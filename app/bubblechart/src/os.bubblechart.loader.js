@@ -134,9 +134,7 @@ OpenSpending.BubbleChart.Loader = function(config) {
 		var me = this;
 		// initialize bubble chart
 		var bubbleChart = new OpenSpending.BubbleChart(
-			me.config,
-			me.setTooltip.bind(me),
-			me.hideTooltip.bind(me)
+			me.config
 		);
 		bubbleChart.setData(data);
 		// we'll store the instance for debugging purposes

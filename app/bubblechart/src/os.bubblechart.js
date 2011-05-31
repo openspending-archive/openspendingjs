@@ -21,9 +21,10 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	/*
 	 * this function is called when the user hovers a bubble
 	 */
-	me.onHover = onHover;
+	//me.onHover = onHover;
 	
-	me.onUnHover = onUnHover;
+	//me.onUnHover = onUnHover;
+	me.tooltip = config.tooltipCallback;
 	
 	/*
 	 * stylesheet JSON that contains colors and icons for the bubbles
@@ -131,7 +132,7 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 		}
 		
 		// fake breakdowns
-		if (me.config.fakeBreakdowns && !node.breakdowns) {
+		if (me.config.fakeBreakdowns && (!node.breakdowns || node.breakdowns.length < 1)) {
 			node.breakdowns = [];
 			var sum = 0, val;
 			for (c=0; c<me.config.fakeBreakdowns.length; c++) {
