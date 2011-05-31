@@ -72,8 +72,6 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 	
 	me.onhover = function(e) {
 		var me = this, c = me.bc.$container[0];
-		vis4.log('onhover', e);
-
 		e.node = me.node;
 		e.bubblePos = { x:me.pos.x, y: me.pos.y };
 		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
@@ -89,8 +87,6 @@ OpenSpending.BubbleChart.Bubbles.Plain = function(node, bubblechart, origin, rad
 		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
 		me.bc.tooltip(e);
 	};
-	
-	
 	
 	me.draw = function() {
 		var me = this, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale), ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();

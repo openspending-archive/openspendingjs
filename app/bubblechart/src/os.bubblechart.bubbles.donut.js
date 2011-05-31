@@ -44,12 +44,14 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		me.pos = new me.ns.Vector(0,0);
 		me.getXY();
 		
-		var breakdown = [], i, val;
+		var breakdown = [], i, val, bd = [];
 		for (i in me.node.breakdowns) {
+			me.node.breakdowns[i].famount = utils.formatNumber(me.node.breakdowns[i].amount);
 			val = me.node.breakdowns[i].amount / me.node.amount;
 			breakdown.push(val);
+			bd.push(me.node.breakdowns[i]);
 		}
-		vis4.log(breakdown);
+		me.node.breakdowns = bd;
 		me.breakdown = breakdown;
 		
 		me.breakdownOpacities = [0.2, 0.7, 0.45, 0.6, 0.35];
@@ -79,22 +81,24 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 			me.bc.navigateTo(me.node);
 		}
 	};
-	
+		
 	me.onhover = function(e) {
-		var me = this;
+		var me = this, c = me.bc.$container[0];
 		e.node = me.node;
-		e.position = { x:me.pos.x, y: me.pos.y };
-		me.bc.onHover(e);
+		e.bubblePos = { x:me.pos.x, y: me.pos.y };
+		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
+		e.type = 'SHOW';
+		me.bc.tooltip(e);
 	};
 	
 	me.onunhover = function(e) {
-		var me = this;
+		var me = this, c = me.bc.$container[0];
 		e.node = me.node;
-		e.position = { x:me.pos.x, y: me.pos.y };
-		me.bc.onUnHover(e);
+		e.type = 'HIDE';
+		e.bubblePos = { x:me.pos.x, y: me.pos.y };
+		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
+		me.bc.tooltip(e);
 	};
-	
-	
 	
 	this.draw = function() {
 		var me = this, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale), ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();
@@ -104,25 +108,26 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		if (me.node.children.length > 0) me.dashedBorder.attr({ cx: me.pos.x, cy: me.pos.y, r: r*0.85, 'stroke-opacity': me.alpha * 0.8 });
 		else me.dashedBorder.attr({ 'stroke-opacity': 0 });
 
-		// draw breakdown chart
-		var i,x=me.pos.x,y=me.pos.y,x0,x1,x2,x3,y0,y1,y2,y3,ir = r*0.85, oa = -Math.PI * 0.5, da;
-		for (i in me.breakdown) {
-			da = me.breakdown[i] * Math.PI * 2;
-			x0 = x+Math.cos((oa))*ir; 
-			y0 = y+Math.sin((oa))*ir;
-			x1 = x+Math.cos((oa+da))*ir;
-			y1 = y+Math.sin((oa+da))*ir;
-			x2 = x+Math.cos((oa+da))*r;
-			y2 = y+Math.sin((oa+da))*r;
-			x3 = x+Math.cos((oa))*r;
-			y3 = y+Math.sin((oa))*r;
-			oa += da;
-			
-			var path = "M"+x0+" "+y0+" A"+ir+","+ir+" 0 "+(da > Math.PI ? "1,1" : "0,1")+" "+x1+","+y1+" L"+x2+" "+y2+" A"+r+","+r+" 0 "+(da > Math.PI ? "1,0" : "0,0")+" "+x3+" "+y3+" Z";
-			
-			me.breakdownArcs[i].attr({ path: path, 'stroke-opacity': me.alpha*0.2, 'fill-opacity': me.breakdownOpacities[i]*me.alpha });
+		if (me.breakdown.length > 1) {
+			// draw breakdown chart
+			var i,x=me.pos.x,y=me.pos.y,x0,x1,x2,x3,y0,y1,y2,y3,ir = r*0.85, oa = -Math.PI * 0.5, da;
+			for (i in me.breakdown) {
+				da = me.breakdown[i] * Math.PI * 2;
+				x0 = x+Math.cos((oa))*ir; 
+				y0 = y+Math.sin((oa))*ir;
+				x1 = x+Math.cos((oa+da))*ir;
+				y1 = y+Math.sin((oa+da))*ir;
+				x2 = x+Math.cos((oa+da))*r;
+				y2 = y+Math.sin((oa+da))*r;
+				x3 = x+Math.cos((oa))*r;
+				y3 = y+Math.sin((oa))*r;
+				oa += da;
+				
+				var path = "M"+x0+" "+y0+" A"+ir+","+ir+" 0 "+(da > Math.PI ? "1,1" : "0,1")+" "+x1+","+y1+" L"+x2+" "+y2+" A"+r+","+r+" 0 "+(da > Math.PI ? "1,0" : "0,0")+" "+x3+" "+y3+" Z";
+				
+				me.breakdownArcs[i].attr({ path: path, 'stroke-opacity': me.alpha*0.2, 'fill-opacity': me.breakdownOpacities[i]*me.alpha });
+			}
 		}
-		
 
 		//me.label.attr({ x: me.pos.x, y: me.pos.y, 'font-size': Math.max(4, me.bubbleRad * me.bc.bubbleScale * 0.25) });
 		if (r < 20) me.label.hide();
@@ -163,7 +168,7 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 	/*
 	 * adds all visible elements to the page
 	 */
-	this.show = function() {
+	me.show = function() {
 		var me = this, i, r = Math.max(5, me.bubbleRad * me.bc.bubbleScale);
 		
 		me.circle = me.paper.circle(me.pos.x, me.pos.y, r)
@@ -180,19 +185,26 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 			$(me.label).css({ cursor: 'pointer'});
 		}	
 		
-		me.breakdownArcs = [];
-		
-		for (i in me.breakdown) {
-			var arc = me.paper.path("M 0 0 L 2 2")
-				.attr({ fill: '#fff', 'fill-opacity': Math.random()*0.4 + 0.3, stroke: '#fff'});
-			me.breakdownArcs.push(arc);
-		}
-		
 		var list = [me.circle.node, me.label];
-		for (i in me.breakdownArcs) {
-			// list.push(me.breakdownArcs[i].node);
-			$(me.breakdownArcs[i].node).click(me.onclick.bind(me));
+		
+		if (me.breakdown.length > 1) {
+			me.breakdownArcs = {};
+			
+			for (i in me.breakdown) {
+				var arc = me.paper.path("M 0 0 L 2 2")
+					.attr({ fill: '#fff', 'fill-opacity': Math.random()*0.4 + 0.3, stroke: '#fff'});
+				me.breakdownArcs[i] = arc;
+				$(arc.node).hover(me.arcHover.bind(me), me.arcUnhover.bind(me));
+			}
+			
+			for (i in me.breakdownArcs) {
+				// we dont add the breakdown arcs to the list 'cause
+				// we want them to fire different mouse over events
+				// list.push(me.breakdownArcs[i].node);
+				$(me.breakdownArcs[i].node).click(me.onclick.bind(me));
+			}
 		}
+		
 		var mgroup = new me.ns.MouseEventGroup(me, list);
 		mgroup.click(me.onclick.bind(me));
 		mgroup.hover(me.onhover.bind(me));
@@ -202,5 +214,45 @@ OpenSpending.BubbleChart.Bubbles.Donut = function(node, bubblechart, origin, rad
 		
 	};
 	
-	this.init();
+	
+	me.arcHover = function(e) {
+		var me = this, c = me.bc.$container[0], i, 
+			arcs = me.breakdownArcs, node, 
+			bd = me.node.breakdowns;
+			
+		for (i in arcs) {
+			if (arcs[i].node == e.target) {
+				vis4.log(bd, i, bd[i]);
+				e.node = bd[i];
+				e.bubblePos = { x:me.pos.x, y: me.pos.y };
+				e.mousePos = { x:e.pageX - c.offsetLeft, y: e.pageY - c.offsetTop };
+				e.type = 'SHOW';
+				me.bc.tooltip(e);
+				return;
+			}
+		}
+		
+		vis4.log('cant find the breakdown node');
+	};
+	
+	me.arcUnhover = function(e) {
+		var me = this, c = me.bc.$container[0], i, 
+			arcs = me.breakdownArcs, node, 
+			bd = me.node.breakdowns;
+			
+		for (i in arcs) {
+			if (arcs[i].node == e.target) {
+				e.node = bd[i];
+				e.bubblePos = { x:me.pos.x, y: me.pos.y };
+				e.mousePos = { x:e.pageX - c.offsetLeft, y: e.pageY - c.offsetTop };
+				e.type = 'HIDE';
+				me.bc.tooltip(e);
+				return;
+			}
+		}
+		
+		vis4.log('cant find the breakdown node');
+	};
+	
+	me.init();
 };

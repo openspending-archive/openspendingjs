@@ -85,20 +85,22 @@ OpenSpending.BubbleChart.Bubbles.Pies = function(node, bubblechart, origin, radi
 	};
 	
 	me.onhover = function(e) {
-		var me = this;
+		var me = this, c = me.bc.$container[0];
 		e.node = me.node;
-		e.position = { x:me.pos.x, y: me.pos.y };
-		me.bc.onHover(e);
+		e.bubblePos = { x:me.pos.x, y: me.pos.y };
+		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
+		e.type = 'SHOW';
+		me.bc.tooltip(e);
 	};
 	
 	me.onunhover = function(e) {
-		var me = this;
+		var me = this, c = me.bc.$container[0];
 		e.node = me.node;
-		e.position = { x:me.pos.x, y: me.pos.y };
-		me.bc.onUnHover(e);
+		e.type = 'HIDE';
+		e.bubblePos = { x:me.pos.x, y: me.pos.y };
+		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
+		me.bc.tooltip(e);
 	};
-	
-	
 	
 	this.draw = function() {
 		var me = this, r = me.bubbleRad * me.bc.bubbleScale, ox = me.pos.x, oy = me.pos.y, devnull = me.getXY();

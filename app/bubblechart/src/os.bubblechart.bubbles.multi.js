@@ -80,19 +80,22 @@ OpenSpending.BubbleChart.Bubbles.Multi = function(node, bubblechart, origin, rad
 	};
 	
 	me.onhover = function(e) {
-		var me = this;
+		var me = this, c = me.bc.$container[0];
 		e.node = me.node;
-		e.position = { x:me.pos.x, y: me.pos.y };
-		me.bc.onHover(e);
+		e.bubblePos = { x:me.pos.x, y: me.pos.y };
+		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
+		e.type = 'SHOW';
+		me.bc.tooltip(e);
 	};
 	
 	me.onunhover = function(e) {
-		var me = this;
+		var me = this, c = me.bc.$container[0];
 		e.node = me.node;
-		e.position = { x:me.pos.x, y: me.pos.y };
-		me.bc.onUnHover(e);
+		e.type = 'HIDE';
+		e.bubblePos = { x:me.pos.x, y: me.pos.y };
+		e.mousePos = { x:e.origEvent.pageX - c.offsetLeft, y: e.origEvent.pageY - c.offsetTop };
+		me.bc.tooltip(e);
 	};
-	
 	
 	/*
 	 * adds all visible elements to the page
