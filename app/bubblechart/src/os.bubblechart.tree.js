@@ -108,12 +108,12 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 
 		prefix = parent ? parent.id + '__' : '';
 		if (value === undefined || value === null) {
-			id = 'undefined';
-			label = 'Undefined';
+			id = 'others';
+			label = 'Others';
 		} else if (type === 'object') {
 			if (value._id === undefined) {
-				id = 'undefined';
-				label = 'Undefined';
+				id = 'others';
+				label = 'Others';
 			} else {
 				id = value._id;
 				label = value.label;
