@@ -90,6 +90,8 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 		var c, child, pc, me = this;
 		// set node color
 		
+		node.famount = me.ns.Utils.formatNumber(node.amount);
+		
 		if (me.style.hasOwnProperty(node.id)) {
 			node.color = me.style[node.id].color;	
 		} else if (node.hasOwnProperty('color') && node.color !== undefined) {
