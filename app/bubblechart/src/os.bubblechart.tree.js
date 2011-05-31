@@ -103,7 +103,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 	var toNode = function(value, parent) {
 		var type = typeof(value),
 			id,
-	  		label,
+			label,
 			prefix;
 
 		prefix = parent ? parent.id + '__' : '';
@@ -199,7 +199,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 				node.breakdowns = {};
 				parent.children.push(node);
 				nodes[node.id] = node;
-			};
+			}
 
             node.amount = node.amount + entry.amount;
 
