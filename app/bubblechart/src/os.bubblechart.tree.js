@@ -44,12 +44,12 @@ OpenSpending.BubbleChart.getTree = function(config) {
         drilldowns.push(config.breakdown);
     }
     drilldowns = $.unique(drilldowns);
+    data.drilldown = drilldowns.join('|');
 
     if (config.testDataPath !== undefined) {
         url = config.testDataPath;
         dataType = 'json';
     }
-
     $.ajax({
         url: url,
         data: data,
@@ -91,9 +91,49 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
     }
     nodes.root = root;
 
-    if(data.errors !== undefined) {
+	for (var i in drilldowns) {
+		var drilldown = drilldowns[i];
+		nodes[drilldown] = {};
+	}
+    if (data.errors !== undefined) {
         throw "Error";
     }
+
+
+	var toNode = function(value, parent) {
+		var type = typeof(value),
+			id,
+	  		label,
+			prefix;
+
+		prefix = parent ? parent.id + '__' : '';
+		if (value === undefined || value === null) {
+			id = 'undefined';
+			label = 'Undefined';
+		} else if (type === 'object') {
+			if (value._id === undefined) {
+				id = 'undefined';
+				label = 'Undefined';
+			} else {
+				id = value._id;
+				label = value.label;
+			}
+		} else if ( type === 'boolean' ) {
+			if (value) {
+				id = 'yes';
+				label = 'Yes';
+			} else {
+				id = 'no';
+				label = 'No';
+			}
+		} else if ( type === 'string' || type === 'number') {
+			id = value + '';
+			label = value + '';
+		} else {
+			throw 'unsupported type: ' + type;
+		}
+		return {id: prefix + id, label: label, amount: 0.0};
+	};
 
     /**
      *  Add a node for each drilldown to the 'nodes' object
@@ -105,7 +145,7 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
      *
      *  @method processEntry
      *  @param {object} entry The entry in the list of drill downs
-     *  @param {object} nodes Object used as a mapping for node ids to nodes
+     *  @param {object} node The node to which we save the breakdown
      *  @return {undefined}
      */
     var addBreakdown = function(node, entry) {
@@ -114,61 +154,54 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
             return;
         }
 
-        var value = entry[breakdown];
-        if (value === undefined) {
-            return;
-        }
+		var breakdown_value,
+			breakdown_node,
+			node_template,
+			nodes = {},
+			_id;
 
-        var name = value.name,
-            label = entry[breakdown].label,
-            amount = entry.amount;
+		breakdown_value = entry[breakdown];
+		node_template = toNode(breakdown_value);
+		_id = node_template.id;
+		breakdown_node = node.breakdowns[_id];
 
-        if (node.breakdowns[name] === undefined) {
-            node.breakdowns[name] = {id: name,
-                                     label: label,
-                                     amount: 0.0};
+        if (breakdown_node === undefined) {
+            breakdown_node = node_template;
+			node.breakdowns[_id] = breakdown_node;
         }
-        node.breakdowns[name].amount = node.breakdowns[name].amount + amount;
+        breakdown_node.amount = breakdown_node.amount + entry.amount;
     };
 
     var processEntry = function(entry, nodes) {
 
         var parent = nodes.root,
             level = 0,
-            i, drilldown,
+            drilldown,
             current,
-            node;
+            node,
+			node_template;
 
-		for (i in drilldowns) {
-			drilldown = drilldowns[i];
+        for (var index in drilldowns) {
+            drilldown = drilldowns[index];
 
             level = level + 1;
             current = entry[drilldown];
+			node_template = toNode(current, parent);
 
-            // Don't process the drilldowns further if a
-            // drilldown has no value
-            if(! current) {
-                break;
-            }
-
-            node = nodes[current.name];
+            node = nodes[node_template.id];
             if(node === undefined) {
                 // Initialize a new node and add it to the parent node
-                node = {id: current.name,
-                        children: [],
-                        amount: entry.amount,
-                        label: current.label,
-                        color: current.color,
-                        level: level,
-                       breakdowns: {}};
+                node = node_template;
+				node.children = [];
+				node.amount = 0.0;
+				node.color = current ? current.color : undefined;
+				node.level = level;
+				node.breakdowns = {};
+				parent.children.push(node);
+				nodes[node.id] = node;
+			};
 
-                parent.children.push(node);
-                nodes[current.name] = node;
-
-            } else {
-                // update the ammount for existing nodes.
-                node.amount = node.amount + entry.amount;
-            }
+            node.amount = node.amount + entry.amount;
 
             // Add the current amount and the breakdown to the root node
             // to have a total.
@@ -183,9 +216,9 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
         }
     };
 
-	for (var i in entries) {
-		processEntry(entries[i], nodes);
-	}
+    for (var index in entries) {
+        processEntry(entries[index], nodes);
+    }
 
     return nodes.root;
 };

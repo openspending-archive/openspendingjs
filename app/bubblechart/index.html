@@ -101,27 +101,30 @@
 			
 			var config = {
 				// todo: we should really document all the settings
-				apiUrl: 'http://berlin.offenerhaushalt.de/api',
-				dataset: 'berlin',
+				apiUrl: 'http://openspending.org/api',
+				// todo: ...
+				testDataPath: 'data/example-aggregate.json',
+				// todo: we should really document all the settings		
+				dataset: 'cra',
 				// todo: we should really document all the settings
 				drilldowns: ['hauptfunktion', 'oberfunktion'],
 				// todo: we should really document all the settings
-				cuts: ['year:2008'],
+				cuts: ['year:2009'],
 				// todo: we should really document all the settings
-				rootNodeLabel: 'Berlin', 
+				rootNodeLabel: 'Grant total', 
 				// jquery selector code to identify the container div 
 				container: '#bubble-chart',
 				// 
-				initYear: 2010,
+				initYear: 2009,
 				// this callback is invoked as soon as the year changes by url
-                //breakdown: 'cofog3',
+                breakdown: 'cofog3',
 				yearChangeHandler: yearChange,
 				// defines what class is used to render the bubbles
 				// possible values are pie,donut,plain,multi
-				bubbleType: 'plain',
+				bubbleType: 'donut',
 				// fake breakdown values for each node
 				fakeBreakdowns: ['Government', 'General Bugdet Support', 'Aid'],
-				
+				// tooltip handler
 				tooltipCallback: tooltip
 			}
 			
