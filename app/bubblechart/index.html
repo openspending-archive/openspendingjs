@@ -75,6 +75,7 @@
 	}
 	
 	</style>
+	<script type="text/javascript" src="config.testdata.js"></script>
 	<script type="text/javascript">
        
 		$(function() {
@@ -94,7 +95,7 @@
 						left: event.mousePos.x + 4, 
 						top: event.mousePos.y + 4 
 					});
-					$tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
+					$tooltip.html(event.node.label+' <b>'+event.node.famount+'</b><br />'+event.node.urlToken);
 					$tooltip.show();
 				} else {
 					// hide tooltip
@@ -102,36 +103,17 @@
 				}
 			};
 			
+			// config is now defined in separate files
+			vis4.log(config);
 			
-			var config = {
-				// todo: we should really document all the settings
-				apiUrl: 'http://openspending.org/api',
-				// todo: ...
-				testDataPath: 'data/example-aggregate.json',
-				// todo: we should really document all the settings		
-				dataset: 'cra',
-				// todo: we should really document all the settings
-				drilldowns: ['cofog1', 'cofog2', 'cofog3'],
-				// todo: we should really document all the settings
-				cuts: ['year:2009'],
-				// todo: we should really document all the settings
-				rootNodeLabel: 'Grant total', 
-				// jquery selector code to identify the container div 
-				container: '#bubble-chart',
-				// 
-				initYear: 2009,
-				// breakdown
-                breakdown: 'cofog3',
-                // this callback is invoked as soon as the year changes by url
-				yearChangeHandler: yearChange,
-				// defines what class is used to render the bubbles
-				// possible values are pie,donut,plain,multi
-				bubbleType: 'donut',
-				// fake breakdown values for each node
-				fakeBreakdowns: ['Government', 'General Bugdet Support', 'Aid'],
-				// tooltip handler
-				tooltipCallback: tooltip
-			}
+			config.tooltipCallback = tooltip;
+			config.yearChangeHandler = yearChange;
+			
+			config.bubbleStyles = {
+				'defence': {
+					'icon': 'icons/02-defence.svg'
+				}
+			};
 			
 			new OpenSpending.BubbleChart.Loader(config);
 			
