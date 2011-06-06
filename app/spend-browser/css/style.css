@@ -33,3 +33,26 @@
   margin-top: 0px;
 }
 
+.result-list th.num {
+  padding-right: 25px;
+}
+
+.result-list thead th {
+  background-image: none;
+  border: solid 1px #eee;
+}
+
+.result-list thead th.sortable {
+  background-image: url(http://assets.okfn.org/ext/jquery.tablesorter/bg.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+
+.result-list thead th.sort-asc {
+  background-image: url(http://assets.okfn.org/ext/jquery.tablesorter/asc.gif);
+}
+.result-list thead th.sort-desc {
+  background-image: url(http://assets.okfn.org/ext/jquery.tablesorter/desc.gif);
+}
+
