@@ -104,35 +104,55 @@ OpenSpending.BubbleChart.buildTree = function(data, drilldowns,
 		var type = typeof(value),
 			id,
 			label,
-			prefix;
+			prefix,
+            taxonomy,
+            name;
 
 		prefix = parent ? parent.id + '__' : '';
 		if (value === undefined || value === null) {
 			id = 'others';
 			label = 'Others';
+            name = 'others';
 		} else if (type === 'object') {
 			if (value._id === undefined) {
 				id = 'others';
 				label = 'Others';
+                name = 'others';
 			} else {
 				id = value._id;
 				label = value.label;
+                taxonomy = value.taxonomy;
+                name = value.name;
+                if (!name) {
+                    if (label) {
+                        name = label.toLowerCase().replace(/\W/g, "-");
+                    } else {
+                        name = id;
+                    }
+                }
 			}
 		} else if ( type === 'boolean' ) {
 			if (value) {
 				id = 'yes';
 				label = 'Yes';
+                name = 'yes';
 			} else {
 				id = 'no';
 				label = 'No';
+                name = 'no';
 			}
 		} else if ( type === 'string' || type === 'number') {
 			id = value + '';
 			label = value + '';
+            name = id.toLowerCase().replace(/\W/g, "-");
 		} else {
 			throw 'unsupported type: ' + type;
 		}
-		return {id: prefix + id, label: label, amount: 0.0};
+		return {id: prefix + id,
+                label: label,
+                name: name,
+                taxonomy: taxonomy,
+                amount: 0.0};
 	};
 
     /**
