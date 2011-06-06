@@ -232,12 +232,19 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	 * bubbles are traversed. it will store icon urls to the nodes 
 	 */
 	me.initIcons = function() {
-		var me = this, styles = me.config.bubbleStyles, i, node;
+		var me = this, styles = me.config.bubbleStyles, i, node, taxonomy, id, taxStyles;
 		
 		for (i in me.nodeList) {
 			node = me.nodeList[i];
-			if (styles.hasOwnProperty(node.urlToken) && styles[node.urlToken].hasOwnProperty('icon')) {
-				node.iconUrl = styles[node.urlToken].icon;
+			id = node.name;
+			if (node.hasOwnProperty('taxonomy') {
+				taxonomy = node.taxonomy;
+				if (styles.hasOwnProperty(taxonomy)) {
+					taxStyles = styles[taxonomy];
+					if (taxStyles.hasOwnProperty(id)) {
+						node.iconUrl = taxStyles[id];
+					}
+				} 
 			}
 		}
 	};
