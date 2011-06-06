@@ -5,6 +5,7 @@ src/os.bubblechart.bubbles.donut.js
 src/os.bubblechart.bubbles.multi.js
 src/os.bubblechart.bubbles.pies.js
 src/os.bubblechart.bubbles.plain.js
+src/os.bubblechart.bubbles.icon.js
 src/os.bubblechart.layout.js
 src/os.bubblechart.line.js
 src/os.bubblechart.mouseeventgroup.js

@@ -5,7 +5,7 @@
  * Licensed under the MIT license
  */
 /*jshint undef: true, browser:true, jquery: true, devel: true */
-/*global Raphael, TWEEN, vis4, vis4color */
+/*global Raphael, TWEEN, vis4, vis4color, vis4loader */
 
 var OpenSpending = OpenSpending ? OpenSpending : {}; 
 
@@ -33,7 +33,17 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	
 	me.ns = OpenSpending.BubbleChart;
 	
+	/*
+	 * hashmap of all nodes by url token
+	 */
 	me.nodesByUrlToken = {};
+	
+	/*
+	 * flat array of all nodes
+	 */
+	me.nodeList = [];
+	
+	me.iconsByUrlToken = {};
 	
 	me.globalNodeCounter = 0;
 	
@@ -90,7 +100,9 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 	 */
 	me.traverse = function(node, index) {
 		var c, child, pc, me = this, urlTokenSource;
-		// set node color
+		
+		// store node in flat node list
+		me.nodeList.push(node);
 		
 		node.famount = me.ns.Utils.formatNumber(node.amount);
 		
@@ -98,16 +110,13 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 			node.color = me.style[node.id].color;	
 		} else if (node.hasOwnProperty('color') && node.color !== undefined) {
 			// use color given in data
-			vis4.log('use data color', node.color);
 		} else {
 			// use color from parent node if no other match available
 			if (node.level > 0) node.color = node.parent.color;
 			else node.color = '#999999';
 		}
-		vis4.log(node.id, node.color, node);
 		// lighten up the color if there are no children
-		if (node.children.length < 1) {
-			vis4.log(node.color);
+		if (node.children.length < 2) {
 			node.color = vis4color.fromHex(node.color).saturation('*.86').x;
 		}
 		
@@ -204,6 +213,10 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 			case 'multi':
 				bubbleClass = Bubbles.Multi;
 				break;
+			case 'icon':
+				bubbleClass = Bubbles.Icon;
+				me.initIcons();
+				break;
 			default:
 				bubbleClass = Bubbles.Plain;
 				break;
@@ -214,6 +227,37 @@ OpenSpending.BubbleChart = function(config, onHover, onUnHover) {
 		me.traverseBubbles(rootBubble);
 	};
 	
+	/*
+	 * if the bubble type is set to "icon", this func will be called before the
+	 * bubbles are traversed. it will store icon urls to the nodes 
+	 */
+	me.initIcons = function() {
+		var me = this, styles = me.config.bubbleStyles, i, node;
+		
+		for (i in me.nodeList) {
+			node = me.nodeList[i];
+			if (styles.hasOwnProperty(node.urlToken) && styles[node.urlToken].hasOwnProperty('icon')) {
+				node.iconUrl = styles[node.urlToken].icon;
+			}
+		}
+	};
+	
+	me.iconsLoaded = function(ldr) {
+		var me = this, i, j, paths, icon, svg, item;
+		vis4.log('loaded '+ldr.items.length+' icons');
+		for (i in ldr.items) {
+			item = ldr.items[i];
+			svg = item.data;
+			if (!me.iconsByUrlToken.hasOwnProperty(item.id)) {
+				me.iconsByUrlToken[item.id] = [];
+			}
+			paths = svg.getElementsByTagName('path');
+			for (j in paths) {
+				me.iconsByUrlToken[item.id].push(paths[j].getAttribute('d'));
+			}
+		}
+	};
+
 	me.traverseBubbles = function(parentBubble) {
 		var me = this, ring,
 			a2rad = me.ns.Utils.amount2rad,

@@ -1,17 +1,16 @@
 var config = {
-	// todo: we should really document all the settings
-	apiUrl: 'http://staging.openspending.org/api',
-	dataset: 'israel',
-	// todo: we should really document all the settings
-	drilldowns: ['primary', 'section', 'entity'/*, 'programme'*/],
-	// todo: we should really document all the settings
-	cuts: ['year:2010'],
-	// todo: we should really document all the settings
-	rootNodeLabel: 'Budget total', 
+				apiUrl: 'http://berlin.offenerhaushalt.de/api',
+				dataset: 'berlin',
+				// todo: we should really document all the settings		
+				drilldowns: ['hauptfunktion', 'oberfunktion'],
+				// todo: we should really document all the settings
+				cuts: ['year:2011'],
+				// todo: we should really document all the settings
+				rootNodeLabel: 'Berlin',
 
 	container: '#bubble-chart',
 	// 
-	initYear: 2009,
+	initYear: 2011,
 	// breakdown
 	//breakdown: 'cofog3',
 	// this callback is invoked as soon as the year changes by url
