@@ -3,7 +3,11 @@
 }
 
 #infovis {
-    width:800px;
+  position:relative;
+  width:600px;
+  height:500px;
+  margin:auto;
+  overflow:hidden;
 }
 
 #infovis div {
@@ -14,8 +18,9 @@
 }
 
 #infovis .content {
-    background-color:#333;
-    border:0px solid #111;
+  background-color:#333;
+  border:0px solid #111;
+  text-align: center;
 }
 
 #infovis .head {
