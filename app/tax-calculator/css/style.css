@@ -1,0 +1,141 @@
+#wrapper {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.clear {
+  clear: both;
+}
+
+/** Layout */
+
+.layout-row, .area-row {
+  width: 100%;
+  overflow: auto; /* row expands to contain children */
+  margin-bottom: 1%;
+}
+
+.layout-col, .area-col {
+  margin: 0 0 0 1%;
+  float: left;
+}
+
+.layout-col-1 {
+  clear: left;
+  margin-left: 0;
+}
+
+.layout-3col-15-70-15 .layout-col {
+  width: 14.5%;
+}
+
+.layout-3col-15-70-15 .layout-col-2 {
+  width: 69%;
+}
+
+/** Header */
+
+#header {
+	text-align: center;
+}
+
+#header h1 {
+	color: #830242;
+	font-size: 2.5em;
+	text-transform: uppercase;
+}
+
+#header h2 {
+	margin: 0;
+	color: #aaa;
+	font-size: 1.5em;
+	text-transform: uppercase;
+}
+
+/** Top bar */
+
+#topbar {
+	margin: 1em 0 0 0;
+}
+
+#topbar div h2 {
+	margin: 0;
+	padding: 0;
+	font-size: 1.2em;
+	text-transform: uppercase;
+}
+
+#topbar div p {
+	margin: 0;
+	padding: 0;
+	color: #830242;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+#salary {
+	text-align: left;
+}
+
+#slider {
+	text-align: center;
+}
+
+#tax {
+	text-align: right;
+}
+
+/** Slider */
+
+.slider-container {
+  margin: auto;
+  width: 85%;
+}
+
+.wdmmg-slider {
+	width: 100%;
+	margin: 0.25em auto;
+}
+
+.wdmmg-slider.ui-widget-content {
+	background: none;
+	background-color: #830242;
+	height: 6px;
+}
+
+.wdmmg-slider.ui-slider-horizontal .ui-slider-handle {
+	height: 14px;
+	width: 10px;
+	cursor: move;
+	margin-left: -0.4em;
+}
+
+.slider-container div#ticks {
+	font-size: 90%;
+	margin-top: 5px;
+}
+
+.slider-container div.tick-min {
+	float: left;
+	margin-left: -5px;
+}
+
+.slider-container div.tick-max {
+	float: right;
+	margin-right: -15px;
+}
+
+
+/** Treemap **/
+
+#infovis-container {
+  margin: auto;
+  margin-top: 20px;
+  width: 80%;
+}
+
+#infovis {
+  width: 100%;
+  height: 400px;
+}
+

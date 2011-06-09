@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UK Tax Calculator - OpenSpending</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/ui-lightness/jquery-ui.css">
+    <link rel="stylesheet" href="../../lib/vendor/jqueryui-1.8.4/css/ui-lightness/jquery-ui-1.8.4.custom.css">
+    <link type="text/css" href="../media/css/treemap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="../../lib/vendor/jquery-1.5.2.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="../../lib/vendor/jqueryui-1.8.4/jquery-ui.min.js"></script>
+    <script src="../../lib/vendor/underscore-min.js"></script>
+    <script type="text/javascript" src="../../lib/vendor/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="http://assets.okfn.org/ext/Jit/1.1.3/jit-yc.js"></script>
+
+    <script src="../../lib/utils/wdmmg.js"></script>
+    <script src="js/ui.js"></script>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="header">
+      <h1>How Much Tax Do I Pay?</h1>
+    </div>
+
+    <div id="topbar" class="layout-row layout-3col-15-70-15">
+      <div id="salary" class="layout-col layout-col-1">
+        <h2>Income</h2>
+        <p>£22,000</p>
+      </div>
+
+      <div id="slider" class="layout-col layout-col-2">
+        <h2>Select your salary</h2>
+        <div class="slider-container">
+          <div class="wdmmg-slider"></div>
+          <div id="ticks">
+            <div class="tick-min">10k</div>
+            <div class="tick-max">500k</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tax" class="layout-col layout-col-3">
+        <h2>Your tax</h2>
+        <p>£31.12</p>
+      </div>
+    </div><!-- /#topbar -->
+    <hr class="clear" />
+
+    <div id="infovis-container">
+      <div id="infovis"></div>
+    </div>
+
+    <h2>Explanation</h2>
+    <div class="explanation">
+    </div>
+
+    <h3>Source</h3>
+    <p>The <a href="http://wiki.openspending.org/API#Tax_share">OpenSpending.org Tax API</a> which uses UK National statistics data for tax paid per household income decile, 2008/9 &ndash; see Table 14 in <a href="http://www.statistics.gov.uk/CCI/article.asp?ID=2440">http://www.statistics.gov.uk/CCI/article.asp?ID=2440</a>.</p>
+
+    <h2>Todos</h2>
+    <p>Allow users to indicate whether a smoker, drinker or driver.</p>
+
+    <h2 id="about">About</h2>
+    <p>A creation of the <a href="http://wheredoesmymoneygo.org/" target="_blank">Where Does My Money Go?</a> team. Visualized by <a href="http://rufuspollock.org/" target="_blank">Rufus Pollock</a> using the <a href="http://thejit.org/">thejit</a> and jquery.</p>
+
+  </div><!-- /#wrapper -->
+</body>
+</html>
