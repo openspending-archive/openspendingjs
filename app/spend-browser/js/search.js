@@ -10,8 +10,8 @@ OpenSpending.App.SpendBrowser = (function($) {
         $target.append(this.tmplNavigator);
         $target.append(this.tmplResults);
 
-        OpenSpending.Search.configure(config);
-        var manager = OpenSpending.Search.Manager;
+        var browser = OpenSpending.Search(config);
+        var manager = browser.Manager;
         manager.addWidget(new OpenSpending.Search.ResultWidget({
             id: 'result',
             target: config.target + ' .results'
