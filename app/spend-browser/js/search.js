@@ -12,23 +12,23 @@ OpenSpending.App.SpendBrowser = (function($) {
 
         var browser = OpenSpending.Search(config);
         var manager = browser.Manager;
-        manager.addWidget(new OpenSpending.Search.ResultWidget({
+        manager.addWidget(new browser.ResultWidget({
             id: 'result',
             target: config.target + ' .results'
           })
         );
-        manager.addWidget(new OpenSpending.Search.PagerWidget({
+        manager.addWidget(new browser.PagerWidget({
             id: 'pager',
             target: config.target + ' .pager'
           })
         );
-        manager.addWidget(new OpenSpending.Search.DropDownFacetWidget({
+        manager.addWidget(new browser.DropDownFacetWidget({
           id: 'department',
           target: config.target + ' .department-facet',
           field: 'from.label_str'
           })
         );
-        manager.addWidget(new OpenSpending.Search.CurrentSearchWidget({
+        manager.addWidget(new browser.CurrentSearchWidget({
           id: 'currentsearch',
           target: config.target + ' .navigator .filters-current .list'
         }));
@@ -64,7 +64,7 @@ OpenSpending.App.SpendBrowser = (function($) {
             'facet.mincount': 1,
             'json.nl': 'map'
           };
-          OpenSpending.Search.search(params);
+          browser.search(params);
         });
         $(config.target + ' form .clear-search').click(function(e) {
           e.preventDefault();
