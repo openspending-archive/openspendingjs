@@ -1,0 +1,41 @@
+.explorer {
+  margin-top: 20px;
+}
+
+.bubbletree {
+    height:600px;
+}
+
+#controls {
+  float: right;
+  min-width: 200px;
+  width: 20%;
+}
+
+#controls > div{
+    margin-bottom: 1em;
+}
+
+#controls-year {
+  width: 80%;
+}
+
+.ui-slider-horizontal {
+  height: 3px;
+}
+
+.ui-slider-horizontal .ui-slider-handle {
+  height: 14px;
+  width: 4px;
+  margin-left: -0.1em;
+  top: -0.45em;
+}
+
+#breakdown-list {
+  margin-bottom:4px;
+}
+
+#breakdown-list li, #keys-list li {
+  cursor: move;
+}
+

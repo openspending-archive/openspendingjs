@@ -1,0 +1,92 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>
+  <title>Spending Browser</title>
+
+  <!-- OpenSpending Styles: replace these if you wish. -->
+  <script src="http://openspending.org/js/libs/modernizr-1.6.min.js"></script>
+  <link rel="stylesheet" href="http://openspending.org/css/reset.css" /> 
+  <link rel="stylesheet" href="http://openspending.org/css/blueprint/screen.css" type="text/css" media="screen, projection" /> 
+  <link rel="stylesheet" href="http://openspending.org/css/blueprint/print.css" type="text/css" media="print" /> 
+  <!--[if lt IE 8]><link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]-->
+  <link rel="stylesheet" href="http://openspending.org/css/style.css" /> 
+
+  <!-- local mods/additions -->
+  <link rel="stylesheet" href="css/style.css" /> 
+  <!-- /OpenSpending Styles -->
+
+  <!-- Vendor Libraries -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/underscore-min.js"></script>
+  <script type="text/javascript" src="../../lib/vendor/backbone/20110619/backbone.js"></script>
+
+  <!-- OpenSpending lib -->
+  <script type="text/javascript" src="../../lib/utils/utils.js"></script>
+  <script type="text/javascript" src="../../lib/datastore.js"></script>
+  <script type="text/javascript" src="../../lib/model.js"></script>
+
+  <!-- bubbletree -->
+  <script type="text/javascript" src="../../lib/vendor/jquery.history.js"></script> 
+  <script type="text/javascript" src="../../lib/vendor/raphael.js"></script> 
+  <script type="text/javascript" src="../../lib/vendor/vis4.js"></script> 
+  <script type="text/javascript" src="../../lib/vendor/Tween.js"></script> 
+  <script type="text/javascript" src="../bubbletree/bubbletree.min.js"></script> 
+
+  <!-- this app -->
+  <script type="text/javascript" src="js/explorer.js"></script>
+
+  <script type="text/javascript">
+jQuery(document).ready(function($) {
+  var config = {
+    endpoint: 'http://openspending.org/',
+    target: '.explorer',
+    dataset: 'cra'
+  };
+  var explorer = new OpenSpending.App.Explorer(config);
+  explorer.initialize();
+});
+  </script>
+</head>
+<body>
+  <!-- All these initial divs are for OpenSpending Html -->
+  <div id="wrap">
+    <div id="page" class="container">
+      <header>
+        <h1 id="site-title">Spending Browser Demo</h1>
+      </header>
+
+      <div id="main">
+        <div id="content">
+
+          <!-- The Element we attach to -->
+          <div class="explorer">
+            <div id="controls">
+             <div id="controls-year">
+                <h3>Year: <span id="year"></span></h3>
+                <div id="yearslider"></div>
+                <div id="year-range"></div>
+              </div>
+             <div id="controls-breakdown">
+               <h3>Breakdown by</h3>
+               <ol id="breakdown-list">
+               </ol>
+               <button>Redraw</button>
+             </div>
+            </div>
+            <div class="bubbletree-wrapper">
+              <div class="bubbletree"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer class="container">
+      <p>Created by the Open Knowledge Foundation</p>
+    </footer>
+  </div>
+</body>
+</html>
+
