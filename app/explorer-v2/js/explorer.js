@@ -33,7 +33,8 @@ OpenSpending.App.Explorer = function(config) {
         e.preventDefault();
         draw();
       });
-      draw();
+      // draw();
+      // my.renderTree('#bubble-chart');
     }
 
     function draw() {
@@ -47,7 +48,7 @@ OpenSpending.App.Explorer = function(config) {
       });
       vals = _.uniq(vals);
       my.config.drilldowns = vals;
-      var containerId = my.config.target + ' .bubbletree';
+      var containerId = my.config.target + ' #bubble-chart';
       if (my.config.drilldowns.length > 0) {
         my.renderTree(containerId);
       }
@@ -57,10 +58,46 @@ OpenSpending.App.Explorer = function(config) {
   my.renderTree = function(figId) {
     var config = {
       apiUrl: my.config.endpoint + 'api',
-      container: figId,
       dataset: my.config.dataset,
-      drilldowns: my.config.drilldowns
+      drilldowns: my.config.drilldowns,
+      // cuts: ['year:2008'],
+      rootNodeLabel: 'Grant total', 
+      container: figId,
+      // initYear: 2009,
+      // breakdown: 'region',
+      bubbleType: ['icon'],
     };
+
+    var yearChange = function(year) {
+      window.alert('year changed to '+year);
+    };
+    
+    var $tooltip = $('<div class="tooltip">Tooltip</div>');
+    $('#bubble-chart').append($tooltip);
+    
+    var tooltip = function(event) {
+      if (event.type == 'SHOW') {
+        // show tooltip
+        vis4.log(event);
+        $tooltip.css({ 
+          left: event.mousePos.x + 4, 
+          top: event.mousePos.y + 4 
+        });
+        $tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
+        var bubble = event.target;
+        
+        $tooltip.show();
+      } else {
+        // hide tooltip
+        $tooltip.hide();
+      }
+    };
+    
+    config.tooltipCallback = tooltip;
+    config.yearChangeHandler = yearChange;
+    
+    config.bubbleStyles = config.bubbleStyles ? config.bubbleStyles : {};
+      
     new OpenSpending.BubbleTree.Loader(config);
   };
 

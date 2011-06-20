@@ -33,6 +33,8 @@
   <script type="text/javascript" src="../../lib/vendor/Tween.js"></script> 
   <script type="text/javascript" src="../bubbletree/bubbletree.min.js"></script> 
 
+	<link rel="stylesheet" type="text/css" href="../bubbletree/css/style.tooltips.css" />
+	
   <!-- this app -->
   <script type="text/javascript" src="js/explorer.js"></script>
 
@@ -75,10 +77,11 @@ jQuery(document).ready(function($) {
              </div>
             </div>
             <div class="bubbletree-wrapper">
-              <div class="bubbletree"></div>
+              <div id="bubble-chart-wrapper">
+                <div id="bubble-chart"></div>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
