@@ -5,10 +5,12 @@
 	<title>UK Country Regional Analysis</title>
 	<script type="text/javascript" src="../../../../lib/vendor/jquery-1.5.2.min.js"></script>
 	<script type="text/javascript" src="../../../../lib/vendor/jquery.history.js"></script>
+	<script type="text/javascript" src="../../../../lib/vendor/jquery.tooltip.min.js"></script>
 	<script type="text/javascript" src="../../../../lib/vendor/raphael.js"></script>
 	<script type="text/javascript" src="../../../../lib/vendor/vis4.js"></script>
 	<script type="text/javascript" src="../../../../lib/vendor/Tween.js"></script>
 	<script type="text/javascript" src="../../bubbletree.min.js"></script>
+	<script type="text/javascript" src="os.map.js"></script>
 	
 	<link rel="stylesheet" type="text/css" href="../../css/style.page.css" />
 	<link rel="stylesheet" type="text/css" href="../../css/style.bubbletree.css" />
@@ -45,6 +47,10 @@
 				}
 			};
 			
+			var updateMap = function(node) {
+				
+			}
+			
 			var config = {
 				// todo: we should really document all the settings
 				apiUrl: 'http://openspending.org/api',
@@ -53,7 +59,7 @@
 				// todo: we should really document all the settings		
 				dataset: 'cra',
 				// todo: we should really document all the settings
-				drilldowns: ['cofog1', 'cofog2', 'region'],
+				drilldowns: ['cofog1', 'cofog2', 'cofog3'],
 				// todo: we should really document all the settings
 				cuts: ['year:2008'],
 				// todo: we should really document all the settings
@@ -63,91 +69,79 @@
 				// 
 				initYear: 2009,
 				// breakdown
-				//breakdown: 'cg_lg_or_pc',
+				breakdown: 'region',
 				// this callback is invoked as soon as the year changes by url
 				// defines what class is used to render the bubbles
 				// possible values are pie,donut,plain,multi,icon
-				bubbleType: ['icon', 'icon', 'icon', 'plain'],
+				bubbleType: ['icon', 'icon', 'icon', 'icon'],
+				
+				nodeClickCallback: updateMap,
 				
 				rootPath: '../../'
 			};
 			
-			config.tooltipCallback = tooltip;
+			
+			
+			//config.tooltipCallback = tooltip;
+			
+			config.tooltipContent = function(node) {
+				return node.label+'<br/><span class="amount">'+node.famount+'</span>';
+			};
 			
 			config.yearChangeHandler = yearChange;
 			
 			config.bubbleStyles = config.bubbleStyles ? config.bubbleStyles : {};
 			config.bubbleStyles['cofog'] = OpenSpending.BubbleTree.Styles.Cofog;	
+
+			var map = new OpenSpending.Map('uk-map.svg', $('#map'));
 			
-			// uncomment the following line to test local data import
-			// config.localDataPath = 'data/simple-tree.json';
+			$('#maptypeswitch').click(function(e) {
+				if (!$(e.target).hasClass('active')) {
+					$('#maptypeswitch a').removeClass('active');
+					$(e.target).addClass('active');
+					map.mode = $(e.target).attr('name');
+					map.updateValues(map.currentNode);
+				}
+			});
 			
-			// uncomment the following block to test direct local data import
-			/*config.localData = {
-				'id': 'root',
-				'label': 'Total',
-				'amount': 1400000,
-				'children': [{
-					'label': 'Foo',
-					'id': 'foo',
-					'amount': 250000,
-					'children': [{
-						'label': 'Foo-1',
-						'amount': 100000,
-						'children': []
-					}, {
-						'label': 'Foo-2',
-						'amount': 150000,
-						'children': []
-					}]
-				},{
-					'label': 'Foobar',
-					'amount': 400000,
-					'children': [{
-						'label': 'Foobar-1',
-						'amount': 200000,
-						'children': []
-					}, {
-						'label': 'Foobar-2',
-						'amount': 100000,
-						'children': []
-					}, {
-						'label': 'Foobar-3',
-						'amount': 100000,
-						'children': []
-					}]
-				},{
-					'label': 'Bar',
-					'amount': 750000,
-					'level': 1,
-					'children': [{
-						'label': 'Bar-1',
-						'amount': 400000,
-						'children': []
-					}, {
-						'label': 'Bar-2',
-						'amount': 150000,
-						'children': []
-					}, {
-						'label': 'Bar-3',
-						'amount': 70000,
-						'children': []
-					}, {
-						'label': 'Bar-4',
-						'amount': 30000,
-						'children': []
-					}]
-				}]
+			var onNodeClick = function(node) {
+				map.updateValues(node);
+				$('#mapdesc').html('Map of Regional Spending on <div style="font-size:130%">'+node.label+'</div>');
 			};
-			*/
+
+			config.nodeClickCallback = onNodeClick;
+			config.firstNodeCallback = onNodeClick;
 			new OpenSpending.BubbleTree.Loader(config);
-			
-			
 		});
 
        
                                         
 	</script>
+	<style type="text/css">
+		#bubble-chart-wrapper {
+			width: 57%;
+		}
+		#map {
+			width: 40%;
+			position: absolute;
+			top:0;
+			right: 0;
+			height: 95%;
+		}
+		#header { top: 15px; }
+		#mapdesc { width: 35%; bottom: 2%; left: 60%; position: absolute; text-align: center; font-family: Graublau; }
+		#maptypeswitch {
+			z-index: 10000;
+			position: absolute; bottom: 2%; right: 20px; font-family: Graublau; font-size:14px;
+		}
+		#maptypeswitch a {
+			cursor: pointer; color: #999; padding: 0 0.5ex;
+		}
+		#maptypeswitch a.active {
+			background: #861541; color: #fff; text-decoration: none;
+		}
+	</style>
+	
 </head>
 <body>
 	<div id="header"><a class="title">OpenSpending</a>
@@ -158,5 +152,12 @@
 	<div id="bubble-chart-wrapper">
 		<div id="bubble-chart"></div>
 	</div>
+	<div id="map">
+	
+	</div>
+	<div id="mapdesc">
+		
+	</div>
+	<div id="maptypeswitch"><a name="total" class="active">Total</a> &nbsp;<a name="percapita">By Population</a></div>
 </body>
 </html>
