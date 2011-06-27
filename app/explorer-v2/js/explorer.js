@@ -7,21 +7,25 @@ OpenSpending.App.Explorer = function(config) {
   my.dataset = null;
 
   my.initialize = function() {
-    var $breakdown = $('#controls-breakdown');
-    var $breakdownList = $breakdown.find('ol');
+    var $parent = $(my.config.target);
+    $parent.append($(explorerTmpl));
+    var $explorer = $parent.find('.explorer');
+    my.containerId = my.config.target + ' .explorer .bubbletree';
+    my.$breakdown = $explorer.find('#controls-breakdown');
+    var $breakdownList = my.$breakdown.find('ol');
     var model = OpenSpending.Model(my.config);
 
     var datasetObj = new model.Dataset({
       name: my.config.dataset
     });
     datasetObj.fetch({
-      success: init,
+      success: initBreakdowns,
       dataType: 'jsonp'
     });
 
-    function init(dataset) {
+    function initBreakdowns(dataset) {
       my.dataset = dataset;
-      $.each([1,2], function(idx, item) {
+      $.each([1,2,3], function(idx, item) {
         var tselect = $('<select />');
         tselect.append($('<option />').attr('value', '').html(''));
         $.each(dataset.drilldownDimensions(), function(idx, item) {
@@ -29,29 +33,33 @@ OpenSpending.App.Explorer = function(config) {
         });
         $breakdownList.append($('<li />').append(tselect));
       });
-      $breakdown.find('button').click(function(e) {
+      my.$breakdown.find('button').click(function(e) {
         e.preventDefault();
-        draw();
+        my.draw();
       });
-      // draw();
-      // my.renderTree('#bubble-chart');
     }
 
-    function draw() {
-      var vals = [];
-      $.each($breakdown.find('select option:selected'), function(idx, item) {
-        var _dim = $(item).text();
-        // ignore the empty string
-        if (_dim) {
-          vals.push(_dim);
-        }
-      });
-      vals = _.uniq(vals);
-      my.config.drilldowns = vals;
-      var containerId = my.config.target + ' .bubbletree';
-      if (my.config.drilldowns.length > 0) {
-        my.renderTree(containerId);
+    if (my.config.defaults && my.config.defaults.drilldowns) {
+      my.config.drilldowns = my.config.defaults.drilldowns;
+      my.renderTree(my.containerId);
+    } else {
+      alert('Please select drilldown from sidebar and hit redraw');
+    }
+  };
+
+  my.draw = function() {
+    var vals = [];
+    $.each(my.$breakdown.find('select option:selected'), function(idx, item) {
+      var _dim = $(item).text();
+      // ignore the empty string
+      if (_dim) {
+        vals.push(_dim);
       }
+    });
+    vals = _.uniq(vals);
+    my.config.drilldowns = vals;
+    if (my.config.drilldowns.length > 0) {
+      my.renderTree(my.containerId);
     }
   };
 
@@ -103,6 +111,28 @@ OpenSpending.App.Explorer = function(config) {
       callback: dataLoaded
     });
   };
+
+  explorerTmpl = ' \
+    <div class="explorer"> \
+      <div id="controls"> \
+       <div id="controls-year"> \
+          <h3>Year: <span id="year"></span></h3> \
+          <div id="yearslider"></div> \
+          <div id="year-range"></div> \
+        </div> \
+       <div id="controls-breakdown"> \
+         <h3>Breakdown by</h3> \
+         <ol id="breakdown-list"> \
+         </ol> \
+         <button>Redraw</button> \
+       </div> \
+      </div> \
+      <div class="loading"></div> \
+      <div class="bubbletree-wrapper"> \
+        <div class="bubbletree"></div> \
+      </div> \
+    </div> \
+  ';
 
   return my;
 };

@@ -2,6 +2,12 @@
   min-height: 650px;
 }
 
+.loading {
+  margin-top: 2em;
+  font-size: 150%;
+  text-align: center;
+}
+
 #controls {
   float: right;
   width: 200px;
