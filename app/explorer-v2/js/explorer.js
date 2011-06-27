@@ -7,7 +7,11 @@ OpenSpending.App.Explorer = function(config) {
   my.dataset = null;
 
   my.initialize = function() {
-    var $breakdown = $('#controls-breakdown');
+    var $parent = $(my.config.target);
+    $parent.append($(explorerTmpl));
+    var $explorer = $parent.find('.explorer');
+    
+    var $breakdown = $explorer.find('#controls-breakdown');
     var $breakdownList = $breakdown.find('ol');
     var model = OpenSpending.Model(my.config);
 
@@ -15,13 +19,13 @@ OpenSpending.App.Explorer = function(config) {
       name: my.config.dataset
     });
     datasetObj.fetch({
-      success: init,
+      success: initBreakdowns,
       dataType: 'jsonp'
     });
 
-    function init(dataset) {
+    function initBreakdowns(dataset) {
       my.dataset = dataset;
-      $.each([1,2], function(idx, item) {
+      $.each([1,2,3], function(idx, item) {
         var tselect = $('<select />');
         tselect.append($('<option />').attr('value', '').html(''));
         $.each(dataset.drilldownDimensions(), function(idx, item) {
@@ -48,7 +52,7 @@ OpenSpending.App.Explorer = function(config) {
       });
       vals = _.uniq(vals);
       my.config.drilldowns = vals;
-      var containerId = my.config.target + ' .bubbletree';
+      var containerId = my.config.target + ' .explorer .bubbletree';
       if (my.config.drilldowns.length > 0) {
         my.renderTree(containerId);
       }
@@ -103,6 +107,28 @@ OpenSpending.App.Explorer = function(config) {
       callback: dataLoaded
     });
   };
+
+  explorerTmpl = ' \
+    <div class="explorer"> \
+      <div id="controls"> \
+       <div id="controls-year"> \
+          <h3>Year: <span id="year"></span></h3> \
+          <div id="yearslider"></div> \
+          <div id="year-range"></div> \
+        </div> \
+       <div id="controls-breakdown"> \
+         <h3>Breakdown by</h3> \
+         <ol id="breakdown-list"> \
+         </ol> \
+         <button>Redraw</button> \
+       </div> \
+      </div> \
+      <div class="loading"></div> \
+      <div class="bubbletree-wrapper"> \
+        <div class="bubbletree"></div> \
+      </div> \
+    </div> \
+  ';
 
   return my;
 };

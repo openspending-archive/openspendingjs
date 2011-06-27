@@ -43,7 +43,7 @@
 jQuery(document).ready(function($) {
   var config = {
     endpoint: 'http://openspending.org/',
-    target: '.explorer',
+    target: '#content',
     dataset: 'cra'
   };
   var explorer = new OpenSpending.App.Explorer(config);
@@ -62,26 +62,7 @@ jQuery(document).ready(function($) {
       <div id="main">
         <div id="content">
 
-          <!-- The Element we attach to -->
-          <div class="explorer">
-            <div id="controls">
-             <div id="controls-year">
-                <h3>Year: <span id="year"></span></h3>
-                <div id="yearslider"></div>
-                <div id="year-range"></div>
-              </div>
-             <div id="controls-breakdown">
-               <h3>Breakdown by</h3>
-               <ol id="breakdown-list">
-               </ol>
-               <button>Redraw</button>
-             </div>
-            </div>
-            <div class="loading"></div>
-            <div class="bubbletree-wrapper">
-              <div class="bubbletree"></div>
-            </div>
-          </div>
+          <!-- We will insert explorer here -->
         </div>
       </div>
     </div>
