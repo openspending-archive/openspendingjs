@@ -10,9 +10,9 @@ OpenSpending.App.Explorer = function(config) {
     var $parent = $(my.config.target);
     $parent.append($(explorerTmpl));
     var $explorer = $parent.find('.explorer');
-    
-    var $breakdown = $explorer.find('#controls-breakdown');
-    var $breakdownList = $breakdown.find('ol');
+    my.containerId = my.config.target + ' .explorer .bubbletree';
+    my.$breakdown = $explorer.find('#controls-breakdown');
+    var $breakdownList = my.$breakdown.find('ol');
     var model = OpenSpending.Model(my.config);
 
     var datasetObj = new model.Dataset({
@@ -33,29 +33,33 @@ OpenSpending.App.Explorer = function(config) {
         });
         $breakdownList.append($('<li />').append(tselect));
       });
-      $breakdown.find('button').click(function(e) {
+      my.$breakdown.find('button').click(function(e) {
         e.preventDefault();
-        draw();
+        my.draw();
       });
-      // draw();
-      // my.renderTree('#bubble-chart');
     }
 
-    function draw() {
-      var vals = [];
-      $.each($breakdown.find('select option:selected'), function(idx, item) {
-        var _dim = $(item).text();
-        // ignore the empty string
-        if (_dim) {
-          vals.push(_dim);
-        }
-      });
-      vals = _.uniq(vals);
-      my.config.drilldowns = vals;
-      var containerId = my.config.target + ' .explorer .bubbletree';
-      if (my.config.drilldowns.length > 0) {
-        my.renderTree(containerId);
+    if (my.config.defaults && my.config.defaults.drilldowns) {
+      my.config.drilldowns = my.config.defaults.drilldowns;
+      my.renderTree(my.containerId);
+    } else {
+      alert('Please select drilldown from sidebar and hit redraw');
+    }
+  };
+
+  my.draw = function() {
+    var vals = [];
+    $.each(my.$breakdown.find('select option:selected'), function(idx, item) {
+      var _dim = $(item).text();
+      // ignore the empty string
+      if (_dim) {
+        vals.push(_dim);
       }
+    });
+    vals = _.uniq(vals);
+    my.config.drilldowns = vals;
+    if (my.config.drilldowns.length > 0) {
+      my.renderTree(my.containerId);
     }
   };
 
