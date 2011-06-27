@@ -25,6 +25,7 @@
   <script type="text/javascript" src="../../lib/utils/utils.js"></script>
   <script type="text/javascript" src="../../lib/datastore.js"></script>
   <script type="text/javascript" src="../../lib/model.js"></script>
+  <script type="text/javascript" src="../../lib/aggregator.js"></script>
 
   <!-- bubbletree -->
   <script type="text/javascript" src="../../lib/vendor/jquery.history.js"></script> 
@@ -76,10 +77,9 @@ jQuery(document).ready(function($) {
                <button>Redraw</button>
              </div>
             </div>
+            <div class="loading"></div>
             <div class="bubbletree-wrapper">
-              <div id="bubble-chart-wrapper">
-                <div id="bubble-chart"></div>
-              </div>
+              <div class="bubbletree"></div>
             </div>
           </div>
         </div>
