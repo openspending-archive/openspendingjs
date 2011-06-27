@@ -48,7 +48,7 @@ OpenSpending.App.Explorer = function(config) {
       });
       vals = _.uniq(vals);
       my.config.drilldowns = vals;
-      var containerId = my.config.target + ' #bubble-chart';
+      var containerId = my.config.target + ' .bubbletree';
       if (my.config.drilldowns.length > 0) {
         my.renderTree(containerId);
       }
@@ -56,24 +56,11 @@ OpenSpending.App.Explorer = function(config) {
   };
 
   my.renderTree = function(figId) {
-    var config = {
-      apiUrl: my.config.endpoint + 'api',
-      dataset: my.config.dataset,
-      drilldowns: my.config.drilldowns,
-      // cuts: ['year:2008'],
-      rootNodeLabel: 'Grant total', 
-      container: figId,
-      // initYear: 2009,
-      // breakdown: 'region',
-      bubbleType: ['icon']
-    };
-
-    var yearChange = function(year) {
-      window.alert('year changed to '+year);
-    };
-    
+    $('.loading').html('Loading data <img src="http://m.okfn.org.s3.amazonaws.com/images/icons/ajaxload-circle.gif" />');
+    $('.loading').show();
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
-    $('#bubble-chart').append($tooltip);
+    $(figId).append($tooltip);
+    $tooltip.hide();
     
     var tooltip = function(event) {
       if (event.type == 'SHOW') {
@@ -93,12 +80,28 @@ OpenSpending.App.Explorer = function(config) {
       }
     };
     
-    config.tooltipCallback = tooltip;
-    config.yearChangeHandler = yearChange;
+    var dataLoaded = function(data) {
+      $('.loading').hide();
+      new OpenSpending.BubbleTree.Loader({
+        data: data,
+        container: figId,
+        rootNodeLabel: 'Grant total',
+        bubbleType: 'icon',
+        bubbleStyles: {
+          // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
+        },
+        tooltipCallback: tooltip
+      });
+    };
     
-    config.bubbleStyles = config.bubbleStyles ? config.bubbleStyles : {};
-      
-    new OpenSpending.BubbleTree.Loader(config);
+    // call openspending api for data
+    new OpenSpending.Aggregator({
+      apiUrl: my.config.endpoint + 'api',
+      dataset: my.config.dataset,
+      drilldowns: my.config.drilldowns,
+      // breakdown: 'region',
+      callback: dataLoaded
+    });
   };
 
   return my;
