@@ -2,7 +2,7 @@ var OpenSpending = OpenSpending || {};
 OpenSpending.App = {} || OpenSpending.App;
 
 OpenSpending.App.Explorer = function(config) {
-  my = {};
+  var my = {};
   my.config = config;
   my.dataset = null;
 
@@ -65,7 +65,7 @@ OpenSpending.App.Explorer = function(config) {
       container: figId,
       // initYear: 2009,
       // breakdown: 'region',
-      bubbleType: ['icon'],
+      bubbleType: ['icon']
     };
 
     var yearChange = function(year) {
