@@ -43,7 +43,7 @@ OpenSpending.App.Explorer = function(config) {
       my.config.drilldowns = my.config.defaults.drilldowns;
       my.renderTree(my.containerId);
     } else {
-      alert('Please select drilldown from sidebar and hit redraw');
+      $('.loading').html('Please select drilldown from sidebar and hit redraw');
     }
   };
 
