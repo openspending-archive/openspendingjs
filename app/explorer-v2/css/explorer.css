@@ -1,5 +1,15 @@
 .explorer {
-  min-height: 650px;
+  min-height: 450px;
+  position: relative;
+}
+
+#content {
+	margin-left: 0;
+}
+
+#main {
+	margin-bottom: 0;
+	padding-bottom: 0;
 }
 
 .loading {
