@@ -81,3 +81,11 @@
 	font-size: 12px 
 }
 
+
+.loading {
+	z-index: 1000;
+	position: absolute;
+	width: 700px;
+	height: 400px;
+	padding-top: 150px;
+}

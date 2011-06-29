@@ -88,9 +88,26 @@ OpenSpending.App.Explorer = function(config) {
       }
     };
     
+	var getTooltip = function() {
+		return this.getAttribute('tooltip');
+	};
+	
+	var initTooltip = function(node, domnode) {
+		vis4.log($(domnode).tooltip);
+		vis4.log(node.label + ' - '+node.famount);
+		domnode.setAttribute('tooltip', node.label + ' <b>'+node.famount+'</b>');
+		
+		//vis4.log(domnode.getAttribute('tooltip'));
+		
+		$(domnode).tooltip({ delay: 100, bodyHandler: getTooltip });
+	};
+    
     var dataLoaded = function(data) {
       $('.loading').hide();
-      new OpenSpending.BubbleTree.Loader({
+      if (my.lastConfig && my.lastConfig.instance) {
+  	    my.lastConfig.instance.clean();
+      }
+      var config = {
         data: data,
         container: figId,
         rootNodeLabel: 'Grant total',
@@ -98,8 +115,12 @@ OpenSpending.App.Explorer = function(config) {
         bubbleStyles: {
           // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
         },
-        tooltipCallback: tooltip
-      });
+        initTooltip: initTooltip,
+        maxNodesPerLevel: 15
+//        tooltipCallback: tooltip
+      };
+      new OpenSpending.BubbleTree.Loader(config);
+      my.lastConfig = config;
     };
     
     // call openspending api for data
@@ -107,6 +128,7 @@ OpenSpending.App.Explorer = function(config) {
       apiUrl: my.config.endpoint + 'api',
       dataset: my.config.dataset,
       drilldowns: my.config.drilldowns,
+      localApiCache: '../bubbletree/examples/cra/aggregate.json',
       // breakdown: 'region',
       callback: dataLoaded
     });
@@ -116,7 +138,7 @@ OpenSpending.App.Explorer = function(config) {
     <div class="explorer"> \
       <div id="controls"> \
        <div id="controls-year"> \
-          <h3>Year: <span id="year"></span></h3> \
+          <h3>Year: <span id="year">2009</span></h3> \
           <div id="yearslider"></div> \
           <div id="year-range"></div> \
         </div> \
