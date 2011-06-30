@@ -128,7 +128,7 @@ OpenSpending.App.Explorer = function(config) {
       apiUrl: my.config.endpoint + 'api',
       dataset: my.config.dataset,
       drilldowns: my.config.drilldowns,
-      localApiCache: '../bubbletree/examples/cra/aggregate.json',
+      // localApiCache: '../bubbletree/examples/cra/aggregate.json',
       // breakdown: 'region',
       callback: dataLoaded
     });
