@@ -167,22 +167,22 @@ var sample_gdocs_spreadsheet_data = {
 }
 
 test("gdocsToJavascript", function() {
-	var res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data);
-	var out = res1.data;
-	equals(res1.header[0], 'column-2', 'check header values');
-	equals(res1.header[1], 'column-1', 'check header values');
-	equals(out.length, 3, 'check length output');
-	equals(out[0][0], '1', 'check first row of output');
-	equals(out[0][1], 'A', 'check first row of output');
+  var res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data);
+  var out = res1.data;
+  equals(res1.header[0], 'column-2', 'check header values');
+  equals(res1.header[1], 'column-1', 'check header values');
+  equals(out.length, 3, 'check length output');
+  equals(out[0][0], '1', 'check first row of output');
+  equals(out[0][1], 'A', 'check first row of output');
 
-	res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data,
-		{'columnsToUse': ['column-1', 'column-2']}
-		);
-	out = res1.data;
-	equals(res1.header[0], 'column-1', 'check header values');
-	equals(res1.header[1], 'column-2', 'check header values');
-	equals(out.length, 3, 'check length output');
-	equals(out[0][0], 'A', 'check first row of output');
-	equals(out[0][1], '1', 'check first row of output');
+  res1 = gdocsToJavascript(sample_gdocs_spreadsheet_data,
+    {'columnsToUse': ['column-1', 'column-2']}
+    );
+  out = res1.data;
+  equals(res1.header[0], 'column-1', 'check header values');
+  equals(res1.header[1], 'column-2', 'check header values');
+  equals(out.length, 3, 'check length output');
+  equals(out[0][0], 'A', 'check first row of output');
+  equals(out[0][1], '1', 'check first row of output');
 });
 
