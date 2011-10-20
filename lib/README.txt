@@ -1,4 +1,4 @@
-# OpenSpending Javascript libraries 
+# Openspending libraries 
 
 This directory contains a couple of .do files to assist in the management of
 these libraries. These are "redo" scripts -- see [1].
@@ -21,9 +21,4 @@ To regenerate an individual library, say "backbone", run:
 All minification assumes you have `uglifyjs` installed. If you don't, use
 
     npm install uglify-js
-
-# About
-
-Copyright (c) 2010 Open Knowledge Foundation. Openly licensed, see:
-http://www.wheredoesmymoneygo.org/legal/ 
 

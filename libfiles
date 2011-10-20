@@ -1,0 +1,3 @@
+#!/bin/sh
+EXT=$1
+find lib -name "*${EXT}" -print
