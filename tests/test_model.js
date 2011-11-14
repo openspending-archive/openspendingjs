@@ -4,7 +4,8 @@ module('model');
 
 test('Test Dataset', function() {
   var indata = {
-    title: 'My New Dataset',
+    name: 'test-dataset',
+    title: 'My New Dataset'
   };
   config = {
     endpoint: 'http://localhost:5000/'
@@ -12,6 +13,7 @@ test('Test Dataset', function() {
   var model = OpenSpending.Model(config);
 
   var dataset = new model.Dataset(indata);
+  equals(dataset.url(), config.endpoint + indata.name + '.json');
   equals(dataset.get('title'), indata.title);
   var out = dataset.toJSON();
   equals(out.title, indata.title);
