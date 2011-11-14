@@ -1,1 +1,12 @@
 .redo
+## general
+*.orig
+*~
+.*.swp
+sandbox/*
+## specific
+scripts/localconfig.js
+src/flash-ordnance
+.DS_Store
+src/dfid
+src/flash-working
