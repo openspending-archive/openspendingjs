@@ -3,6 +3,7 @@
 <head>
   <title>Spending Browser</title>
   <!-- local mods/additions -->
+	<link rel="stylesheet" type="text/css" href="../../lib/vendor/bubbletree/1.0/bubbletree.css" />
   <link rel="stylesheet" href="css/style.css" /> 
   <!-- /OpenSpending Styles -->
 
@@ -20,23 +21,21 @@
 
   <!-- bubbletree -->
   <script type="text/javascript" src="../../lib/vendor/jquery.history.js"></script> 
-  <script type="text/javascript" src="../../lib/vendor/jquery.tooltip.min.js"></script> 
+  <script type="text/javascript" src="../../lib/vendor/jquery.tooltip.js"></script> 
   <script type="text/javascript" src="../../lib/vendor/raphael.js"></script> 
   <script type="text/javascript" src="../../lib/vendor/vis4.js"></script> 
   <script type="text/javascript" src="../../lib/vendor/Tween.js"></script> 
-  <script type="text/javascript" src="../bubbletree/bubbletree.min.js"></script> 
+  <script type="text/javascript" src="../../lib/vendor/bubbletree/1.0/bubbletree.js"></script> 
 
-	<link rel="stylesheet" type="text/css" href="../bubbletree/css/style.tooltips.css" />
-	
   <!-- this app -->
   <script type="text/javascript" src="js/explorer.js"></script>
 
   <script type="text/javascript">
 jQuery(document).ready(function($) {
   var config = {
-    endpoint: 'http://openspending.org/',
+    endpoint: 'http://testing.openspending.org/',
     target: '#content',
-    dataset: 'cra',
+    dataset: 'ukgov-finances-cra',
     defaults: {
       drilldowns: ['cofog1', 'cofog2']
     }

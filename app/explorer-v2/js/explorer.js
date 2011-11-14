@@ -24,6 +24,8 @@ OpenSpending.App.Explorer = function(config) {
     });
 
     function initBreakdowns(dataset) {
+      // disable as drilldownDimensions not working atm
+      return;
       my.dataset = dataset;
       $.each([1,2,3], function(idx, item) {
         var tselect = $('<select />');
@@ -66,6 +68,7 @@ OpenSpending.App.Explorer = function(config) {
   my.renderTree = function(figId) {
     $('.loading').html('Loading data <img src="http://m.okfn.org.s3.amazonaws.com/images/icons/ajaxload-circle.gif" />');
     $('.loading').show();
+
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
     $(figId).append($tooltip);
     $tooltip.hide();
@@ -88,39 +91,34 @@ OpenSpending.App.Explorer = function(config) {
       }
     };
     
-	var getTooltip = function() {
-		return this.getAttribute('tooltip');
-	};
-	
-	var initTooltip = function(node, domnode) {
-		vis4.log($(domnode).tooltip);
-		vis4.log(node.label + ' - '+node.famount);
-		domnode.setAttribute('tooltip', node.label + ' <b>'+node.famount+'</b>');
-		
-		//vis4.log(domnode.getAttribute('tooltip'));
-		
-		$(domnode).tooltip({ delay: 100, bodyHandler: getTooltip });
-	};
+    var getTooltip = function() {
+      return this.getAttribute('tooltip');
+    };
     
+    var initTooltip = function(node, domnode) {
+      vis4.log($(domnode).tooltip);
+      vis4.log(node.label + ' - '+node.famount);
+      domnode.setAttribute('tooltip', node.label + ' <b>'+node.famount+'</b>');
+      
+      //vis4.log(domnode.getAttribute('tooltip'));
+      
+      $(domnode).tooltip({ delay: 100, bodyHandler: getTooltip });
+    };
+
     var dataLoaded = function(data) {
       $('.loading').hide();
-      if (my.lastConfig && my.lastConfig.instance) {
-  	    my.lastConfig.instance.clean();
-      }
       var config = {
         data: data,
         container: figId,
-        rootNodeLabel: 'Grant total',
-        bubbleType: 'icon',
+        bubbleType: 'donut',
         bubbleStyles: {
           // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
         },
         initTooltip: initTooltip,
-        maxNodesPerLevel: 15
-//        tooltipCallback: tooltip
+        maxNodesPerLevel: 12
+        // tooltipCallback: tooltip
       };
-      new OpenSpending.BubbleTree.Loader(config);
-      my.lastConfig = config;
+      var bubbletree = new BubbleTree(config);
     };
     
     // call openspending api for data
