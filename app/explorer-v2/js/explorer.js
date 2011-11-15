@@ -120,16 +120,20 @@ OpenSpending.App.Explorer = function(config) {
       };
       var bubbletree = new BubbleTree(config);
     };
-    
-    // call openspending api for data
-    new OpenSpending.Aggregator({
+
+    aggregatorConfig = {
       apiUrl: my.config.endpoint + 'api',
       dataset: my.config.dataset,
       drilldowns: my.config.drilldowns,
       // localApiCache: '../bubbletree/examples/cra/aggregate.json',
-      // breakdown: 'region',
       callback: dataLoaded
-    });
+    };
+    if (my.config.defaults.breakdown) {
+      aggregatorConfig.breakdown = my.config.defaults.breakdown;
+    }
+    
+    // call openspending api for data
+    new OpenSpending.Aggregator(aggregatorConfig);
   };
 
   explorerTmpl = ' \
