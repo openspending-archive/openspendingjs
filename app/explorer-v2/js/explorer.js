@@ -1,9 +1,14 @@
 var OpenSpending = OpenSpending || {};
 OpenSpending.App = {} || OpenSpending.App;
 
+// Explorer App
+// 
+// @param aggregator: parameters for aggregator call. 
 OpenSpending.App.Explorer = function(config) {
   var my = {};
   my.config = config;
+  var aggregatorConfig = OpenSpending.aggregatorConfigFromQueryString();
+  _.extend(my.config.aggregator, aggregatorConfig);
   my.dataset = null;
 
   my.initialize = function() {
@@ -41,8 +46,7 @@ OpenSpending.App.Explorer = function(config) {
       });
     }
 
-    if (my.config.defaults && my.config.defaults.drilldowns) {
-      my.config.drilldowns = my.config.defaults.drilldowns;
+    if (my.config.aggregator && my.config.aggregator.drilldowns) {
       my.renderTree(my.containerId);
     } else {
       $('.loading').html('Please select drilldown from sidebar and hit redraw');
@@ -59,8 +63,8 @@ OpenSpending.App.Explorer = function(config) {
       }
     });
     vals = _.uniq(vals);
-    my.config.drilldowns = vals;
-    if (my.config.drilldowns.length > 0) {
+    my.config.aggregator.drilldowns = vals;
+    if (my.config.aggregator.drilldowns.length > 0) {
       my.renderTree(my.containerId);
     }
   };
@@ -124,14 +128,10 @@ OpenSpending.App.Explorer = function(config) {
     aggregatorConfig = {
       apiUrl: my.config.endpoint + 'api',
       dataset: my.config.dataset,
-      drilldowns: my.config.drilldowns,
       // localApiCache: '../bubbletree/examples/cra/aggregate.json',
       callback: dataLoaded
     };
-    if (my.config.defaults.breakdown) {
-      aggregatorConfig.breakdown = my.config.defaults.breakdown;
-    }
-    
+    _.extend(aggregatorConfig, my.config.aggregator);
     // call openspending api for data
     new OpenSpending.Aggregator(aggregatorConfig);
   };
