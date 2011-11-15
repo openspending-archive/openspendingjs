@@ -3,10 +3,17 @@ OpenSpending.App = {} || OpenSpending.App;
 
 // Explorer App
 // 
-// @param aggregator: parameters for aggregator call. 
+// config argument has following attributes
+// @param: endpoint: api endpoint for OpenSpending site
+// @param target: css selector for element to attach to (append content to this element)
+// @param dataset: dataset id / name.
+// @param aggregator: hash containing arguments to use for aggregator call (breakdown, drilldowns, cuts). Can be empty.
 OpenSpending.App.Explorer = function(config) {
   var my = {};
   my.config = config;
+  if (!my.config.aggregator) {
+    my.config.aggregator = {};
+  }
   var aggregatorConfig = OpenSpending.aggregatorConfigFromQueryString();
   _.extend(my.config.aggregator, aggregatorConfig);
   my.dataset = null;
