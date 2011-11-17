@@ -116,15 +116,44 @@ OpenSpending.App.Explorer = function(config) {
       $(domnode).tooltip({ delay: 100, bodyHandler: getTooltip });
     };
 
+	var breakdownStyles = function() {
+      // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
+	  if (my.config.aggregator.breakdown) {
+	  	var bubbleStyles = { name: {} };
+
+		var breakdownStyles = function(data) {
+          var extractStyle = function(i) { return i[my.config.aggregator.breakdown].name; };
+
+		  if (data.hasOwnProperty('drilldown')) {
+			breakdowns = data.drilldown.map(extractStyle);
+			for (var i=0, len=breakdowns.length; i < len; i++) {
+		      bubbleStyles.name[breakdowns[i]] = { color: vis4color.fromHSV(i / len * 360, 0.5, 0.95, "hsv").x };
+			}
+          }
+	    };
+	
+		$.ajax({
+		  url: '/api/2/aggregate',
+		  data: {
+			'dataset': my.config.dataset,
+			'drilldown': my.config.aggregator.breakdown
+		  },
+		  dataType: 'json',
+		  success: breakdownStyles
+		});
+	    return bubbleStyles;
+	  } else {
+		return null;
+	  }
+	};
+
     var dataLoaded = function(data) {
       $('.loading').hide();
       var config = {
         data: data,
         container: figId,
         bubbleType: 'donut',
-        bubbleStyles: {
-          // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
-        },
+        bubbleStyles: my.config.bubbleStyles || breakdownStyles() || {},
         initTooltip: initTooltip,
         maxNodesPerLevel: 12
         // tooltipCallback: tooltip
