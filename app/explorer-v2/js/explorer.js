@@ -76,6 +76,18 @@ OpenSpending.App.Explorer = function(config) {
     }
   };
 
+  var getBreakdowns = function(dataset, breakdownField, handler) {
+	$.ajax({
+	  url: my.config.endpoint + 'api/2/aggregate',
+	  data: {
+		'dataset': dataset,
+		'drilldown': breakdownField
+	  },
+	  dataType: 'json',
+	  success: handler
+	});
+  };
+
   my.renderTree = function(figId) {
     $('.loading').html('Loading data <img src="http://m.okfn.org.s3.amazonaws.com/images/icons/ajaxload-circle.gif" />');
     $('.loading').show();
@@ -132,15 +144,9 @@ OpenSpending.App.Explorer = function(config) {
           }
 	    };
 	
-		$.ajax({
-		  url: '/api/2/aggregate',
-		  data: {
-			'dataset': my.config.dataset,
-			'drilldown': my.config.aggregator.breakdown
-		  },
-		  dataType: 'json',
-		  success: breakdownStyles
-		});
+		getBreakdowns(my.config.dataset, my.config.aggregator.breakdown, 
+					  breakdownStyles);
+
 	    return bubbleStyles;
 	  } else {
 		return null;
