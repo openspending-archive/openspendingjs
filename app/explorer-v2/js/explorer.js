@@ -132,6 +132,8 @@ OpenSpending.App.Explorer = function(config) {
       // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
 	  if (my.config.aggregator.breakdown) {
 	  	var bubbleStyles = { name: {} };
+		var saturation = 0.5;
+		var value = 0.95;
 
 		var breakdownStyles = function(data) {
           var extractStyle = function(i) { return i[my.config.aggregator.breakdown].name; };
@@ -139,7 +141,10 @@ OpenSpending.App.Explorer = function(config) {
 		  if (data.hasOwnProperty('drilldown')) {
 			breakdowns = data.drilldown.map(extractStyle);
 			for (var i=0, len=breakdowns.length; i < len; i++) {
-		      bubbleStyles.name[breakdowns[i]] = { color: vis4color.fromHSV(i / len * 360, 0.5, 0.95, "hsv").x };
+			  var hue = i / len * 360;
+		      bubbleStyles.name[breakdowns[i]] = { 
+				color: vis4color.fromHSV(hue, saturation, value, "hsv").x 
+			  };
 			}
           }
 	    };
