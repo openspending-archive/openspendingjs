@@ -36,7 +36,7 @@ OpenSpending.App.Explorer = function(config) {
     $parent.append($(explorerTmpl));
     var $explorer = $parent.find('.explorer');
     my.containerId = my.config.target + ' .explorer .bubbletree';
-    my.$breakdown = $explorer.find('#controls-breakdown');
+    my.$breakdown = $explorer.find('#controls-drilldown');
     var $breakdownList = my.$breakdown.find('ol');
     var model = OpenSpending.Model(my.config);
 
@@ -44,7 +44,7 @@ OpenSpending.App.Explorer = function(config) {
       name: my.config.dataset
     });
     datasetObj.fetch({
-      success: initBreakdowns,
+      success: initDimensions,
       dataType: 'jsonp'
     }); */
 
@@ -54,7 +54,7 @@ OpenSpending.App.Explorer = function(config) {
 		for(i in model.mapping) {
 		  output.push(i);
 		}
-		initBreakdowns(datasetName, output);
+		initDimensions(datasetName, output);
 	  };
 
 	  $.ajax({
@@ -66,9 +66,9 @@ OpenSpending.App.Explorer = function(config) {
 
 	if(useControls()) {
 	  getDimensions(my.config.dataset);
-	}	
+	}
 	
-    function initBreakdowns(dataset, dimensions) {
+    function initDimensions(dataset, dimensions) {
       my.dataset = dataset;
 
 	  var menuItem = function() {
@@ -230,7 +230,7 @@ OpenSpending.App.Explorer = function(config) {
           <div id="yearslider"></div> \
           <div id="year-range"></div> \
         </div> \
-        <div id="controls-breakdown"> \
+        <div id="controls-drilldown"> \
           <h3>Breakdown by</h3> \
           <ol id="breakdown-list"> \
           </ol> \
