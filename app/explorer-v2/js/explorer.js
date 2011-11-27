@@ -38,6 +38,8 @@ OpenSpending.App.Explorer = function(config) {
     my.containerId = my.config.target + ' .explorer .bubbletree';
     my.$drilldown = $explorer.find('#controls-drilldown');
     var $drilldownList = my.$drilldown.find('ol');
+	my.$breakdown = $explorer.find('#controls-breakdown');
+	var $breakdownAnchor = my.$breakdown = my.$breakdown.find('ol');
     var model = OpenSpending.Model(my.config);
 
 /*  var datasetObj = new model.Dataset({
@@ -83,7 +85,9 @@ OpenSpending.App.Explorer = function(config) {
       $.each([1,2,3], function(idx, item) {
         $drilldownList.append($('<li />').append(menuItem()));
       });
-      my.$drilldown.find('button').click(function(e) {
+	  $breakdownAnchor.append($('<li />').append(menuItem()));
+
+      $explorer.find('button').click(function(e) {
         e.preventDefault();
         my.draw();
       });
@@ -106,6 +110,7 @@ OpenSpending.App.Explorer = function(config) {
       }
     });
     vals = _.uniq(vals);
+	my.config.aggregator.breakdown = my.$breakdown.find('select option:selected').text();
     my.config.aggregator.drilldowns = vals;
     if (my.config.aggregator.drilldowns.length > 0) {
       my.renderTree(my.containerId);
@@ -225,17 +230,22 @@ OpenSpending.App.Explorer = function(config) {
   explorerTmpl = ' \
     <div class="explorer"> \
       <div id="controls"> \
-        <div id="controls-year"> \
+        <!-- <div id="controls-year"> \
           <h3>Year: <span id="year">2009</span></h3> \
           <div id="yearslider"></div> \
           <div id="year-range"></div> \
-        </div> \
+        </div> --> \
         <div id="controls-drilldown"> \
           <h3>Drill down by</h3> \
           <ol id="drilldown-list"> \
           </ol> \
-          <button>Redraw</button> \
         </div> \
+        <div id="controls-breakdown"> \
+          <h3>Break down by</h3> \
+          <ol id="breakdown-list"> \
+          </ol> \
+        </div> \
+        <button>Redraw</button> \
       </div> \
       <div class="loading"></div> \
       <div class="bubbletree-wrapper"> \
