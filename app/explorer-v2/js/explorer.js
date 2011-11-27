@@ -81,7 +81,7 @@ OpenSpending.App.Explorer = function(config) {
 	  };
 
       $.each([1,2,3], function(idx, item) {
-        $breakdownList.append($('<li />').append(menuItem));
+        $breakdownList.append($('<li />').append(menuItem()));
       });
       my.$breakdown.find('button').click(function(e) {
         e.preventDefault();
