@@ -20,7 +20,7 @@ OpenSpending.App.Explorer = function(config) {
 
 
   var useControls = function() {
-	return true;
+	return false;
 	
 	if(my.config.aggregator && my.config.aggregator.drilldowns) {
 	  return true;
@@ -225,17 +225,17 @@ OpenSpending.App.Explorer = function(config) {
   explorerTmpl = ' \
     <div class="explorer"> \
       <div id="controls"> \
-       <div id="controls-year"> \
+        <div id="controls-year"> \
           <h3>Year: <span id="year">2009</span></h3> \
           <div id="yearslider"></div> \
           <div id="year-range"></div> \
         </div> \
-       <div id="controls-breakdown"> \
-         <h3>Breakdown by</h3> \
-         <ol id="breakdown-list"> \
-         </ol> \
-         <button>Redraw</button> \
-       </div> \
+        <div id="controls-breakdown"> \
+          <h3>Breakdown by</h3> \
+          <ol id="breakdown-list"> \
+          </ol> \
+          <button>Redraw</button> \
+        </div> \
       </div> \
       <div class="loading"></div> \
       <div class="bubbletree-wrapper"> \
