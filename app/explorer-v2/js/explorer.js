@@ -36,8 +36,8 @@ OpenSpending.App.Explorer = function(config) {
     $parent.append($(explorerTmpl));
     var $explorer = $parent.find('.explorer');
     my.containerId = my.config.target + ' .explorer .bubbletree';
-    my.$breakdown = $explorer.find('#controls-drilldown');
-    var $breakdownList = my.$breakdown.find('ol');
+    my.$drilldown = $explorer.find('#controls-drilldown');
+    var $drilldownList = my.$drilldown.find('ol');
     var model = OpenSpending.Model(my.config);
 
 /*  var datasetObj = new model.Dataset({
@@ -81,9 +81,9 @@ OpenSpending.App.Explorer = function(config) {
 	  };
 
       $.each([1,2,3], function(idx, item) {
-        $breakdownList.append($('<li />').append(menuItem()));
+        $drilldownList.append($('<li />').append(menuItem()));
       });
-      my.$breakdown.find('button').click(function(e) {
+      my.$drilldown.find('button').click(function(e) {
         e.preventDefault();
         my.draw();
       });
@@ -98,7 +98,7 @@ OpenSpending.App.Explorer = function(config) {
 
   my.draw = function() {
     var vals = [];
-    $.each(my.$breakdown.find('select option:selected'), function(idx, item) {
+    $.each(my.$drilldown.find('select option:selected'), function(idx, item) {
       var _dim = $(item).text();
       // ignore the empty string
       if (_dim) {
@@ -231,8 +231,8 @@ OpenSpending.App.Explorer = function(config) {
           <div id="year-range"></div> \
         </div> \
         <div id="controls-drilldown"> \
-          <h3>Breakdown by</h3> \
-          <ol id="breakdown-list"> \
+          <h3>Drill down by</h3> \
+          <ol id="drilldown-list"> \
           </ol> \
           <button>Redraw</button> \
         </div> \
