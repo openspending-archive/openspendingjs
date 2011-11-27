@@ -18,6 +18,19 @@ OpenSpending.App.Explorer = function(config) {
   _.extend(my.config.aggregator, aggregatorConfig);
   my.dataset = null;
 
+
+  var useControls = function() {
+	return true;
+	
+	if(my.config.aggregator && my.config.aggregator.drilldowns) {
+	  return true;
+	}
+  };
+
+  var showControls = function() {
+	$(my.config.target).find('#controls').css('display', 'inline');
+  };
+
   my.initialize = function() {
     var $parent = $(my.config.target);
     $parent.append($(explorerTmpl));
@@ -27,25 +40,48 @@ OpenSpending.App.Explorer = function(config) {
     var $breakdownList = my.$breakdown.find('ol');
     var model = OpenSpending.Model(my.config);
 
-    var datasetObj = new model.Dataset({
+/*  var datasetObj = new model.Dataset({
       name: my.config.dataset
     });
     datasetObj.fetch({
       success: initBreakdowns,
       dataType: 'jsonp'
-    });
+    }); */
 
-    function initBreakdowns(dataset) {
-      // disable as drilldownDimensions not working atm
-      return;
+	var getDimensions = function(datasetName) {
+	  var handler = function(model) {
+		var output = [];
+		for(i in model.mapping) {
+		  output.push(i);
+		}
+		initBreakdowns(datasetName, output);
+	  };
+
+	  $.ajax({
+		url: my.config.endpoint + datasetName + '/model.json',
+		dataType: 'json',
+		success: handler
+	  });
+	};
+
+	if(useControls()) {
+	  getDimensions(my.config.dataset);
+	}	
+	
+    function initBreakdowns(dataset, dimensions) {
       my.dataset = dataset;
-      $.each([1,2,3], function(idx, item) {
+
+	  var menuItem = function() {
         var tselect = $('<select />');
         tselect.append($('<option />').attr('value', '').html(''));
-        $.each(dataset.drilldownDimensions(), function(idx, item) {
-          tselect.append($('<option />').attr('value', item).html(item));
+        $.each(dimensions, function(idx, item) {
+		  tselect.append($('<option />').attr('value', item).html(item));
         });
-        $breakdownList.append($('<li />').append(tselect));
+		return tselect
+	  };
+
+      $.each([1,2,3], function(idx, item) {
+        $breakdownList.append($('<li />').append(menuItem));
       });
       my.$breakdown.find('button').click(function(e) {
         e.preventDefault();
@@ -170,6 +206,9 @@ OpenSpending.App.Explorer = function(config) {
         // tooltipCallback: tooltip
       };
       var bubbletree = new BubbleTree(config);
+	  if(useControls()) {
+		showControls();
+	  }
     };
 
     aggregatorConfig = {
