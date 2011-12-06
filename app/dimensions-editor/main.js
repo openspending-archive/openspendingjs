@@ -32,7 +32,11 @@
         if ($.type(o[key]) !== 'array') o[key] = [];
         return o[key].push(value);
       } else if (path.length === 1) {
-        return o[key] = value;
+        if (key !== "key") {
+          return o[key] = value;
+        } else if (value === "true") {
+          return o[key] = true;
+        }
       } else {
         if ($.type(o[key]) !== 'object') o[key] = {};
         return walk(o[key], path.slice(1), value);
@@ -479,7 +483,7 @@
     };
 
     ModelEditor.prototype.onModelChange = function() {
-      var k, v, w, _i, _len, _ref, _ref2;
+      var data, demote, hmap, k, payload, v, w, _i, _len, _ref, _ref2;
       _ref = util.flattenObject(this.data);
       for (k in _ref) {
         v = _ref[k];
@@ -490,8 +494,41 @@
         w = _ref2[_i];
         w.deserialize($.extend(true, {}, this.data));
       }
-	  var payload = JSON.stringify(this.data, null, 2);
-	  return this.updateEditor(payload);
+      hmap = function(src, f) {
+        var k, tmp, v, _fn;
+        tmp = {};
+        _fn = function(k, v) {
+          return tmp[k] = f(k, v);
+        };
+        for (k in src) {
+          v = src[k];
+          _fn(k, v);
+        }
+        return tmp;
+      };
+      demote = function(k, v, id) {
+        var tmp;
+        tmp = v;
+        tmp[id] = k;
+        return tmp;
+      };
+      data = hmap(this.data, function(k, v) {
+        return hmap(v, function(k, v) {
+          var K, V, _results;
+          if (k !== "fields") {
+            return v;
+          } else {
+            _results = [];
+            for (K in v) {
+              V = v[K];
+              _results.push(demote(K, V, "name"));
+            }
+            return _results;
+          }
+        });
+      });
+      payload = JSON.stringify(data, null, 2);
+      return this.updateEditor(payload);
     };
 
     ModelEditor.prototype.onFillColumnsRequest = function(elem) {
@@ -508,12 +545,11 @@
       }).call(this)).join('\n'));
     };
 
-	ModelEditor.prototype.updateEditor = function(data) {
-	  var getEditor = this.options.getEditor || function() {
-		return top.document.getEditor();
-	  };
-	  return getEditor().getSession().setValue(data);
-	};
+    ModelEditor.prototype.updateEditor = function(data) {
+      var getEditor, _ref;
+      getEditor = this.options.getEditor;
+      return typeof getEditor === "function" ? (_ref = getEditor()) != null ? _ref.getSession().setValue(data) : void 0 : void 0;
+    };
 
     return ModelEditor;
 
