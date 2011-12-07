@@ -483,7 +483,7 @@
     };
 
     ModelEditor.prototype.onModelChange = function() {
-      var data, demote, hmap, k, payload, v, w, _i, _len, _ref, _ref2;
+      var k, payload, v, w, _i, _len, _ref, _ref2;
       _ref = util.flattenObject(this.data);
       for (k in _ref) {
         v = _ref[k];
@@ -494,40 +494,7 @@
         w = _ref2[_i];
         w.deserialize($.extend(true, {}, this.data));
       }
-      hmap = function(src, f) {
-        var k, tmp, v, _fn;
-        tmp = {};
-        _fn = function(k, v) {
-          return tmp[k] = f(k, v);
-        };
-        for (k in src) {
-          v = src[k];
-          _fn(k, v);
-        }
-        return tmp;
-      };
-      demote = function(k, v, id) {
-        var tmp;
-        tmp = v;
-        tmp[id] = k;
-        return tmp;
-      };
-      data = hmap(this.data, function(k, v) {
-        return hmap(v, function(k, v) {
-          var K, V, _results;
-          if (k !== "fields") {
-            return v;
-          } else {
-            _results = [];
-            for (K in v) {
-              V = v[K];
-              _results.push(demote(K, V, "name"));
-            }
-            return _results;
-          }
-        });
-      });
-      payload = JSON.stringify(data, null, 2);
+      payload = JSON.stringify(this.data, null, 2);
       return this.updateEditor(payload);
     };
 
