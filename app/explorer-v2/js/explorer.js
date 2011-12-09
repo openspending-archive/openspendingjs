@@ -20,15 +20,18 @@ OpenSpending.App.Explorer = function(config) {
 
 
   var useControls = function() {
-	return false;
-	
-	if(my.config.aggregator && my.config.aggregator.drilldowns) {
+	if(my.config.aggregator || !my.config.aggregator.drilldowns) {
 	  return true;
 	}
   };
 
   var showControls = function() {
 	$(my.config.target).find('#controls').css('display', 'inline');
+  };
+
+  var hideControls = function() {
+	$(my.config.target).find('#controls').hide(); // css('display', 'none');
+	console.log("hiding");
   };
 
   my.initialize = function() {
@@ -82,19 +85,24 @@ OpenSpending.App.Explorer = function(config) {
 		return tselect
 	  };
 
+	  var liHtml = '<li />';
       $.each([1,2,3], function(idx, item) {
-        $drilldownList.append($('<li />').append(menuItem()));
+        $drilldownList.append($(liHtml).append(menuItem()));
       });
-	  $breakdownAnchor.append($('<li />').append(menuItem()));
+	  $breakdownAnchor.append($(liHtml).append(menuItem()));
 
       $explorer.find('button').click(function(e) {
         e.preventDefault();
         my.draw();
+		my.renderTree(my.containerId);
+		hideControls();
       });
     }
 
     if (my.config.aggregator && my.config.aggregator.drilldowns) {
       my.renderTree(my.containerId);
+	} else if (useControls()) {
+	  showControls();
     } else {
       $('.loading').html('Please select drilldown from sidebar and hit redraw');
     }
@@ -211,9 +219,9 @@ OpenSpending.App.Explorer = function(config) {
         // tooltipCallback: tooltip
       };
       var bubbletree = new BubbleTree(config);
-	  if(useControls()) {
-		showControls();
-	  }
+//	  if(useControls()) {
+//		showControls();
+//	  }
     };
 
     aggregatorConfig = {
