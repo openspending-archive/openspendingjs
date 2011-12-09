@@ -31,7 +31,6 @@ OpenSpending.App.Explorer = function(config) {
 
   var hideControls = function() {
 	$(my.config.target).find('#controls').hide(); // css('display', 'none');
-	console.log("hiding");
   };
 
   my.initialize = function() {
