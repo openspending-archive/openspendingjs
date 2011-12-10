@@ -259,8 +259,8 @@
       var formObj, k, v, _ref, _results;
       this.data = (data != null ? data[this.name] : void 0) || {};
       this.meta = DIMENSION_TYPE_META[this.data['type']] || {};
-      if (util.compoundType(data.type) && !('fields' in this.data)) {
-        this.data.fields = {
+      if (util.compoundType(data.type) && !('attributes' in this.data)) {
+        this.data.attributes = {
           'name': {
             'datatype': 'id'
           },
@@ -283,7 +283,7 @@
     };
 
     DimensionWidget.prototype.formFieldPrefix = function(fieldName) {
-      return "" + this.name + "[fields][" + fieldName + "]";
+      return "" + this.name + "[attributes][" + fieldName + "]";
     };
 
     DimensionWidget.prototype.formFieldRequired = function(fieldName) {
