@@ -243,14 +243,15 @@
       '.field_rm click': 'onFieldRemoveClick'
     };
 
-    function DimensionWidget(name, container, options) {
+    function DimensionWidget(name, container, nameContainer, options) {
       this.formFieldRequired = __bind(this.formFieldRequired, this);
       this.formFieldPrefix = __bind(this.formFieldPrefix, this);
       var el;
       this.name = name;
-      el = $("<fieldset class='dimension' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
+      el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
       this.id = "" + (this.element.parents('.modeleditor').attr('id')) + "_dim_" + this.name;
+      $("<li><a href='#" + this.id + "'>" + this.name + "</li>").appendTo(nameContainer);
       this.element.attr('id', this.id);
     }
 
@@ -333,11 +334,12 @@
       DimensionsWidget.__super__.constructor.apply(this, arguments);
       this.widgets = [];
       this.dimsEl = this.element.find('.dimensions').get(0);
+      this.dimNamesEl = this.element.find('.dimension-names').get(0);
     }
 
     DimensionsWidget.prototype.addDimension = function(name) {
       var w;
-      w = new DimensionWidget(name, this.dimsEl);
+      w = new DimensionWidget(name, this.dimsEl, this.dimNamesEl);
       this.widgets.push(w);
       return w;
     };
