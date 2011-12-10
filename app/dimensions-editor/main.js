@@ -444,7 +444,7 @@
     function ModelEditor(element, options) {
       var ctor, e, selector, _i, _len, _ref, _ref2;
       ModelEditor.__super__.constructor.apply(this, arguments);
-      this.data = $.extend(true, {}, DEFAULT_MAPPING);
+      this.data = $.extend(true, {}, options.mapping || DEFAULT_MAPPING);
       this.widgets = [];
       this.form = $(element).find('.forms form').eq(0);
       this.id = this.element.attr('id');
