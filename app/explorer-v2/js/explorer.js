@@ -56,7 +56,7 @@ OpenSpending.App.Explorer = function(config) {
 	  var handler = function(model) {
 		var output = [];
 		for(i in model.mapping) {
-		  output.push(i);
+		  output.push([i, model.mapping[i].label]);
 		}
 		initDimensions(datasetName, output);
 	  };
@@ -79,7 +79,8 @@ OpenSpending.App.Explorer = function(config) {
         var tselect = $('<select />');
         tselect.append($('<option />').attr('value', '').html(''));
         $.each(dimensions, function(idx, item) {
-		  tselect.append($('<option />').attr('value', item).html(item));
+		  var name = item[0]; var label = item[1];
+		  tselect.append($('<option />').attr('value', name).html(label));
         });
 		return tselect
 	  };
@@ -110,14 +111,15 @@ OpenSpending.App.Explorer = function(config) {
   my.draw = function() {
     var vals = [];
     $.each(my.$drilldown.find('select option:selected'), function(idx, item) {
-      var _dim = $(item).text();
+      var _dim = $(item).attr('value');
       // ignore the empty string
       if (_dim) {
         vals.push(_dim);
       }
     });
     vals = _.uniq(vals);
-	my.config.aggregator.breakdown = my.$breakdown.find('select option:selected').text();
+
+	my.config.aggregator.breakdown = $(my.$breakdown.find('select option:selected')).attr('value');
     my.config.aggregator.drilldowns = vals;
     if (my.config.aggregator.drilldowns.length > 0) {
       my.renderTree(my.containerId);
