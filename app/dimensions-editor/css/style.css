@@ -1,0 +1,118 @@
+body {
+  font-family: Helvetica, sans-serif;
+  font-size: 90%;
+}
+
+legend + * {
+  margin-top: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+}
+
+table thead tr {
+  border: none;
+}
+
+table td {
+  padding: 3px;
+  border-left: 1px solid #ccc;
+}
+
+table td:first-child {
+  border: none;
+}
+
+.modeleditor {
+  *display: inline-block;
+  width: 100%;
+  border: 1px solid #ccc;
+  background: transparent url(../img/dlbg.png) repeat-y 15em top;
+}
+
+.modeleditor:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.modeleditor .steps {
+  position: fixed;
+  width: 15em;
+}
+
+.modeleditor .steps ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.modeleditor .steps ul li {
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.modeleditor .steps ul li.active {
+  font-weight: bold;
+}
+
+.modeleditor .steps ul li a {
+  display: inline-block;
+  color: inherit;
+  text-decoration: inherit;
+  padding: 0.5em;
+}
+
+.modeleditor .steps ul li span {
+  color: #aaa;
+}
+
+.modeleditor .steps ul li ul li {
+  text-align: left;
+  border-bottom: none;
+  border-top: 1px dashed #ccc;
+}
+
+.modeleditor .steps ul li.active ul li {
+  font-weight: normal;
+}
+
+.modeleditor .steps ul li ul li a {
+  text-align: left;
+  padding: 0.25em 0.25em 0.25em 4em;
+}
+
+.modeleditor .forms {
+  margin-left: 15em;
+}
+
+.modeleditor .forms div.formpart {
+  margin: 1em;
+}
+
+.modeleditor .forms .unique_keys_widget span {
+  cursor: pointer;
+}
+
+.modeleditor .forms .unique_keys_widget span.active {
+  font-weight: bold;
+  color: #fff;
+  background: #33a;
+  padding: 3px 0 3px 3px;
+  margin: 0 3px 0 0;
+}
+
+.modeleditor .forms .unique_keys_widget span:last-of-type.active {
+  padding: 3px;
+}
