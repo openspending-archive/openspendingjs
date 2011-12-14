@@ -10,10 +10,13 @@ initModelEditor = function($, config) {
 	});
   };
 
-  var runDimensionEditor = function(columns, mapping) {
+  var runDimensionEditor = function(analysis, mapping) {
+	var columns = analysis.columns; // FIXME: might be absent
+
 	config = { columns: columns,
 			   getEditor: findEditor,
-			   mapping: mapping
+			   mapping: mapping,
+			   analysis: analysis
 			 };
 	$modelEditor.modelEditor(config);
 	
@@ -21,14 +24,13 @@ initModelEditor = function($, config) {
 	setupACECallback(me);
   };
 
-  var getMapping = function(data) {
-	var columns = data.columns; // FIXME: might be absent
+  var getMapping = function(analysis) {
 
 	$.ajax({
 	  url: '/' + config.dataset + '/model.json',
 	  dataType: 'json',
 	  success: function(modelJs) { 
-		return runDimensionEditor(columns, modelJs.mapping); 
+		return runDimensionEditor(analysis, modelJs.mapping); 
 	  }
 	});
   };
