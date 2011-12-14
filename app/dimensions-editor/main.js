@@ -251,9 +251,13 @@
       el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
       this.id = "" + (this.element.parents('.modeleditor').attr('id')) + "_dim_" + this.name;
-      $("<li><a href='#" + this.id + "'>" + this.name + "</li>").appendTo(nameContainer);
+      this.linkText().appendTo(nameContainer);
       this.element.attr('id', this.id);
     }
+
+    DimensionWidget.prototype.linkText = function() {
+      return $("<li><a href='#" + this.id + "'>" + this.name + "</li>");
+    };
 
     DimensionWidget.prototype.deserialize = function(data) {
       var formObj, k, v, _ref, _results;
@@ -327,14 +331,16 @@
       '.add_attribute_dimension click': 'onAddAttributeDimensionClick',
       '.add_compound_dimension click': 'onAddCompoundDimensionClick',
       '.add_date_dimension click': 'onAddDateDimensionClick',
-      '.add_measure click': 'onAddMeasureClick'
+      '.add_measure click': 'onAddMeasureClick',
+      '.rm_dimension click': 'onRemoveDimensionClick'
     };
 
-    function DimensionsWidget(element, options) {
+    function DimensionsWidget(element, modelEditor, options) {
       DimensionsWidget.__super__.constructor.apply(this, arguments);
       this.widgets = [];
       this.dimsEl = this.element.find('.dimensions').get(0);
       this.dimNamesEl = this.element.find('.dimension-names').get(0);
+      this.modelEditor = modelEditor;
     }
 
     DimensionsWidget.prototype.addDimension = function(name) {
@@ -342,6 +348,18 @@
       w = new DimensionWidget(name, this.dimsEl, this.dimNamesEl);
       this.widgets.push(w);
       return w;
+    };
+
+    DimensionsWidget.prototype.refreshNames = function() {
+      var w, _i, _len, _ref, _results;
+      $(this.dimNamesEl).empty();
+      _ref = this.widgets;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        w = _ref[_i];
+        _results.push(w.linkText().appendTo(this.dimNamesEl));
+      }
+      return _results;
     };
 
     DimensionsWidget.prototype.removeDimension = function(name) {
@@ -355,7 +373,10 @@
           break;
         }
       }
-      if (idx !== null) return this.widgets.splice(idx, 1)[0].element.remove();
+      if (idx !== null) this.widgets.splice(idx, 1)[0].element.remove();
+      delete this.modelEditor.data[name];
+      this.refreshNames();
+      return this.element.trigger('modelChange');
     };
 
     DimensionsWidget.prototype.deserialize = function(data) {
@@ -424,6 +445,13 @@
       return false;
     };
 
+    DimensionsWidget.prototype.onRemoveDimensionClick = function(e) {
+      var dimension;
+      dimension = $(e.srcElement).attr('rm-dim');
+      this.removeDimension(dimension);
+      return false;
+    };
+
     return DimensionsWidget;
 
   })();
@@ -467,7 +495,7 @@
         _ref2 = this.element.find(selector).get();
         for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
           e = _ref2[_i];
-          this.widgets.push(new ctor(e));
+          this.widgets.push(new ctor(e, this));
         }
       }
       this.element.trigger('modelChange');

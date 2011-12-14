@@ -100,10 +100,13 @@ class DimensionWidget extends Widget
     super el, options
 
     @id = "#{@element.parents('.modeleditor').attr('id')}_dim_#{@name}"
-    $("<li><a href='##{@id}'>#{@name}</li>").appendTo(nameContainer)
+    this.linkText().appendTo(nameContainer)
     @element.attr('id', @id)
     
     #@meta = DIMENSION_TYPE_META[@name] or {}
+
+  linkText: () ->
+    $("<li><a href='##{@id}'>#{@name}</li>")
 
   deserialize: (data) ->
     @data = data?[@name] or {}
@@ -153,18 +156,24 @@ class DimensionsWidget extends Delegator
     '.add_compound_dimension click': 'onAddCompoundDimensionClick'
     '.add_date_dimension click': 'onAddDateDimensionClick'
     '.add_measure click': 'onAddMeasureClick'
+    '.rm_dimension click': 'onRemoveDimensionClick'
 
-  constructor: (element, options) ->
+  constructor: (element, modelEditor, options) ->
     super
 
     @widgets = []
     @dimsEl = @element.find('.dimensions').get(0)
     @dimNamesEl = @element.find('.dimension-names').get(0)
+    @modelEditor = modelEditor
 
   addDimension: (name) ->
     w = new DimensionWidget(name, @dimsEl, @dimNamesEl)
     @widgets.push(w)
     return w
+
+  refreshNames: () ->
+    $(@dimNamesEl).empty()
+    w.linkText().appendTo(@dimNamesEl) for w in @widgets
 
   removeDimension: (name) ->
     idx = null
@@ -176,6 +185,10 @@ class DimensionsWidget extends Delegator
 
     if idx isnt null
       @widgets.splice(idx, 1)[0].element.remove()
+
+    delete @modelEditor.data[name]
+    this.refreshNames()
+    @element.trigger('modelChange')
 
   deserialize: (data) ->
     return if @ignoreParent
@@ -221,6 +234,11 @@ class DimensionsWidget extends Delegator
     this.promptAddDimension({'type': 'measure', 'datatype': 'float'})
     return false
 
+  onRemoveDimensionClick: (e) ->
+    dimension = $(e.srcElement).attr('rm-dim')
+    this.removeDimension(dimension)
+    return false
+
 class ModelEditor extends Delegator
   widgetTypes:
     '.dimensions_widget': DimensionsWidget
@@ -233,7 +251,8 @@ class ModelEditor extends Delegator
 
   constructor: (element, options) ->
     super
-    @data = $.extend(true, {}, options.mapping || DEFAULT_MAPPING)
+    data = options.mapping || options.analysis.mapping || DEFAULT_MAPPING
+    @data = $.extend(true, {}, data)
     @widgets = []
 
     @form = $(element).find('.forms form').eq(0)
@@ -253,7 +272,7 @@ class ModelEditor extends Delegator
 
     # Initialize widgets
     for selector, ctor of @widgetTypes
-      @widgets.push(new ctor(e)) for e in @element.find(selector).get()
+      @widgets.push(new ctor(e, this)) for e in @element.find(selector).get()
 
     @element.trigger 'modelChange'
 
@@ -280,12 +299,6 @@ class ModelEditor extends Delegator
     # components may not have been correctly filled out by the above.
     for w in @widgets
       w.deserialize($.extend(true, {}, @data))
-
-    # work around absence of decent hash comprehensions in recent CoffeeScript
-    #hmap = (src, f) -> tmp = {} ; (do (k, v) -> tmp[k] = f(k, v)) for k, v of src ; tmp
-    #demote = (k, v, id) -> tmp = v ; tmp[id] = k ; tmp
-
-    #data = hmap(@data, (k, v) -> hmap(v, (k, v) -> if k isnt "attributes" then v else (demote(K, V, "name") for K, V of v)))
 
     payload = JSON.stringify(@data, null, 2)
     @updateEditor(payload)
