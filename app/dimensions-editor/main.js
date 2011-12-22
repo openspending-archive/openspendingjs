@@ -217,6 +217,28 @@
     },
     compoundType: function(type) {
       return $.inArray(type, ['attribute', 'value', 'date', 'measure']) === -1;
+    },
+    flattenForm: function(data, form) {
+      var el, elt_is_bool, k, str_of_bool, v, _ref, _results;
+      str_of_bool = function(b) {
+        if (b) {
+          return "true";
+        } else {
+          return "false";
+        }
+      };
+      elt_is_bool = function(elt) {
+        return elt.hasClass('boolean');
+      };
+      _ref = util.flattenObject(data);
+      _results = [];
+      for (k in _ref) {
+        v = _ref[k];
+        el = form.find("[name=\"" + k + "\"]");
+        v = elt_is_bool(el) ? str_of_bool(v) : v;
+        _results.push(el.val(v));
+      }
+      return _results;
     }
   };
 
@@ -251,7 +273,6 @@
       el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
       this.id = "" + (this.element.parents('.modeleditor').attr('id')) + "_dim_" + this.name;
-      console.log(nameContainer);
       this.linkText().appendTo(nameContainer);
       this.element.attr('id', this.id);
     }
@@ -261,7 +282,7 @@
     };
 
     DimensionWidget.prototype.deserialize = function(data) {
-      var formObj, k, v, _ref, _results;
+      var formObj;
       this.data = (data != null ? data[this.name] : void 0) || {};
       this.meta = DIMENSION_TYPE_META[this.data['type']] || {};
       if (util.compoundType(data.type) && !('attributes' in this.data)) {
@@ -278,13 +299,7 @@
       this.element.trigger('fillColumnsRequest', [this.element.find('select.column')]);
       formObj = {};
       formObj[this.name] = this.data;
-      _ref = util.flattenObject(formObj);
-      _results = [];
-      for (k in _ref) {
-        v = _ref[k];
-        _results.push(this.element.find("[name=\"" + k + "\"]").val(v));
-      }
-      return _results;
+      return util.flattenForm(formObj, this.element);
     };
 
     DimensionWidget.prototype.formFieldPrefix = function(fieldName) {
@@ -517,15 +532,11 @@
     };
 
     ModelEditor.prototype.onModelChange = function() {
-      var k, payload, v, w, _i, _len, _ref, _ref2;
-      _ref = util.flattenObject(this.data);
-      for (k in _ref) {
-        v = _ref[k];
-        this.form.find("[name=\"" + k + "\"]").val(v);
-      }
-      _ref2 = this.widgets;
-      for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-        w = _ref2[_i];
+      var payload, w, _i, _len, _ref;
+      util.flattenForm(this.data, this.form);
+      _ref = this.widgets;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        w = _ref[_i];
         w.deserialize($.extend(true, {}, this.data));
       }
       payload = JSON.stringify(this.data, null, 2);

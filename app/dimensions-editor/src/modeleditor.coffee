@@ -81,6 +81,17 @@ util =
   compoundType: (type) ->
     $.inArray(type, ['attribute', 'value', 'date', 'measure']) == -1
 
+  # FIXME? this may not deal with complex form elements such as radio
+  # buttons or <select multiple>.
+  flattenForm: (data, form) ->
+    str_of_bool = (b)   -> if b then "true" else "false"
+    elt_is_bool = (elt) -> elt.hasClass('boolean')
+
+    # Populate straightforward bits
+    for k, v of util.flattenObject(data)
+      el = form.find("[name=\"#{k}\"]")
+      v = if (elt_is_bool el) then (str_of_bool v) else v
+      el.val(v)
 
 
 class Widget extends Delegator
@@ -109,6 +120,7 @@ class DimensionWidget extends Widget
     $("<li><a href='##{@id}'>#{@name}</li>")
 
   deserialize: (data) ->
+
     @data = data?[@name] or {}
     @meta = DIMENSION_TYPE_META[@data['type']] or {}
 
@@ -122,8 +134,7 @@ class DimensionWidget extends Widget
     formObj = {}
     formObj[@name] = @data
 
-    for k, v of util.flattenObject(formObj)
-      @element.find("[name=\"#{k}\"]").val(v)
+    util.flattenForm(formObj, @element)
 
   formFieldPrefix: (fieldName) =>
     "#{@name}[attributes][#{fieldName}]"
@@ -163,7 +174,7 @@ class DimensionsWidget extends Delegator
 
     @widgets = []
     @dimsEl = @element.find('.dimensions').get(0)
-    @dimNamesEl = @element.find('.dimension-names').get(0)
+    @dimNamesEl = $(modelEditor?.namesHook) || @element.find('.dimension-names').get(0)
     @modelEditor = modelEditor
 
   addDimension: (name) ->
@@ -252,8 +263,10 @@ class ModelEditor extends Delegator
   constructor: (element, options) ->
     super
     data = options.mapping || options.analysis.mapping || DEFAULT_MAPPING
+    @target = options.target
     @data = $.extend(true, {}, data)
     @widgets = []
+    @namesHook = options?.namesHook
 
     @form = $(element).find('.forms form').eq(0)
 
@@ -289,11 +302,7 @@ class ModelEditor extends Delegator
     return false
 
   onModelChange: () ->
-    # Populate straightforward bits
-    for k, v of util.flattenObject(@data)
-      # FIXME? this may not deal with complex form elements such as radio
-      # buttons or <select multiple>.
-      @form.find("[name=\"#{k}\"]").val(v)
+    util.flattenForm(@data, @form)
 
     # Send updated model copy to each subcomponent, as more complex
     # components may not have been correctly filled out by the above.
@@ -301,6 +310,7 @@ class ModelEditor extends Delegator
       w.deserialize($.extend(true, {}, @data))
 
     payload = JSON.stringify(@data, null, 2)
+    $(@options.target).val(payload)
     @updateEditor(payload)
 
   onFillColumnsRequest: (elem) ->
