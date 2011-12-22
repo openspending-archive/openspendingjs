@@ -14,7 +14,7 @@ initModelEditor = function($, config) {
 	var columns = analysis.columns; // FIXME: might be absent
 
 	config = { columns: columns,
-			   getEditor: findEditor,
+			   getEditor: function () { return null; },
 			   mapping: mapping,
 			   analysis: analysis
 			 };
