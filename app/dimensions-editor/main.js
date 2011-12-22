@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_MAPPING, DEFAULT_VIEWS, DIMENSION_TYPE_META, Delegator, DimensionWidget, DimensionsWidget, FIELDS_META, ModelEditor, ViewEditor, ViewWidget, ViewsWidget, Widget, util,
+  var DEFAULT_MAPPING, DIMENSION_TYPE_META, Delegator, DimensionWidget, DimensionsWidget, FIELDS_META, ModelEditor, Widget, util,
     __slice = Array.prototype.slice,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
@@ -475,6 +475,7 @@
       var ctor, data, e, selector, _i, _len, _ref, _ref2;
       ModelEditor.__super__.constructor.apply(this, arguments);
       data = options.mapping || options.analysis.mapping || DEFAULT_MAPPING;
+      this.target = options.target;
       this.data = $.extend(true, {}, data);
       this.widgets = [];
       this.form = $(element).find('.forms form').eq(0);
@@ -526,6 +527,7 @@
         w.deserialize($.extend(true, {}, this.data));
       }
       payload = JSON.stringify(this.data, null, 2);
+      $(this.options.target).val(payload);
       return this.updateEditor(payload);
     };
 
@@ -556,117 +558,5 @@
   $.plugin('modelEditor', ModelEditor);
 
   this.ModelEditor = ModelEditor;
-
-  DEFAULT_VIEWS = [];
-
-  Widget = (function() {
-
-    __extends(Widget, Delegator);
-
-    function Widget() {
-      Widget.__super__.constructor.apply(this, arguments);
-    }
-
-    Widget.prototype.deserialize = function(data) {};
-
-    return Widget;
-
-  })();
-
-  ViewWidget = (function() {
-
-    __extends(ViewWidget, Widget);
-
-    function ViewWidget(name, container, nameContainer, options) {
-      var el;
-      this.name = name;
-      console.log("viewname", name);
-      el = $("<fieldset class='view tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
-      ViewWidget.__super__.constructor.call(this, el, options);
-    }
-
-    ViewWidget.prototype.deserialize = function(data) {
-      this.data = (data != null ? data[this.name] : void 0) || {};
-      console.log(this.element);
-      console.log($.tmpl('tpl_view', this));
-      return this.element.html($.tmpl('tpl_view', this));
-    };
-
-    return ViewWidget;
-
-  })();
-
-  ViewsWidget = (function() {
-
-    __extends(ViewsWidget, Delegator);
-
-    ViewsWidget.prototype.events = {
-      '.add_dataset_view click': 'onDatasetViewAddClick'
-    };
-
-    function ViewsWidget(element, options) {
-      ViewsWidget.__super__.constructor.apply(this, arguments);
-      this.widgets = [];
-      this.viewsEl = this.element.find('.views').get(0);
-      this.viewNamesEl = this.element.find('.view-names').get(0);
-    }
-
-    ViewsWidget.prototype.onDatasetViewAddClick = function(e) {
-      var data, name;
-      name = prompt("Name:");
-      if (!name) return false;
-      data = {};
-      data[name] = {
-        'foo': 'bar'
-      };
-      return this.addView(name.trim()).deserialize(data);
-    };
-
-    ViewsWidget.prototype.addView = function(name) {
-      var w;
-      w = new ViewWidget(name, this.viewsEl, this.viewNamesEl);
-      this.widgets.push(w);
-      return w;
-    };
-
-    return ViewsWidget;
-
-  })();
-
-  ViewEditor = (function() {
-
-    __extends(ViewEditor, Delegator);
-
-    ViewEditor.prototype.widgetTypes = {
-      '.views_widget': ViewsWidget
-    };
-
-    ViewEditor.prototype.foo = function() {
-      return true;
-    };
-
-    function ViewEditor(element, options) {
-      var ctor, e, selector, _i, _len, _ref, _ref2;
-      ViewEditor.__super__.constructor.apply(this, arguments);
-      this.data = $.extend(true, {}, options.views || DEFAULT_VIEWS);
-      this.widgets = [];
-      _ref = this.widgetTypes;
-      for (selector in _ref) {
-        ctor = _ref[selector];
-        _ref2 = this.element.find(selector).get();
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          e = _ref2[_i];
-          this.widgets.push(new ctor(e));
-        }
-      }
-    }
-
-    return ViewEditor;
-
-  })();
-
-  $.plugin('viewEditor', ViewEditor);
-
-  this.ViewEditor = ViewEditor;
 
 }).call(this);

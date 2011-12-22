@@ -16,12 +16,13 @@ initModelEditor = function($, config) {
 	config = { columns: columns,
 			   getEditor: function () { return null; },
 			   mapping: mapping,
-			   analysis: analysis
+			   analysis: analysis,
+               target: fallbackHook
 			 };
 	$modelEditor.modelEditor(config);
 	
 	var me = $modelEditor.data('modelEditor');
-	setupACECallback(me);
+	//setupACECallback(me);
   };
 
   var getMapping = function(analysis) {
