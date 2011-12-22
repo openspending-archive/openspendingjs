@@ -251,6 +251,7 @@
       el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
       this.id = "" + (this.element.parents('.modeleditor').attr('id')) + "_dim_" + this.name;
+      console.log(nameContainer);
       this.linkText().appendTo(nameContainer);
       this.element.attr('id', this.id);
     }
@@ -339,7 +340,7 @@
       DimensionsWidget.__super__.constructor.apply(this, arguments);
       this.widgets = [];
       this.dimsEl = this.element.find('.dimensions').get(0);
-      this.dimNamesEl = this.element.find('.dimension-names').get(0);
+      this.dimNamesEl = $(modelEditor != null ? modelEditor.namesHook : void 0) || this.element.find('.dimension-names').get(0);
       this.modelEditor = modelEditor;
     }
 
@@ -478,6 +479,7 @@
       this.target = options.target;
       this.data = $.extend(true, {}, data);
       this.widgets = [];
+      this.namesHook = options != null ? options.namesHook : void 0;
       this.form = $(element).find('.forms form').eq(0);
       this.id = this.element.attr('id');
       if (!(this.id != null)) {

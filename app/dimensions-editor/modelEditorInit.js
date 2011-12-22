@@ -2,6 +2,7 @@
 initModelEditor = function($, config) {
   var $modelEditor = $(config.editorSelector);
   var fallbackHook = config.fallbackSelector;
+  var namesHook = config.namesHook;
 
   var setupACECallback = function(me) {
 	$(fallbackHook).change(function () {
@@ -17,7 +18,8 @@ initModelEditor = function($, config) {
 			   getEditor: function () { return null; },
 			   mapping: mapping,
 			   analysis: analysis,
-               target: fallbackHook
+               target: fallbackHook,
+               namesHook: namesHook
 			 };
 	$modelEditor.modelEditor(config);
 	
