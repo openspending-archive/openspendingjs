@@ -93,7 +93,6 @@ util =
       v = if (elt_is_bool el) then (str_of_bool v) else v
       el.val(v)
 
-
 class Widget extends Delegator
   deserialize: (data) ->
 
@@ -103,14 +102,15 @@ class DimensionWidget extends Widget
     '.add_field click': 'onAddFieldClick'
     '.field_rm click': 'onFieldRemoveClick'
 
-  constructor: (name, container, nameContainer, options) ->
+  constructor: (name, container, nameContainer, modelEditor, options) ->
     @name = name
     el = $("<fieldset class='dimension tab-pane' data-dimension-name='#{@name}'>
             </fieldset>").appendTo(container)
 
     super el, options
 
-    @id = "#{@element.parents('.modeleditor').attr('id')}_dim_#{@name}"
+    meName = $(modelEditor).attr('id')
+    @id = "#{meName}_dim_#{@name}"
     this.linkText().appendTo(nameContainer)
     @element.attr('id', @id)
     
@@ -173,12 +173,13 @@ class DimensionsWidget extends Delegator
     super
 
     @widgets = []
-    @dimsEl = @element.find('.dimensions').get(0)
+    @dimsEl = $('.dimensions').get(0)
+
     @dimNamesEl = $(modelEditor?.namesHook) || @element.find('.dimension-names').get(0)
     @modelEditor = modelEditor
 
   addDimension: (name) ->
-    w = new DimensionWidget(name, @dimsEl, @dimNamesEl)
+    w = new DimensionWidget(name, @dimsEl, @dimNamesEl, @modelEditor)
     @widgets.push(w)
     return w
 
@@ -246,7 +247,7 @@ class DimensionsWidget extends Delegator
     return false
 
   onRemoveDimensionClick: (e) ->
-    dimension = $(e.srcElement).attr('rm-dim')
+    dimension = $(e.currentTarget).attr('rm-dim')
     this.removeDimension(dimension)
     return false
 
@@ -262,8 +263,9 @@ class ModelEditor extends Delegator
 
   constructor: (element, options) ->
     super
-    data = options.mapping || options.analysis.mapping || DEFAULT_MAPPING
     @target = options.target
+    mapping = JSON.parse($(@target).html())
+    data = mapping || DEFAULT_MAPPING
     @data = $.extend(true, {}, data)
     @widgets = []
     @namesHook = options?.namesHook
@@ -288,6 +290,8 @@ class ModelEditor extends Delegator
       @widgets.push(new ctor(e, this)) for e in @element.find(selector).get()
 
     @element.trigger 'modelChange'
+
+    #test.run_all(@element)
 
   onFormChange: (e) ->
     return if @ignoreFormChange

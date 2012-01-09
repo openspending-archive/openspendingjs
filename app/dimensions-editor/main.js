@@ -265,14 +265,15 @@
       '.field_rm click': 'onFieldRemoveClick'
     };
 
-    function DimensionWidget(name, container, nameContainer, options) {
+    function DimensionWidget(name, container, nameContainer, modelEditor, options) {
       this.formFieldRequired = __bind(this.formFieldRequired, this);
       this.formFieldPrefix = __bind(this.formFieldPrefix, this);
-      var el;
+      var el, meName;
       this.name = name;
       el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
-      this.id = "" + (this.element.parents('.modeleditor').attr('id')) + "_dim_" + this.name;
+      meName = $(modelEditor).attr('id');
+      this.id = "" + meName + "_dim_" + this.name;
       this.linkText().appendTo(nameContainer);
       this.element.attr('id', this.id);
     }
@@ -354,14 +355,14 @@
     function DimensionsWidget(element, modelEditor, options) {
       DimensionsWidget.__super__.constructor.apply(this, arguments);
       this.widgets = [];
-      this.dimsEl = this.element.find('.dimensions').get(0);
+      this.dimsEl = $('.dimensions').get(0);
       this.dimNamesEl = $(modelEditor != null ? modelEditor.namesHook : void 0) || this.element.find('.dimension-names').get(0);
       this.modelEditor = modelEditor;
     }
 
     DimensionsWidget.prototype.addDimension = function(name) {
       var w;
-      w = new DimensionWidget(name, this.dimsEl, this.dimNamesEl);
+      w = new DimensionWidget(name, this.dimsEl, this.dimNamesEl, this.modelEditor);
       this.widgets.push(w);
       return w;
     };
@@ -463,7 +464,7 @@
 
     DimensionsWidget.prototype.onRemoveDimensionClick = function(e) {
       var dimension;
-      dimension = $(e.srcElement).attr('rm-dim');
+      dimension = $(e.currentTarget).attr('rm-dim');
       this.removeDimension(dimension);
       return false;
     };
@@ -488,10 +489,11 @@
     };
 
     function ModelEditor(element, options) {
-      var ctor, data, e, selector, _i, _len, _ref, _ref2;
+      var ctor, data, e, mapping, selector, _i, _len, _ref, _ref2;
       ModelEditor.__super__.constructor.apply(this, arguments);
-      data = options.mapping || options.analysis.mapping || DEFAULT_MAPPING;
       this.target = options.target;
+      mapping = JSON.parse($(this.target).html());
+      data = mapping || DEFAULT_MAPPING;
       this.data = $.extend(true, {}, data);
       this.widgets = [];
       this.namesHook = options != null ? options.namesHook : void 0;
