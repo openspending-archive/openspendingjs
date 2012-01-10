@@ -397,7 +397,7 @@
     };
 
     DimensionsWidget.prototype.deserialize = function(data) {
-      var dims, name, obj, toRemove, widget, _i, _j, _len, _len2, _ref, _results;
+      var dims, name, obj, toRemove, widget, _i, _j, _len, _len2, _ref;
       if (this.ignoreParent) return;
       dims = data || {};
       toRemove = [];
@@ -415,17 +415,23 @@
         name = toRemove[_j];
         this.removeDimension(name);
       }
-      _results = [];
       for (name in dims) {
         obj = dims[name];
-        _results.push(this.addDimension(name).deserialize(data));
+        this.addDimension(name).deserialize(data);
       }
-      return _results;
+      return this.setDimensionCounter();
     };
 
-    DimensionsWidget.prototype.promptAddDimension = function(props) {
+    DimensionsWidget.prototype.setDimensionCounter = function() {
+      var count, payload;
+      count = $(this.dimNamesEl).children().length;
+      payload = "Dimensions (" + count + ")";
+      return $('#dimension-count').html(payload);
+    };
+
+    DimensionsWidget.prototype.promptAddDimension = function(suggestion, props) {
       var data, name;
-      name = prompt("Dimension name:");
+      name = prompt("Please enter a name for the dimension (without spaces):", suggestion);
       if (!name) return false;
       data = {};
       data[name] = props;
@@ -433,21 +439,21 @@
     };
 
     DimensionsWidget.prototype.onAddAttributeDimensionClick = function(e) {
-      this.promptAddDimension({
+      this.promptAddDimension("", {
         'type': 'attribute'
       });
       return false;
     };
 
     DimensionsWidget.prototype.onAddCompoundDimensionClick = function(e) {
-      this.promptAddDimension({
+      this.promptAddDimension("", {
         'type': 'compound'
       });
       return false;
     };
 
     DimensionsWidget.prototype.onAddDateDimensionClick = function(e) {
-      this.promptAddDimension({
+      this.promptAddDimension("time", {
         'type': 'date',
         'datatype': 'date'
       });
@@ -455,7 +461,7 @@
     };
 
     DimensionsWidget.prototype.onAddMeasureClick = function(e) {
-      this.promptAddDimension({
+      this.promptAddDimension("amount", {
         'type': 'measure',
         'datatype': 'float'
       });
