@@ -260,6 +260,11 @@
           return xs.concat([el]);
         }
       }), []);
+    },
+    titlize: function(s) {
+      return s.replace(/(^|\s)([a-z])/g, function(m, p1, p2) {
+        return p1 + p2.toUpperCase();
+      });
     }
   };
 
@@ -538,6 +543,7 @@
       if (!name) return false;
       data = {};
       data[name] = props;
+      data[name]['label'] = util.titlize(name);
       this.addDimension(name.trim()).deserialize(data);
       return this.setDimensionCounter();
     };
