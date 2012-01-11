@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_MAPPING, DIMENSION_TYPE_META, Delegator, DimensionWidget, DimensionsWidget, FIELDS_META, ModelEditor, UniquesWidget, Widget, log, util,
+  var AddDimensionWidget, DEFAULT_MAPPING, DIMENSION_TYPE_META, Delegator, DimensionWidget, DimensionsWidget, FIELDS_META, ModelEditor, UniquesWidget, Widget, dim_config, log, util,
     __slice = Array.prototype.slice,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
@@ -366,6 +366,119 @@
 
   })();
 
+  dim_config = {
+    attribute: {
+      "default": "",
+      props: {
+        type: "attribute"
+      }
+    },
+    compound: {
+      "default": "",
+      props: {
+        type: "compound"
+      }
+    },
+    date: {
+      "default": "time",
+      props: {
+        type: "date",
+        datatype: "date"
+      }
+    },
+    measure: {
+      "default": "amount",
+      props: {
+        type: "measure",
+        datatype: "float"
+      }
+    }
+  };
+
+  AddDimensionWidget = (function() {
+
+    __extends(AddDimensionWidget, Widget);
+
+    AddDimensionWidget.prototype.events = {
+      'form #dimension_type change': 'onTypeChange',
+      '.add_dimension click': 'onAddDimensionClick',
+      '.cancel_add_dimension click': 'onCancelAddDimensionClick'
+    };
+
+    function AddDimensionWidget(element, modelEditor, options) {
+      AddDimensionWidget.__super__.constructor.apply(this, arguments);
+      this.modelEditor = modelEditor;
+    }
+
+    AddDimensionWidget.prototype.setName = function(s) {
+      return this.element.find('[name=new-dimension-name]').val(s);
+    };
+
+    AddDimensionWidget.prototype.getName = function() {
+      return this.element.find('[name=new-dimension-name]').val();
+    };
+
+    AddDimensionWidget.prototype.getType = function() {
+      return this.element.find('[name=new-dimension-type]').val();
+    };
+
+    AddDimensionWidget.prototype.onTypeChange = function(e) {
+      var name, suggestion, type, _ref;
+      type = this.getType();
+      name = this.getName();
+      suggestion = (_ref = dim_config[type]) != null ? _ref['default'] : void 0;
+      if (!suggestion.length) {
+        if (name in this.modelEditor.data) {
+          this.setName('');
+        } else {
+          return false;
+        }
+      }
+      if (suggestion in this.modelEditor.data) return false;
+      return this.setName(suggestion);
+    };
+
+    AddDimensionWidget.prototype.saneName = function(name) {
+      return name.length && /^[a-zA-Z0-9_-]*$/.test(name);
+    };
+
+    AddDimensionWidget.prototype.nameUnavailable = function(name) {
+      return name in this.modelEditor.data;
+    };
+
+    AddDimensionWidget.prototype.saveNewDimension = function(name, type) {
+      var dwidget;
+      dwidget = this.modelEditor.widgetInfo['.dimensions_widget'][0];
+      return dwidget.autoAddDimension(name, type);
+    };
+
+    AddDimensionWidget.prototype.onAddDimensionClick = function(e) {
+      var name, type;
+      name = this.getName();
+      type = this.getType();
+      log(name);
+      if (!this.saneName(name)) {
+        alert("Please use only letters, numbers and dashes for names");
+        return;
+      }
+      if (this.nameUnavailable(name)) {
+        alert("That name is already taken.");
+        return;
+      }
+      log(name + ' ' + type);
+      this.saveNewDimension(name, type);
+      this.element.modal('hide');
+      return this.modelEditor.element.trigger('formChange');
+    };
+
+    AddDimensionWidget.prototype.onCancelAddDimensionClick = function(e) {
+      return this.element.modal('hide');
+    };
+
+    return AddDimensionWidget;
+
+  })();
+
   UniquesWidget = (function() {
 
     __extends(UniquesWidget, Widget);
@@ -444,6 +557,10 @@
       '.add_measure click': 'onAddMeasureClick',
       '.rm_dimension click': 'onRemoveDimensionClick',
       '.rm_all_dimensions click': 'onRemoveAllDimensionsClick'
+    };
+
+    DimensionsWidget.prototype.ayt = function() {
+      return log('yes i am');
     };
 
     function DimensionsWidget(element, modelEditor, options) {
@@ -537,10 +654,8 @@
       });
     };
 
-    DimensionsWidget.prototype.promptAddDimension = function(suggestion, props) {
-      var data, name;
-      name = prompt("Please enter a name for the dimension (without spaces):", suggestion);
-      if (!name) return false;
+    DimensionsWidget.prototype.createDimension = function(name, props) {
+      var data;
       data = {};
       data[name] = props;
       data[name]['label'] = util.titlize(name);
@@ -548,34 +663,40 @@
       return this.setDimensionCounter();
     };
 
-    DimensionsWidget.prototype.onAddAttributeDimensionClick = function(e) {
-      this.promptAddDimension("", {
-        'type': 'attribute'
-      });
+    DimensionsWidget.prototype.promptAddDimension = function(suggestion, props) {
+      var name;
+      name = prompt("Please enter a name for the dimension (without spaces):", suggestion);
+      if (!name) return false;
+      return this.createDimension(name, props);
+    };
+
+    DimensionsWidget.prototype.autoAddDimension = function(name, type) {
+      var props;
+      props = dim_config[type]['props'];
+      return this.createDimension(name, props);
+    };
+
+    DimensionsWidget.prototype.onAddDimension = function(type) {
+      var meta;
+      meta = dim_config[type];
+      this.promptAddDimension(meta['default'], meta['props']);
       return false;
+    };
+
+    DimensionsWidget.prototype.onAddAttributeDimensionClick = function(e) {
+      return this.onAddDimension('attribute');
     };
 
     DimensionsWidget.prototype.onAddCompoundDimensionClick = function(e) {
-      this.promptAddDimension("", {
-        'type': 'compound'
-      });
-      return false;
+      return this.onAddDimension('compound');
     };
 
     DimensionsWidget.prototype.onAddDateDimensionClick = function(e) {
-      this.promptAddDimension("time", {
-        'type': 'date',
-        'datatype': 'date'
-      });
-      return false;
+      return this.onAddDimension('date');
     };
 
     DimensionsWidget.prototype.onAddMeasureClick = function(e) {
-      this.promptAddDimension("amount", {
-        'type': 'measure',
-        'datatype': 'float'
-      });
-      return false;
+      return this.onAddDimension('measure');
     };
 
     DimensionsWidget.prototype.onRemoveDimensionClick = function(e) {
@@ -603,7 +724,8 @@
 
     ModelEditor.prototype.widgetTypes = {
       '.dimensions_widget': DimensionsWidget,
-      '#check-uniques': UniquesWidget
+      '#check-uniques': UniquesWidget,
+      '#add-dimension': AddDimensionWidget
     };
 
     ModelEditor.prototype.events = {
@@ -615,13 +737,14 @@
     };
 
     function ModelEditor(element, options) {
-      var ctor, data, e, mapping, selector, _i, _len, _ref, _ref2;
+      var ctor, data, e, mapping, selector, w, _i, _len, _ref, _ref2;
       ModelEditor.__super__.constructor.apply(this, arguments);
       this.target = options.target;
       mapping = JSON.parse($(this.target).html());
       data = mapping || DEFAULT_MAPPING;
       this.data = $.extend(true, {}, data);
       this.widgets = [];
+      this.widgetInfo = {};
       this.namesHook = options != null ? options.namesHook : void 0;
       this.form = $(element).find('.forms form').eq(0);
       this.id = this.element.attr('id');
@@ -638,10 +761,13 @@
       _ref = this.widgetTypes;
       for (selector in _ref) {
         ctor = _ref[selector];
+        this.widgetInfo[selector] = [];
         _ref2 = this.element.find(selector).get();
         for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
           e = _ref2[_i];
-          this.widgets.push(new ctor(e, this));
+          w = new ctor(e, this);
+          this.widgets.push(w);
+          this.widgetInfo[selector].push(w);
         }
       }
       this.element.trigger('modelChange');
