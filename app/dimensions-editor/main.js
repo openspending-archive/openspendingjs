@@ -1,5 +1,5 @@
 (function() {
-  var DEFAULT_MAPPING, DIMENSION_TYPE_META, Delegator, DimensionWidget, DimensionsWidget, FIELDS_META, ModelEditor, Widget, util,
+  var DEFAULT_MAPPING, DIMENSION_TYPE_META, Delegator, DimensionWidget, DimensionsWidget, FIELDS_META, ModelEditor, UniquesWidget, Widget, log, util,
     __slice = Array.prototype.slice,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
@@ -36,6 +36,8 @@
           return o[key] = value;
         } else if (value === "true") {
           return o[key] = true;
+        } else {
+          return delete o[key];
         }
       } else {
         if ($.type(o[key]) !== 'object') o[key] = {};
@@ -177,6 +179,10 @@
     }
   };
 
+  log = function(s) {
+    return console.log(s);
+  };
+
   util = {
     flattenObject: function(obj) {
       var flat, pathStr, walk;
@@ -239,6 +245,21 @@
         _results.push(el.val(v));
       }
       return _results;
+    },
+    validId: function(s) {
+      return /[a-z0-9_-]/.test(s);
+    },
+    sanitiseId: function(s) {
+      return s.replace(/[a-zA-Z0-9_-]/i, '');
+    },
+    flatten: function(arr) {
+      return arr.reduce((function(xs, el) {
+        if (Array.isArray(el)) {
+          return xs.concat(util.flatten(el));
+        } else {
+          return xs.concat([el]);
+        }
+      }), []);
     }
   };
 
@@ -340,6 +361,74 @@
 
   })();
 
+  UniquesWidget = (function() {
+
+    __extends(UniquesWidget, Widget);
+
+    UniquesWidget.prototype.events = {
+      '.set_uniques click': 'onSetUniquesClick',
+      'show': 'onShow'
+    };
+
+    function UniquesWidget(element, modelEditor, options) {
+      UniquesWidget.__super__.constructor.apply(this, arguments);
+      this.modelEditor = modelEditor;
+    }
+
+    UniquesWidget.prototype.onShow = function(e) {
+      var add, dim, list, _results,
+        _this = this;
+      list = this.element.find('#uniques');
+      list.empty();
+      add = function(dim) {
+        var checked, falseX, optionHtml, trueX, txt;
+        checked = _this.modelEditor.data[dim]['key'];
+        trueX = '';
+        falseX = '';
+        if (checked) {
+          trueX = ' selected';
+        } else {
+          falseX = ' selected';
+        }
+        optionHtml = ("<option value='true'" + trueX + ">Yes</option>") + ("<option value='false'" + falseX + ">No</option>");
+        txt = "<select name='" + dim + "'>" + optionHtml + "</select> " + dim;
+        return $("<li>" + txt + "</li>").appendTo(list);
+      };
+      _results = [];
+      for (dim in this.modelEditor.data) {
+        _results.push(add(dim));
+      }
+      return _results;
+    };
+
+    UniquesWidget.prototype.onSetUniquesClick = function(e) {
+      var found, list, selected,
+        _this = this;
+      selected = function(index) {
+        return $(this).val() === 'true';
+      };
+      list = this.element.find('#uniques');
+      found = list.find('select :selected').filter(selected);
+      log(found);
+      if (found.length) {
+        list.find('select').each(function(idx, elt) {
+          var dim, tgt;
+          dim = $(elt).attr('name');
+          tgt = $("[name=\"" + dim + "[key]\"]");
+          return tgt.val($(elt).val());
+        });
+        this.element.modal('hide');
+        list.empty();
+        return this.modelEditor.element.trigger('formChange');
+      } else {
+        return alert("You must specify at least one dimension as unique");
+      }
+    };
+
+    return UniquesWidget;
+
+  })();
+
   DimensionsWidget = (function() {
 
     __extends(DimensionsWidget, Delegator);
@@ -349,7 +438,8 @@
       '.add_compound_dimension click': 'onAddCompoundDimensionClick',
       '.add_date_dimension click': 'onAddDateDimensionClick',
       '.add_measure click': 'onAddMeasureClick',
-      '.rm_dimension click': 'onRemoveDimensionClick'
+      '.rm_dimension click': 'onRemoveDimensionClick',
+      '.rm_all_dimensions click': 'onRemoveAllDimensionsClick'
     };
 
     function DimensionsWidget(element, modelEditor, options) {
@@ -435,7 +525,8 @@
       if (!name) return false;
       data = {};
       data[name] = props;
-      return this.addDimension(name.trim()).deserialize(data);
+      this.addDimension(name.trim()).deserialize(data);
+      return this.setDimensionCounter();
     };
 
     DimensionsWidget.prototype.onAddAttributeDimensionClick = function(e) {
@@ -475,6 +566,14 @@
       return false;
     };
 
+    DimensionsWidget.prototype.onRemoveAllDimensionsClick = function(e) {
+      var name;
+      for (name in this.modelEditor.data) {
+        this.removeDimension(name);
+      }
+      return false;
+    };
+
     return DimensionsWidget;
 
   })();
@@ -484,14 +583,16 @@
     __extends(ModelEditor, Delegator);
 
     ModelEditor.prototype.widgetTypes = {
-      '.dimensions_widget': DimensionsWidget
+      '.dimensions_widget': DimensionsWidget,
+      '#check-uniques': UniquesWidget
     };
 
     ModelEditor.prototype.events = {
       'modelChange': 'onModelChange',
       'fillColumnsRequest': 'onFillColumnsRequest',
       '.forms form submit': 'onFormSubmit',
-      '.forms form change': 'onFormChange'
+      '.forms form change': 'onFormChange',
+      'formChange': 'onFormChange'
     };
 
     function ModelEditor(element, options) {
@@ -570,6 +671,36 @@
       var getEditor, _ref;
       getEditor = this.options.getEditor;
       return typeof getEditor === "function" ? (_ref = getEditor()) != null ? _ref.getSession().setValue(data) : void 0 : void 0;
+    };
+
+    ModelEditor.prototype.columnsUsed = function() {
+      var cols_in_dim, d,
+        _this = this;
+      cols_in_dim = function(d) {
+        var attr, dim, _results;
+        dim = _this.data[d];
+        if (dim['attributes']) {
+          _results = [];
+          for (attr in dim['attributes']) {
+            _results.push(dim['attributes'][attr]['column']);
+          }
+          return _results;
+        } else {
+          return [dim['column']];
+        }
+      };
+      return util.flatten((function() {
+        var _results;
+        _results = [];
+        for (d in this.data) {
+          _results.push(cols_in_dim(d));
+        }
+        return _results;
+      }).call(this));
+    };
+
+    ModelEditor.prototype.columnUsed = function(s) {
+      return $.inArray(s, this.columnsUsed()) > -1;
     };
 
     return ModelEditor;
