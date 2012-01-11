@@ -409,7 +409,6 @@
       };
       list = this.element.find('#uniques');
       found = list.find('select :selected').filter(selected);
-      log(found);
       if (found.length) {
         list.find('select').each(function(idx, elt) {
           var dim, tgt;
@@ -509,7 +508,8 @@
         obj = dims[name];
         this.addDimension(name).deserialize(data);
       }
-      return this.setDimensionCounter();
+      this.setDimensionCounter();
+      return this.updateColumnNames();
     };
 
     DimensionsWidget.prototype.setDimensionCounter = function() {
@@ -517,6 +517,19 @@
       count = $(this.dimNamesEl).children().length;
       payload = "Dimensions (" + count + ")";
       return $('#dimension-count').html(payload);
+    };
+
+    DimensionsWidget.prototype.updateColumnNames = function() {
+      var _this = this;
+      return $('#column-names code').each(function(idx, elt) {
+        var name;
+        name = elt.innerHTML;
+        if (_this.modelEditor.columnUsed(name)) {
+          return $(elt).addClass('used');
+        } else {
+          return $(elt).removeClass('used');
+        }
+      });
     };
 
     DimensionsWidget.prototype.promptAddDimension = function(suggestion, props) {
