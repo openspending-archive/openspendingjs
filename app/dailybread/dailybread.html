@@ -9,6 +9,8 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script src="../../lib/vendor/underscore.js"></script>
+	  <script type="text/javascript" src="https://raw.github.com/okfn/openspendingjs/master/lib/aggregator.js"></script>
+    <script src="js/cofog.js"></script>
     <script src="js/dailybread.js"></script>
     <style>
       #dailybread {
@@ -16,6 +18,33 @@
         margin: 0 auto;
       }
     </style>
+    <script>
+    (function ($) {
+      $(function () {
+        var db = new OpenSpending.DailyBread($('#dailybread'));
+        new OpenSpending.Aggregator({
+              apiUrl: 'http://openspending.org/api',
+              //localApiCache: 'aggregate.json',
+              dataset: 'ukgov-finances-cra',
+              drilldowns: ['cofog1', 'cofog2', 'cofog3'],
+              cuts: ['year:2008'],
+              rootNodeLabel: 'Grant total', 
+              breakdown: 'region',
+              callback: function(data) {
+                db.setDataFromAggregator(data, ['unknown']);
+                db.setIconLookup(function(name) {
+                  var style = OpenSpending.Styles.Cofog[name];
+                  if (style != undefined) {
+                    return style['icon'] + '.png';
+                  }
+                  return 'icons/unknown.svg.png';
+                });
+                db.draw();
+              }
+            });
+        })
+      })(jQuery)
+    </script>
 </head>
 <body>
   <div id="dailybread">

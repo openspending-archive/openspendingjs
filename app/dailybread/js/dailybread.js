@@ -1,6 +1,6 @@
-OpenSpending = "OpenSpending" in window ? OpenSpending : {}
+OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
-;(function ($) {
+(function ($) {
 
 var formatCurrency = function (val, prec, sym, dec, sep) {
   prec = prec === undefined ? 2 : prec
@@ -31,6 +31,7 @@ OpenSpending.DailyBread = function (elem) {
 
   this.tiers = []
   this.areas = []
+  this.iconLookup = function (name) { return undefined; };
 
   this.init = function () {
     this.setSalary(22000) // default starting salary
@@ -85,6 +86,25 @@ OpenSpending.DailyBread = function (elem) {
     self.data = data
   }
 
+  this.setDataFromAggregator = function (data, skip) {
+    handleChildren = function(node, absolute) {
+      return _.map(
+        _.filter(node.children, function(child) {
+          return _.indexOf(skip, child.name);
+        }), 
+        function(child) {
+          var daily = (child.amount / node.amount);
+          if (absolute) daily = daily / 365.0;
+          return [child.name, child.label, daily, handleChildren(child, false)]; 
+        });
+    }
+    self.setData(handleChildren(data, true));
+  }
+
+  this.setIconLookup = function(lookup) {
+    self.iconLookup = lookup;
+  }
+
   this.setSalary = function (salary) {
     self.salaryVal = salary
     self.taxVal = 0.4 * salary
@@ -111,31 +131,33 @@ OpenSpending.DailyBread = function (elem) {
     var t = self.tiers[tierId] = self.tiers[tierId] || $("<div class='db-tier' data-db-tier='" + tierId + "'></div>").appendTo(self.$e)
     var n = data.length
     var w = 100.0 / n
+  
+    var icons = _.map(data, function(d) { return self.iconLookup(d[0]); });
 
     if (!self.sliderUpdate) {
       var tpl = "<div class='db-area-row'>" +
                 "<% _.each(areas, function(area, idx) { %>" +
                 "  <div class='db-area-col db-area-title' style='width: <%= width %>%;' data-db-area='<%= idx %>'>" +
-                "    <h3><%= area[0] %></h3>" +
+                "    <h3><%= area[1] %></h3>" +
                 "  </div>" +
                 "<% }); %>" +
                 "</div>" +
                 "<div class='db-area-row'>" +
                 "<% _.each(areas, function(area, idx) { %>" +
                 "  <div class='db-area-col' style='width: <%= width %>%;' data-db-area='<%= idx %>'>" +
-                "    <div class='db-area-icon'></div>" +
+                "    <div class='db-area-icon'><img src='<%= icons[idx] %>'></div>" +
                 "    <div class='db-area-value'></div>" +
                 "  </div>" +
                 "<% }); %>" +
                 "</div>"
 
-      t.html(_.template(tpl, { activeArea: self.areas[tierId], areas: data, width: w }))
+      t.html(_.template(tpl, { activeArea: self.areas[tierId], areas: data, width: w, icons: icons }))
     }
 
     // Update values
     var valEls = t.find('.db-area-value')
     _.each(data, function (area, idx) {
-      valEls.eq(idx).text(formatCurrency(tax * area[1], 2))
+      valEls.eq(idx).text(formatCurrency(tax * area[2], 2))
     })
 
     t.show()
@@ -149,8 +171,8 @@ OpenSpending.DailyBread = function (elem) {
     for (var i = 0, tot = tierId; i < tierId; i += 1) {
       areaId = self.areas[i]
       if (data[areaId]) {
-        tax = tax * data[areaId][1]
-        data = data[areaId][2]
+        tax = tax * data[areaId][2]
+        data = data[areaId][3]
       } else {
         return null
       }
@@ -162,39 +184,5 @@ OpenSpending.DailyBread = function (elem) {
   return this
 }
 
-data = [ [ "Social Protection",                0.000969904666453826, [ [ "Old Age",                                    0.366666666666667,  [] ]
-                                                                     , [ "Sickness and Disability",                    0.161020833333333,  [] ]
-                                                                     , [ "Family and Children",                        0.1439375,          [] ]
-                                                                     , [ "Social Exclusion N.E.C",                     0.0708125,          [] ]
-                                                                     , [ "Unemployment",                               0.0254791666666667, [ [ "Jobseekers allowance", 0.66, [] ]
-                                                                                                                                          ,  [ "HR incentive schemes", 0.34, [] ]
-                                                                                                                                           ] ]
-                                                                     , [ "Social Protection N.E.C",                    0.0245833333333333, [] ]
-                                                                     , [ "Housing",                                    0.0168333333333333, [] ]
-                                                                     , [ "Survivors",                                  0.0118333333333333, [] ]
-                                                                     , [ "R&D Social Protection",                      0.0,                [] ]
-                                                                     ] ]
-       , [ "Health",                           0.000466766620730904, [ [ "Medical Products, Appliances and Equipment", 0.96969696969697,    [] ]
-                                                                     , [ "Public Health Services",                     0.02004329004329,    [] ]
-                                                                     , [ "R&D Health",                                 0.00627705627705628, [] ]
-                                                                     ] ]
-       , [ "Education",                        0.000379879327694415, [ [ "Schools",                                    0.96969696969697,    [] ]
-                                                                     , [ "Youth projects",                             0.02004329004329,    [] ]
-                                                                     , [ "University subsidy",                         0.00627705627705628, [] ]
-                                                                     ] ]
-       , [ "General Public Services",          0.000232372993004563, [] ]
-       , [ "Economic Affairs",                 0.000206104741621438, [] ]
-       , [ "Defence",                          0.000179654633113354, [] ]
-       , [ "Public Order and Safety",          0.000162984396658678, [] ]
-       , [ "Recreation, Culture and Religion", 0.000060073470278484, [] ]
-       , [ "Housing and Community Amenities",  0.000041786726046386, [] ]
-       , [ "Environmental Protection",         0.000038735567616500, [] ]
-       ]
-
-$(function () {
-  var db = new OpenSpending.DailyBread($('#dailybread'))
-  db.setData(data)
-  db.draw()
-})
-
 })(jQuery)
+

@@ -137,17 +137,22 @@
 }
 
 .db-area-title h3 {
-	font-size: 1em;
+	font-size: 0.9em;
 	height: 4em;
 }
 
 .db-area-col .db-area-icon {
 	height: 5em;
 	border-right: 1px solid #fff;
-	background: #ddd;
+/*	background: #ddd; */
 }
 
-.db-area-col.active .db-area-icon {
-	background: rgba(131, 2, 66, 0.1);
+.db-area-col .db-area-icon img {
+  height: 5em;
+  width: 5em;
+}
+
+.db-area-col.active .db-area-icon img {
+	/*background: rgba(131, 2, 66, 0.1);*/
 }
 
