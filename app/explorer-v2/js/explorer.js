@@ -35,6 +35,7 @@ OpenSpending.App.Explorer = function(config) {
 
   my.initialize = function() {
     var $parent = $(my.config.target);
+    $parent.html('');
     $parent.append($(explorerTmpl));
     var $explorer = $parent.find('.explorer');
     my.containerId = my.config.target + ' .explorer .bubbletree';
