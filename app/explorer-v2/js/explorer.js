@@ -90,6 +90,7 @@ OpenSpending.App.Explorer = function(config) {
         });
 
       $('.control-sortable').bind("sortstop", function(event, ui) {
+          $(my.containerId).empty();
           my.draw();
         });
     }
@@ -205,6 +206,7 @@ OpenSpending.App.Explorer = function(config) {
       maxNodesPerLevel: 12
       // tooltipCallback: tooltip
       };
+      $(figId).empty();
       var bubbletree = new BubbleTree(config);
       //	  if(useControls()) {
       //		showControls();
