@@ -125,7 +125,7 @@ OpenSpending.App.Explorer = function(config) {
   };
 
   my.renderTree = function(figId) {
-    $('.loading').html('Loading data <img src="http://m.okfn.org.s3.amazonaws.com/images/icons/ajaxload-circle.gif" />');
+    $('.loading').html('Loading data <img src="http://m.okfn.org/images/icons/ajaxload-circle.gif" />');
     $('.loading').show();
 
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
