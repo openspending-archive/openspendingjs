@@ -36,6 +36,11 @@ OpenSpending.App.Explorer = function(config) {
   my.initialize = function() {
     var $parent = $(my.config.target);
     $parent.append($(explorerTmpl));
+
+    $('#controls-toggle').click(function () { 
+	  $('.hidable-control').toggle(); 
+	});
+
     var $explorer = $parent.find('.explorer');
     my.containerId = my.config.target + ' .explorer .bubbletree';
     my.$drilldown = $explorer.find('#controls-drilldown');
@@ -226,13 +231,16 @@ OpenSpending.App.Explorer = function(config) {
   explorerTmpl = ' \
     <div class="explorer"> \
       <div id="controls"> \
-        <div><small>Drag dimensions to change the diagram</small></div> \
+        <div><span><small>Drag dimensions to change the diagram</small></span> \
+             <span id="controls-toggle" style="float: right"><small>Show/Hide Controls</small></span> \
+        </div> \
+               \
         <!-- <div id="controls-year"> \
           <h3>Year: <span id="year">2009</span></h3> \
           <div id="yearslider"></div> \
           <div id="year-range"></div> \
-        </div> --> \
-        <div class="row"> \
+          </div> --> \
+        <div class="row hidable-control"> \
           <div class="control-column"> \
             <h3>Drill down by</h3> \
             <ul class="control-sortable multi" id="controls-drilldown"></ul> \
@@ -247,6 +255,7 @@ OpenSpending.App.Explorer = function(config) {
           </div> \
         </div> \
       </div> \
+\
       <div class="loading"></div> \
       <div class="bubbletree-wrapper"> \
         <div class="bubbletree"></div> \
