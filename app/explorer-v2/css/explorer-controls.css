@@ -1,0 +1,27 @@
+.control-column { 
+  display: inline;
+  float: left;
+  width: 300px;
+  margin-left: 10px;
+}
+
+.control-sortable { 
+  list-style-type: none;
+  background: #eee;
+  padding: 5px;
+  margin: 0px;
+  width: 290px;
+  min-height: 28px;
+}
+
+.dimension { 
+  background: #fff;
+  width: 288px;
+  height: 20px;
+  webkit-border-radius: 3px 3px 3px 3px;
+  moz-border-radius: 3px 3px 3px 3px;
+  border-radius: 3px 3px 3px 3px;
+  border: 1px solid black;
+  margin: 3px 0;
+  text-align: center;
+}
