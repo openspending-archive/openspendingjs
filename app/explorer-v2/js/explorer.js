@@ -196,7 +196,6 @@ OpenSpending.App.Explorer = function(config) {
 
     var dataLoaded = function(data) {
       $('.loading').hide();
-      console.log(data);
       var config = {
       data: data,
       container: figId,
