@@ -38,7 +38,7 @@ OpenSpending.App.Explorer = function(config) {
     $parent.append($(explorerTmpl));
 
     $('#controls-toggle').click(function () { 
-	  $('.hidable-control').toggle(); 
+	  $('.hidable-control').slideToggle(); 
 	});
 
     var $explorer = $parent.find('.explorer');
