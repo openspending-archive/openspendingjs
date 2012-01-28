@@ -1,0 +1,44 @@
+@import url('http://assets.okfn.org/kforge/css/master.css');
+@import url('http://assets.okfn.org/ext/jquery.tablesorter/style.css');
+
+body {
+  background-image: none;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+#content {
+  padding: 30px;
+  padding-top: 0;
+}
+
+div.about {
+  width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+/* thejit */
+#infovis {
+  position:relative;
+  width:600px;
+  height:500px;
+  margin:auto;
+  overflow:hidden;
+}
+
+#infovis .content {
+  text-align: center;
+}
+
+label {
+  display: inline;
+}
+
+table {
+  margin-top: 1em;
+  overflow: auto;
+}
+
