@@ -1,1 +1,147 @@
-cuts.html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Closing the Deficit Gap in the UK - The Options May 2010 - Where Does My Money Go?</title>
+    <link rel="stylesheet" href="http://assets.okfn.org/kforge/css/master.css" type="text/css" />
+    <link type="text/css" href="../wdmmg/css/wdmmg.css" rel="stylesheet" />
+    <link type="text/css" href="../media/css/treemap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/cuts.css" type="text/css">
+
+    <!--
+    <script type="text/javascript" src="jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="jquery.tablesorter-2.0.3.js"></script>
+    <script language="javascript" type="text/javascript" src="Jit-1.1.3/jit.js"></script>
+    -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://assets.okfn.org/ext/jquery.tablesorter/2.0.3/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="../../lib/vendor/jquery.json-2.2.js"></script>
+    <script type="text/javascript" src="http://assets.okfn.org/ext/Jit/1.1.3/jit-yc.js"></script>
+
+    <script type="text/javascript" src="../../lib/utils/utils.js"></script>
+    <script type="text/javascript" src="../../lib/utils/wdmmg.js"></script>
+    <script type="text/javascript" src="js/cuts.js"></script>
+
+    <script type="text/javascript">
+    // global
+    var spreadsheetData;
+    var last_total;
+
+    $(document).ready(function(){
+      // update treemap
+      function visualizeDeficit() {
+        var deficit = parseFloat($('input.deficit')[0].value);
+        var cutsSelected = {};
+        var result=calculateSetChecked(cutsSelected,deficit,last_total);
+        if(result>=0){
+          last_total=result;
+          var treedata = loadTreeData(spreadsheetData, deficit, cutsSelected, last_total);
+          createTreeMap(treedata, 'infovis', 'Amount &pound;bn');
+          return true;
+        } else{
+          last_total=-result;
+          return false;
+        }
+      }
+
+      // recalculate with new deficit
+      $("#deficit").click(function() {
+        visualizeDeficit();
+        return false;
+      });
+
+      $("#reset_selection").click(function() {
+         $.each($('[type=checkbox]'), function(index,item) {
+            if ($(item).is(':checked')) {
+              $(item).attr('checked')='';
+            }
+         });
+      });
+
+      // on startup build table, setup sorter
+      $('#results').tablesorter({
+        headers: {0: {sorter: false},2: {sorter: 'digit'}}
+      });
+      var apiurl = 'http://spreadsheets.google.com/feeds/list/0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE/od6/public/values?alt=json-in-script&callback=?'
+      // var apiurl = 'cuts-gdocs.js';
+      $.getJSON(apiurl, function(data){
+        spreadsheetData = data;
+        var tbody = $('<tbody></tbody>');
+        var deficit = makeTable(tbody,data);
+        if(deficit>0) {
+          $('input.deficit')[0].value=deficit;
+        }
+        $("#results tbody").replaceWith(tbody);
+        $("#results").trigger("update");
+        var sorting=[[2,1]];
+        $("#results").trigger("sorton",[sorting]);
+
+        // have to bind after table is created
+        $('[type=checkbox]').bind("click", function() {
+          if(visualizeDeficit()){
+           return true;
+          } else {
+           return false;
+          }
+        });
+        visualizeDeficit();
+     });
+
+  });
+    </script>
+  </head>
+  <body>
+  <h1><a href="http://www.wheredoesmymoneygo.org/" target="_blank">Where Does My Money Go?</a> - <a href="http://www.wheredoesmymoneygo.org/cuts/" target="_blank">Visualising the Cuts</a></h1>
+
+  <div id="content">
+    <h2>
+      <a href="http://www.wheredoesmymoneygo.org/cuts/" target="_blank">Closing the Deficit Gap in the UK - The Options May 2010</a>
+      <br />
+      <span class="small">(running live off <a href="https://spreadsheets.google.com/pub?key=0Ah8UkI7xG7eWdDJfM2gyZDVaSlJ3dHZzR1JJWF9tekE&output=html" target="_blank">source data</a> - <a href="http://www.wheredoesmymoneygo.org/cuts/faq/" target="_blank">guide/faq</a>)</span>
+    </h2>
+    <form id="deficit" class="deficit">
+      <label>Deficit Gap (&pound;bn)</label>
+      <input style="width: 30px;" type="text" name="deficit" value="34" class="deficit" />
+      <input type="submit" name="Update" value="Change" />
+      <!--
+      <input type="submit" name="reset" value="Reset Selection" />
+      -->
+    </form>
+
+    <div id="infovis-container">
+      <div id="infovis"></div>
+    </div>
+
+    <div id="options">
+      <form id="cuts_table">
+       <table id="results">
+          <thead>
+	    <tr>
+	      <th></th>
+	      <th>Description</th>
+	      <th style="width:80px;">Amount (&pound;bn)</th>
+	      <th>Type</th>
+	    </tr>
+	  </thead>
+          <tbody></tbody>
+        </table>
+      </form>
+    </div>
+
+    <h2 id="about">About</h2>
+    <p style="width: 50%; text-align: center; margin: auto;">
+    A creation of the <a href="http://www.wheredoesmymoneygo.org/" target="_blank">Where Does My Money Go?</a> team. Researched by Lisa Evans and Tim Hubbard using many figures from the <a href="http://www.ifs.org.uk/" target="_blank">IFS</a>. Visualized by <a href="http://rufuspollock.org/" target="_blank">Rufus Pollock</a> using the <a href="http://thejit.org/">thejit</a> and jquery.</p>
+
+  </div><!-- /content -->
+
+<script type="text/javascript"> 
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script> 
+<script type="text/javascript"> 
+try {
+var pageTracker = _gat._getTracker("UA-8271754-8");
+pageTracker._trackPageview();
+} catch(err) {}</script> 
+  </body>
+</html>
+
