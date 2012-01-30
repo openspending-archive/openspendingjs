@@ -10,6 +10,7 @@
   background: #eee;
   padding: 5px;
   margin: 0px;
+  margin-bottom: 10px;
   width: 290px;
   min-height: 28px;
 }
@@ -24,4 +25,8 @@
   border: 1px solid black;
   margin: 3px 0;
   text-align: center;
+}
+
+#controls-collections { 
+  width: 300px;
 }

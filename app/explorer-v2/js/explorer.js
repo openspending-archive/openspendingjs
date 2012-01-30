@@ -46,6 +46,7 @@ OpenSpending.App.Explorer = function(config) {
     my.$drilldown = $explorer.find('#controls-drilldown');
     my.$breakdown = $explorer.find('#controls-breakdown');
     my.$dimensions = $explorer.find('#controls-dimensions');
+    my.$collection = $explorer.find('#controls-collections');
     var model = OpenSpending.Model(my.config);
 
     /*  var datasetObj = new model.Dataset({
@@ -72,8 +73,29 @@ OpenSpending.App.Explorer = function(config) {
             });
     };
 
+    var getCollections = function(datasetName) {
+      var handler = function(collections) {
+        $.each(collections, function(i, c) {
+            var option = $('<option />');
+            option.appendTo(my.$collection).attr('value', c.name).text(c.label);
+          });
+
+        my.$collection.change(function(e) {
+            my.draw();
+          });
+      };
+
+      $.ajax({
+        url: my.config.endpoint + datasetName + '/collections.json',
+            dataType: 'json',
+            success: handler
+            });
+    };
+
+
     if(useControls()) {
       getDimensions(my.config.dataset);
+      getCollections(my.config.dataset);
     }
 	
     function initDimensions(dataset, dimensions) {
@@ -112,17 +134,19 @@ OpenSpending.App.Explorer = function(config) {
   my.draw = function() {
     my.config.aggregator.breakdown = my.$breakdown.sortable('toArray')[0] || "";
     my.config.aggregator.drilldowns = my.$drilldown.sortable('toArray');
+    my.config.aggregator.collection = my.$collection.val();
     if (my.config.aggregator.drilldowns.length > 0) {
       my.renderTree(my.containerId);
     }
   };
 
-  var getBreakdowns = function(dataset, breakdownField, handler) {
+  var getBreakdowns = function(dataset, breakdownField, collection, handler) {
     $.ajax({
       url: my.config.endpoint + 'api/2/aggregate',
 	  data: {
           'dataset': dataset,
-            'drilldown': breakdownField
+            'drilldown': breakdownField,
+            'from_collection': collection,
             },
 	  dataType: 'json',
 	  success: handler
@@ -190,7 +214,7 @@ OpenSpending.App.Explorer = function(config) {
           }
         };
 	
-        getBreakdowns(my.config.dataset, my.config.aggregator.breakdown, 
+        getBreakdowns(my.config.dataset, my.config.aggregator.breakdown, my.config.aggregator.collection,
                       breakdownStyles);
 
         return bubbleStyles;
@@ -248,6 +272,9 @@ OpenSpending.App.Explorer = function(config) {
           <div class="control-column"> \
             <h3>Break down by</h3> \
             <ul class="control-sortable single" id="controls-breakdown"></ul> \
+            <select id="controls-collections"> \
+              <option value="">Entire dataset</option> \
+            </select> \
           </div> \
           <div class="control-column"> \
             <h3>Unused dimensions</h3> \
