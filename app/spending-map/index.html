@@ -1,0 +1,75 @@
+<html>
+<head>
+	<title>world map of openspending datasets</title>
+	<script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
+	<script type="text/javascript" src="../../lib/vendor/raphael.js"></script>
+	<script type="text/javascript" src="../../lib/vendor/kartograph.js"></script>
+	<script type="text/javascript" src="../../lib/vendor/kartograph.js"></script>
+	<script type="text/javascript">
+
+$(function() {
+
+	var map = new K.Kartograph('#map');
+	
+	map.loadMap('world.svg', function(map) {
+		map.addLayer({
+			id: 'regions',
+			key: 'iso2'
+		});
+		$.ajax({
+			url: 'datasets.json',
+			success: function(datasets) {
+				var i,j,iso2,countries = {},d1 = {};
+				for (i=0;i<datasets.length;i++) {
+					for (j=0;j<datasets[i].territories.length;j++) {
+						iso2 = datasets[i].territories[j];
+						if (!countries.hasOwnProperty(iso2)) {
+							countries[iso2] = { count: 0, datasets: [] };
+							d1[iso2] = 0;
+						}
+						d1[iso2]++;
+						countries[iso2].count++;
+						countries[iso2].datasets.push(datasets[i]);
+					}
+				}
+				map.choropleth({
+					data: d1,
+					colors: function(d) {
+						if (d === null) return '#e3e3e3';
+						console.log(d);
+						if (d == 1) return 'hsl(220,50%,80%)';
+						return 'hsl(220,50%,60%)';
+					}
+					
+				});
+			}
+		});
+	});
+
+});
+
+	</script>
+	<style type="text/css">
+body { background: #f9f9f9; }
+#wrap {
+	width: 944px; margin: 0 auto;
+	background: #fff;
+}
+#map {
+	width: 640px; height: 370px;
+}
+#map svg path {
+	stroke: #fff;
+	stroke-width: 0.1px;
+	fill: #ddd;
+}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="map">
+
+		</div>
+	</div>
+</body>
+</html>

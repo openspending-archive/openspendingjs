@@ -1,0 +1,393 @@
+[
+  {
+    "languages": [
+      "fr"
+    ], 
+    "currency": "EUR", 
+    "name": "afd", 
+    "territories": ["FR"], 
+    "default_time": null, 
+    "description": "Database of development projects funded by the French Government and financed through AFD.\r\n\r\nScraped from the AFD website, and appear to be incomplete.", 
+    "schema_version": "2011-12-07", 
+    "label": "Agence Fran\u00e7aise de D\u00e9veloppement (AFD) database"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "AUD", 
+    "name": "australian_federal_government_contract_spending", 
+    "territories": ["AU"], 
+    "default_time": null, 
+    "description": "Spending by Australian Federal Government agencies on goods and services from 2007 onwards.", 
+    "schema_version": "2011-12-07", 
+    "label": "Australian Federal Government Contract Spending"
+  }, 
+  {
+    "languages": [
+      "de"
+    ], 
+    "currency": "EUR", 
+    "name": "ada", 
+    "territories": [
+      "AT"
+    ], 
+    "default_time": null, 
+    "description": "Some summary information about \"signed contracts\" is available on a project database on the ADA website, but the data appears to be very partial.\r\n\r\nThis data was scraped from the ADA website.", 
+    "schema_version": "2011-12-07", 
+    "label": "Austrian Development Agency data"
+  }, 
+  {
+    "languages": [], 
+    "currency": "EUR", 
+    "name": "bratislava", 
+    "territories": ["SK"], 
+    "default_time": null, 
+    "description": "City of Bratislava budget", 
+    "schema_version": null, 
+    "label": "Bratislava"
+  }, 
+  {
+    "languages": [], 
+    "currency": "EUR", 
+    "name": "bratislava-city", 
+    "territories": ["SK"], 
+    "default_time": null, 
+    "description": "Budget of City of Bratislava", 
+    "schema_version": null, 
+    "label": "Bratislava City Budget"
+  }, 
+  {
+    "languages": [], 
+    "currency": "EUR", 
+    "name": "city_of_bochum_expenditure", 
+    "territories": ["DE"], 
+    "default_time": null, 
+    "description": "City of Bochum Expenditure", 
+    "schema_version": null, 
+    "label": "City of Bochum Expenditure"
+  }, 
+  {
+    "languages": [
+      "de"
+    ], 
+    "currency": "EUR", 
+    "name": "frankfurt-budget", 
+    "territories": [
+      "DE"
+    ], 
+    "default_time": null, 
+    "description": "Profit and loss budget of the City of Frankfurt, Germany.", 
+    "schema_version": "2011-12-07", 
+    "label": "City of Frankfurt Expenditure"
+  }, 
+  {
+    "languages": [
+      "de"
+    ], 
+    "currency": "EUR", 
+    "name": "budget_city_giessen", 
+    "territories": [
+      "DE"
+    ], 
+    "default_time": null, 
+    "description": "Contains the budget data of the city of Gie\u00dfen. The year 2009 and 2010 are actual data, the year 2011 and 2012 target data.", 
+    "schema_version": "2011-12-07", 
+    "label": "City of Gie\u00dfen expenditure"
+  }, 
+  {
+    "languages": [], 
+    "currency": "EUR", 
+    "name": "budget-city-huettenberg", 
+    "territories": ["DE"], 
+    "default_time": null, 
+    "description": "The budget of the city of H\u00fcttenberg.", 
+    "schema_version": null, 
+    "label": "City of H\u00fcttenberg expenditure"
+  }, 
+  {
+    "languages": [], 
+    "currency": "EUR", 
+    "name": "budget-city-lich", 
+    "territories": ["CH"], 
+    "default_time": null, 
+    "description": "Contains the data of the budget of Lich from 2009 until 2011.", 
+    "schema_version": null, 
+    "label": "City of Lich expenditure"
+  }, 
+  {
+    "languages": [], 
+    "currency": "USD", 
+    "name": "city-of-redacre-spending", 
+    "territories": ["US"], 
+    "default_time": null, 
+    "description": "City of Redacre expenditure", 
+    "schema_version": "2011-12-07", 
+    "label": "City of Redacre expenditure"
+  }, 
+  {
+    "languages": [], 
+    "currency": "USD", 
+    "name": "city-of-springfield-budget", 
+    "territories": ["US"], 
+    "default_time": null, 
+    "description": "City of Springfield expenditure", 
+    "schema_version": "2011-12-07", 
+    "label": "City of Springfield expenditure"
+  }, 
+  {
+    "languages": [], 
+    "currency": "USD", 
+    "name": "city-of-whiteacre-spending", 
+    "territories": ["US"], 
+    "default_time": null, 
+    "description": "City of Whiteacre expenditure", 
+    "schema_version": "2011-12-07", 
+    "label": "City of Whiteacre expenditure"
+  }, 
+  {
+    "languages": [], 
+    "currency": "EUR", 
+    "name": "budget_county_giessen", 
+    "territories": ["DE"], 
+    "default_time": null, 
+    "description": "Contains the budget data of the county of Gie\u00dfen. The year 2009 and 2010 are actual data, the year 2011 and 2012 target data.", 
+    "schema_version": "2011-12-07", 
+    "label": "County of Gie\u00dfen expenditure"
+  }, 
+  {
+    "languages": [
+      "de"
+    ], 
+    "currency": "EUR", 
+    "name": "mkk_budget", 
+    "territories": [
+      "DE"
+    ], 
+    "default_time": null, 
+    "description": "Haushalt Main-Kinzig-Kreis<br><br><a href='https://kuler.adobe.com'><img src='https://www.piratenpartei-hessen.de/sites/piratenpartei-hessen.de/files/images/ku_36pxWtext.png' border='0'></a>", 
+    "schema_version": "2011-12-07", 
+    "label": "County of Main-Kinzig expenditure"
+  }, 
+  {
+    "languages": [
+      "es"
+    ], 
+    "currency": "UYU", 
+    "name": "uy-credito-presupuestal", 
+    "territories": [
+      "UY"
+    ], 
+    "default_time": null, 
+    "description": "En la informaci\u00f3n presentada se detallan los objetivos, las instituciones involucradas y el cr\u00e9dito presupuestal asignado a cada \u00c1rea Program\u00e1tica y Programa. Los montos se encuentran expresados en pesos uruguayos.\r\n\r\nLa ley de Presupuesto es quinquenal, y es pasible de ajustes anuales en la instancia de Rendici\u00f3n de Cuentas.\r\n\r\nLa fuente de datos se encuentra en [CKAN data package](http://ckan.net/dataset/advni_uruguay)", 
+    "schema_version": "2011-12-07", 
+    "label": "Cr\u00e9dito presupuestal Uruguay"
+  }, 
+  {
+    "languages": [
+      "de"
+    ], 
+    "currency": "EUR", 
+    "name": "de-parties", 
+    "territories": [
+      "DE"
+    ], 
+    "default_time": null, 
+    "description": "Extrahiert durch Gregor Aisch.", 
+    "schema_version": "2011-12-07", 
+    "label": "Deutschland - Parteispenden (1994-2009)"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "EUR", 
+    "name": "eu-commission-fts", 
+    "territories": [
+      "DK", 
+      "BE", 
+      "AT", 
+      "CZ", 
+      "SE", 
+      "ES", 
+      "SI", 
+      "SK", 
+      "RO", 
+      "PT", 
+      "PL", 
+      "NL", 
+      "LV", 
+      "IT", 
+      "IE", 
+      "HU", 
+      "GR", 
+      "DE", 
+      "FR", 
+      "FI"
+    ], 
+    "default_time": null, 
+    "description": "All grants and commitment reported by the European Commission", 
+    "schema_version": "2011-12-07", 
+    "label": "EU Commission Grants & Commitments"
+  }, 
+  {
+    "languages": [
+      "de"
+    ], 
+    "currency": "EUR", 
+    "name": "de-bund-foerderkatalog", 
+    "territories": [
+      "DE"
+    ], 
+    "default_time": null, 
+    "description": "Vollst\u00e4ndiger Scrape des [F\u00f6rderkatalogs](http://foerderkatalog.de/) verschiedener Bundesministerien. ", 
+    "schema_version": null, 
+    "label": "F\u00f6rderkatalog des Bundes"
+  }, 
+  {
+    "languages": [], 
+    "currency": "USD", 
+    "name": "iati", 
+    "territories": [
+      "ZW"
+    ], 
+    "default_time": null, 
+    "description": "Consolidated IATI transactions as of 5.12.2011\r\n\r\nBugs noticed so far:\r\n\r\n* \"Unknown\" recipient location is incorrectly marked as \"South Sudan\"\r\n\r\n* Recipient countries are listed twice, as Spain has used ISO3 rather than ISO2 country codes.\r\n\r\n* Sweden is listed as \"Ministry of Foreign Affairs\" (this is how they have listed themselves as the Funding Organisation in the data)\r\n\r\n* Sweden's implementing organisations have been lost as they placed them in the accountable organisation field.", 
+    "schema_version": "2011-12-07", 
+    "label": "International Aid Transparency Initiative (BETA)"
+  }, 
+  {
+    "languages": [
+      "it"
+    ], 
+    "currency": "EUR", 
+    "name": "it-regional-accounts", 
+    "territories": [
+      "IT"
+    ], 
+    "default_time": null, 
+    "description": "The Regional Public Accounts (RPA) measure public financial flows at the regional level providing information on central and local government revenues and expenditures (either on current and capital account) by sector.\r\n\r\nData is available since 1996 for General Government or the wider Public Sector and allows for analysis of various sub-aggregates covering different macro-areas and administrative regions, sector classifications, economic categories, definitions of government expenditure and final expenditure recipients.\r\n\r\nData is produced by the Department for Development Policies, Ministry of Economic Development, ITALY and will be released in CSV/TXT format soon on the RPA website.\r\n\r\nTraduzione italiana:\r\n\r\nI Conti Pubblici Territoriali misurano i flussi finanziari pubblici a livello regionale fornendo informazioni sulle entrate e le spese (sia correnti che in conto capitale) delle amministrazioni centrali, regionali e locali per settore.\r\n\r\nI dati sono disponibili dal 1996 per il totale della pubblica amministrazione o il piu' ampio settore pubblico e consente analisi di per diverse macro-aree, regioni, settori, categorie economiche, livelli di governo e beneficiari ultimi della spesa.\r\n\r\nI dati sono prodotti dal Dipartimento per lo Sviluppo e la Coesione Economica del Ministero dello Sviluppo economico italiano.\r\n", 
+    "schema_version": "2011-12-07", 
+    "label": "Italian Regional Public Accounts"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "KES", 
+    "name": "ke-county-exp", 
+    "territories": [
+      "KE"
+    ], 
+    "default_time": null, 
+    "description": "Dataset from [here](http://opendata.go.ke/Public-Finance/County-Expenditures-by-Administration-2002-3-to-20/2dr6-gdne). \r\n\r\n", 
+    "schema_version": null, 
+    "label": "Kenya County Expenditure by Administration"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "KES", 
+    "name": "ke-cdf", 
+    "territories": [
+      "KE"
+    ], 
+    "default_time": null, 
+    "description": "From [KODI](http://opendata.go.ke/Public-Finance/CDF-Projects-2003-2010/6rxd-cfvr)", 
+    "schema_version": null, 
+    "label": "Kenyan Constituency Development Fund"
+  }, 
+  {
+    "languages": [], 
+    "currency": "BRL", 
+    "name": "ppa", 
+    "territories": [], 
+    "default_time": null, 
+    "description": "The PPA dataset is contributed as an example of a government which uses participatory budgeting.", 
+    "schema_version": "2011-12-07", 
+    "label": "PPA"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "GBP", 
+    "name": "uk-barnet-budget", 
+    "territories": [
+      "GB"
+    ], 
+    "default_time": null, 
+    "description": "Consolidated spending information from Barnet Borough Council", 
+    "schema_version": "2011-12-07", 
+    "label": "UK Barnet Council budget"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "GBP", 
+    "name": "ukgov-finances-cra", 
+    "territories": [
+      "GB"
+    ], 
+    "default_time": null, 
+    "description": "The Country Regional Analysis published by HM Treasury (2010 version).\r\n\r\nSource data can be found in the [CKAN data package](http://ckan.net/package/ukgov-finances-cra)", 
+    "schema_version": "2011-12-07", 
+    "label": "UK Country Regional Analysis"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "GBP", 
+    "name": "ukgov-25k-spending", 
+    "territories": [
+      "GB"
+    ], 
+    "default_time": null, 
+    "description": "Consolidated spending reports for all UK departmental spending above GBP 25,000 as released on a monthly basis. Data is available [here](http://ckan.net/package/ukgov-25k-spending), more information on the [Number 10 Transparency](http://transparency.number10.gov.uk/money.php) site", 
+    "schema_version": "2011-12-07", 
+    "label": "UK Departmental Spending"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "USD", 
+    "name": "ukgov-local-council", 
+    "territories": [
+      "GB"
+    ], 
+    "default_time": null, 
+    "description": "UK local council spending from [OpenlyLocal.com](http://openlylocal.com/councils/spending). The data has been scraped and cleaned by Chris Taggart, errors can be reported on the [GitHub repository](https://github.com/CountCulture/twfy_local_parser/issues). ", 
+    "schema_version": null, 
+    "label": "UK Local Council Spending"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "USD", 
+    "name": "ugandabudget", 
+    "territories": [
+      "UG"
+    ], 
+    "default_time": null, 
+    "description": "Data for Financial Years 2003-4, 2004-5, 2005-6, plus planned spending up to 2009.\r\n\r\n**Disclaimer**\r\n\r\nThe data used for this visualisation was collected as part of the Donor Division of Labour Exercise conducted in 2006\u20132007 in the Aid Information Map (AIM).* All mistakes, errors and omissions in this visualization are the responsibility of Publish What You Fund alone. The data and research reported here do not reflect the official view of the Ministry of Finance, Planning and Economic Development. This data is not used by the Government of Uganda to allocate resources or for any other official purpose and no ministry staff were involved in the development of this visualization.\r\n \r\n*For more details see http://www.odi.org.uk/work/projects/details.asp?id=143&title=uganda-development-partner-division-labour-exercise, report http://www.odi.org.uk/work/projects/details.asp?id=143&title=uganda-development-partner-division-labour-exercise.", 
+    "schema_version": "2011-12-07", 
+    "label": "Uganda Budget and Aid to Uganda, 2003-2006"
+  }, 
+  {
+    "languages": [
+      "en"
+    ], 
+    "currency": "USD", 
+    "name": "wb-privatizations", 
+    "territories": [], 
+    "default_time": null, 
+    "description": "The World Bank has collected a database of all major (i.e. at least USD 1mn) known privatizations of public companies from 1988 to 2008. \r\n\r\nThe source data is available at [the studies web site](http://rru.worldbank.org/Privatization/). Excellent documentation on methodology is available on [this page](http://rru.worldbank.org/Privatization/Methodology.aspx). Quote:\r\n\r\nThis site contains data on the sale price of privatization transactions of over $1 million, carried out in developing countries between 2000 and 2008. It only includes transactions which generate proceeds or monetary receipts to the government resulting from partial and full divestitures, concessions, management contracts, and leases. Thus, only those transactions that generate revenue for the government from privatization or private sector participation in an existing state-owned enterprise or other government assets (such as wireless license sales) are included. The data give information on the sale price of transactions on an \"announcement\" basis rather than on the basis of actual flows of receipts, which may be paid for over several years. \r\n\r\nTransactions that did not generate revenue for the government are excluded from the database. As such, the database does not include firms transferred to the private sector through mass or \"voucher\" privatizations (as in Eastern Europe). It also does not include new greenfield investments that did not involve payments to the government, funds committed or invested by new owners, and build-operate-transfer schemes which do not involve payments to the governments. ", 
+    "schema_version": "2011-12-07", 
+    "label": "Worldbank Privatization Database (1988-2008)"
+  }
+]
