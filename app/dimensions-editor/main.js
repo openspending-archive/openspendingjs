@@ -68,6 +68,15 @@
     return $.a2o(ary);
   };
 
+  $.fn.insertAt = function(idx, element) {
+    var lastIdx;
+    lastIdx = this.children().size();
+    if (idx < 0) idx = Math.max(0, lastIdx + 1 + idx);
+    this.append(element);
+    if (idx < lastIdx) this.children().eq(idx).before(this.children().last());
+    return this;
+  };
+
   Delegator = (function() {
 
     Delegator.prototype.events = {};
@@ -265,6 +274,15 @@
       return s.replace(/(^|\s)([a-z])/g, function(m, p1, p2) {
         return p1 + p2.toUpperCase();
       });
+    },
+    cmp: function(a, b) {
+      if (a < b) {
+        return -1;
+      } else if (a > b) {
+        return 1;
+      } else {
+        return 0;
+      }
     }
   };
 
@@ -294,15 +312,29 @@
     function DimensionWidget(name, container, nameContainer, modelEditor, options) {
       this.formFieldRequired = __bind(this.formFieldRequired, this);
       this.formFieldPrefix = __bind(this.formFieldPrefix, this);
-      var el, meName;
+      var el, idx, meName;
       this.name = name;
       el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
       meName = $(modelEditor).attr('id');
       this.id = "" + meName + "_dim_" + this.name;
-      this.linkText().appendTo(nameContainer);
+      idx = this.getInsertIndex(this.name, nameContainer);
+      log(idx);
+      nameContainer.insertAt(idx, this.linkText());
       this.element.attr('id', this.id);
     }
+
+    DimensionWidget.prototype.getInsertIndex = function(name, nameContainer) {
+      var at, items;
+      at = 0;
+      items = nameContainer.children();
+      items.each(function(idx, item) {
+        var txt;
+        txt = $($(item).children()[0]).html();
+        if (name > txt) return at = idx + 1;
+      });
+      return at;
+    };
 
     DimensionWidget.prototype.linkText = function() {
       return $("<li><a href='#" + this.id + "'>" + this.name + "</li>");
@@ -579,12 +611,15 @@
     };
 
     DimensionsWidget.prototype.refreshNames = function() {
-      var w, _i, _len, _ref, _results;
+      var tmp, w, _i, _len, _results;
       $(this.dimNamesEl).empty();
-      _ref = this.widgets;
+      tmp = this.widgets;
+      tmp.sort(function(a, b) {
+        return util.cmp(a.id, b.id);
+      });
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        w = _ref[_i];
+      for (_i = 0, _len = tmp.length; _i < _len; _i++) {
+        w = tmp[_i];
         _results.push(w.linkText().appendTo(this.dimNamesEl));
       }
       return _results;
