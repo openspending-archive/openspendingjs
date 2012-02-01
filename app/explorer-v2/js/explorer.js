@@ -20,127 +20,118 @@ OpenSpending.App.Explorer = function(config) {
 
 
   var useControls = function() {
-	if(my.config.aggregator || !my.config.aggregator.drilldowns) {
-	  return true;
-	}
+    if(my.config.aggregator || !my.config.aggregator.drilldowns) {
+      return true;
+    }
   };
 
   var showControls = function() {
-	$(my.config.target).find('#controls').css('display', 'inline');
+    $(my.config.target).find('#controls').css('display', 'inline');
   };
 
   var hideControls = function() {
-	$(my.config.target).find('#controls').hide(); // css('display', 'none');
+    $(my.config.target).find('#controls').hide(); // css('display', 'none');
   };
 
   my.initialize = function() {
     var $parent = $(my.config.target);
     $parent.html('');
     $parent.append($(explorerTmpl));
+
+    $('#controls-toggle').click(function () { 
+	  $('.hidable-control').slideToggle(); 
+	});
+
     var $explorer = $parent.find('.explorer');
     my.containerId = my.config.target + ' .explorer .bubbletree';
     my.$drilldown = $explorer.find('#controls-drilldown');
-    var $drilldownList = my.$drilldown.find('ol');
-	my.$breakdown = $explorer.find('#controls-breakdown');
-	var $breakdownAnchor = my.$breakdown = my.$breakdown.find('ol');
+    my.$breakdown = $explorer.find('#controls-breakdown');
+    my.$dimensions = $explorer.find('#controls-dimensions');
     var model = OpenSpending.Model(my.config);
 
-/*  var datasetObj = new model.Dataset({
-      name: my.config.dataset
-    });
-    datasetObj.fetch({
-      success: initDimensions,
-      dataType: 'jsonp'
-    }); */
+    /*  var datasetObj = new model.Dataset({
+        name: my.config.dataset
+        });
+        datasetObj.fetch({
+        success: initDimensions,
+        dataType: 'jsonp'
+        }); */
 
-	var getDimensions = function(datasetName) {
-	  var handler = function(model) {
-		var output = [];
-		for(i in model.mapping) {
-		  output.push([i, model.mapping[i].label]);
-		}
-		initDimensions(datasetName, output);
-	  };
+    var getDimensions = function(datasetName) {
+      var handler = function(model) {
+        var output = [];
+        for(i in model.mapping) {
+          output.push([i, model.mapping[i].label]);
+        }
+        initDimensions(datasetName, output);
+      };
 
-	  $.ajax({
-		url: my.config.endpoint + datasetName + '/model.json',
-		dataType: 'json',
-		success: handler
-	  });
-	};
+      $.ajax({
+        url: my.config.endpoint + datasetName + '/model.json',
+            dataType: 'json',
+            success: handler
+            });
+    };
 
-	if(useControls()) {
-	  getDimensions(my.config.dataset);
-	}
+    if(useControls()) {
+      getDimensions(my.config.dataset);
+    }
 	
     function initDimensions(dataset, dimensions) {
       my.dataset = dataset;
 
-	  var menuItem = function() {
-        var tselect = $('<select />');
-        tselect.append($('<option />').attr('value', '').html(''));
-        $.each(dimensions, function(idx, item) {
-		  var name = item[0]; var label = item[1];
-		  tselect.append($('<option />').attr('value', name).html(label));
+      $.each(dimensions, function(idx, item) {
+          var name = item[0]; var label = item[1];
+          my.$dimensions.append($('<li></li>').addClass('dimension').attr('id', name).text(label));
         });
-		return tselect
-	  };
 
-	  var liHtml = '<li />';
-      $.each([1,2,3], function(idx, item) {
-        $drilldownList.append($(liHtml).append(menuItem()));
-      });
-	  $breakdownAnchor.append($(liHtml).append(menuItem()));
+      $('.control-sortable.multi').disableSelection().sortable({connectWith: '.control-sortable', tolerance: 'pointer', revert: 100});
+      $('.control-sortable.single').disableSelection().sortable({connectWith: '.control-sortable', tolerance: 'pointer', revert: 100,
+            receive: function(event, ui) {
+            var items = $(this).sortable('toArray').length;
+            if (items > 1) {
+              $(ui.sender).sortable('cancel');
+            }
+          }
+        });
 
-      $explorer.find('button').click(function(e) {
-        e.preventDefault();
-        my.draw();
-		my.renderTree(my.containerId);
-		hideControls();
-      });
+      $('.control-sortable').bind("sortstop", function(event, ui) {
+          $(my.containerId).empty();
+          my.draw();
+        });
     }
 
     if (my.config.aggregator && my.config.aggregator.drilldowns) {
       my.renderTree(my.containerId);
-	} else if (useControls()) {
-	  showControls();
+    } else if (useControls()) {
+      showControls();
     } else {
       $('.loading').html('Please select drilldown from sidebar and hit redraw');
     }
   };
 
   my.draw = function() {
-    var vals = [];
-    $.each(my.$drilldown.find('select option:selected'), function(idx, item) {
-      var _dim = $(item).attr('value');
-      // ignore the empty string
-      if (_dim) {
-        vals.push(_dim);
-      }
-    });
-    vals = _.uniq(vals);
-
-	my.config.aggregator.breakdown = $(my.$breakdown.find('select option:selected')).attr('value');
-    my.config.aggregator.drilldowns = vals;
+    my.config.aggregator.breakdown = my.$breakdown.sortable('toArray')[0] || "";
+    my.config.aggregator.drilldowns = my.$drilldown.sortable('toArray');
     if (my.config.aggregator.drilldowns.length > 0) {
       my.renderTree(my.containerId);
     }
   };
 
   var getBreakdowns = function(dataset, breakdownField, handler) {
-	$.ajax({
-	  url: my.config.endpoint + 'api/2/aggregate',
+    $.ajax({
+      url: my.config.endpoint + 'api/2/aggregate',
 	  data: {
-		'dataset': dataset,
-		'drilldown': breakdownField
-	  },
+          'dataset': dataset,
+            'drilldown': breakdownField
+            },
 	  dataType: 'json',
 	  success: handler
-	});
+          });
   };
 
   my.renderTree = function(figId) {
-    $('.loading').html('Loading data <img src="http://m.okfn.org.s3.amazonaws.com/images/icons/ajaxload-circle.gif" />');
+    $('.loading').html('Loading data <img src="http://m.okfn.org/images/icons/ajaxload-circle.gif" />');
     $('.loading').show();
 
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
@@ -153,8 +144,8 @@ OpenSpending.App.Explorer = function(config) {
         vis4.log(event);
         $tooltip.css({ 
           left: event.mousePos.x + 4, 
-          top: event.mousePos.y + 4 
-        });
+              top: event.mousePos.y + 4 
+              });
         $tooltip.html(event.node.label+' <b>'+event.node.famount+'</b>');
         var bubble = event.target;
         
@@ -179,58 +170,59 @@ OpenSpending.App.Explorer = function(config) {
       $(domnode).tooltip({ delay: 100, bodyHandler: getTooltip });
     };
 
-	var breakdownStyles = function() {
+    var breakdownStyles = function() {
       // 'cofog': OpenSpending.BubbleTree.Styles.Cofog
-	  if (my.config.aggregator.breakdown) {
-	  	var bubbleStyles = { name: {} };
-		var saturation = 0.5;
-		var value = 0.95;
+      if (my.config.aggregator.breakdown) {
+        var bubbleStyles = { name: {} };
+        var saturation = 0.5;
+        var value = 0.95;
 
-		var breakdownStyles = function(data) {
+        var breakdownStyles = function(data) {
           var extractStyle = function(i) { return i[my.config.aggregator.breakdown].name; };
 
-		  if (data.hasOwnProperty('drilldown')) {
-			breakdowns = data.drilldown.map(extractStyle);
-			for (var i=0, len=breakdowns.length; i < len; i++) {
-			  var hue = i / len * 360;
-		      bubbleStyles.name[breakdowns[i]] = { 
-				color: vis4color.fromHSV(hue, saturation, value, "hsv").x 
-			  };
-			}
+          if (data.hasOwnProperty('drilldown')) {
+            breakdowns = data.drilldown.map(extractStyle);
+            for (var i=0, len=breakdowns.length; i < len; i++) {
+              var hue = i / len * 360;
+              bubbleStyles.name[breakdowns[i]] = { 
+              color: vis4color.fromHSV(hue, saturation, value, "hsv").x 
+              };
+            }
           }
-	    };
+        };
 	
-		getBreakdowns(my.config.dataset, my.config.aggregator.breakdown, 
-					  breakdownStyles);
+        getBreakdowns(my.config.dataset, my.config.aggregator.breakdown, 
+                      breakdownStyles);
 
-	    return bubbleStyles;
-	  } else {
-		return null;
-	  }
-	};
+        return bubbleStyles;
+      } else {
+        return null;
+      }
+    };
 
     var dataLoaded = function(data) {
       $('.loading').hide();
       var config = {
-        data: data,
-        container: figId,
-        bubbleType: 'donut',
-        bubbleStyles: my.config.bubbleStyles || breakdownStyles() || {},
-        initTooltip: initTooltip,
-        maxNodesPerLevel: 12
-        // tooltipCallback: tooltip
+      data: data,
+      container: figId,
+      bubbleType: 'donut',
+      bubbleStyles: my.config.bubbleStyles || breakdownStyles() || {},
+      initTooltip: initTooltip,
+      maxNodesPerLevel: 12
+      // tooltipCallback: tooltip
       };
+      $(figId).empty();
       var bubbletree = new BubbleTree(config);
-//	  if(useControls()) {
-//		showControls();
-//	  }
+      //	  if(useControls()) {
+      //		showControls();
+      //	  }
     };
 
     aggregatorConfig = {
-      apiUrl: my.config.endpoint + 'api',
-      dataset: my.config.dataset,
-      // localApiCache: '../bubbletree/examples/cra/aggregate.json',
-      callback: dataLoaded
+    apiUrl: my.config.endpoint + 'api',
+    dataset: my.config.dataset,
+    // localApiCache: '../bubbletree/examples/cra/aggregate.json',
+    callback: dataLoaded
     };
     _.extend(aggregatorConfig, my.config.aggregator);
     // call openspending api for data
@@ -240,23 +232,31 @@ OpenSpending.App.Explorer = function(config) {
   explorerTmpl = ' \
     <div class="explorer"> \
       <div id="controls"> \
+        <div><span><small>Drag dimensions to change the diagram</small></span> \
+             <span id="controls-toggle" style="float: right"><small>Show/Hide Controls</small></span> \
+        </div> \
+               \
         <!-- <div id="controls-year"> \
           <h3>Year: <span id="year">2009</span></h3> \
           <div id="yearslider"></div> \
           <div id="year-range"></div> \
-        </div> --> \
-        <div id="controls-drilldown"> \
-          <h3>Drill down by</h3> \
-          <ol id="drilldown-list"> \
-          </ol> \
+          </div> --> \
+        <div class="row hidable-control"> \
+          <div class="control-column"> \
+            <h3>Drill down by</h3> \
+            <ul class="control-sortable multi" id="controls-drilldown"></ul> \
+          </div> \
+          <div class="control-column"> \
+            <h3>Break down by</h3> \
+            <ul class="control-sortable single" id="controls-breakdown"></ul> \
+          </div> \
+          <div class="control-column"> \
+            <h3>Unused dimensions</h3> \
+            <ul class="control-sortable multi" id="controls-dimensions"></ul> \
+          </div> \
         </div> \
-        <div id="controls-breakdown"> \
-          <h3>Break down by</h3> \
-          <ol id="breakdown-list"> \
-          </ol> \
-        </div> \
-        <button>Redraw</button> \
       </div> \
+\
       <div class="loading"></div> \
       <div class="bubbletree-wrapper"> \
         <div class="bubbletree"></div> \
