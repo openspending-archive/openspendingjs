@@ -32,7 +32,7 @@
         if ($.type(o[key]) !== 'array') o[key] = [];
         return o[key].push(value);
       } else if (path.length === 1) {
-        if (key !== "key") {
+        if ($.inArray(key, ["key", "facet"]) === -1) {
           return o[key] = value;
         } else if (value === "true") {
           return o[key] = true;
@@ -319,7 +319,6 @@
       meName = $(modelEditor).attr('id');
       this.id = "" + meName + "_dim_" + this.name;
       idx = this.getInsertIndex(this.name, nameContainer);
-      log(idx);
       nameContainer.insertAt(idx, this.linkText());
       this.element.attr('id', this.id);
     }
