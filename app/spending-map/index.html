@@ -3,22 +3,24 @@
 	<title>world map of openspending datasets</title>
 	<script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
 	<script type="text/javascript" src="../../lib/vendor/raphael.js"></script>
-	<script type="text/javascript" src="../../lib/vendor/kartograph.js"></script>
-	<script type="text/javascript" src="../../lib/vendor/kartograph.js"></script>
+	<script type="text/javascript" src="../../lib/vendor/kartograph/kartograph.min.js"></script>
+	<script type="text/javascript" src="../../lib/vendor/chroma.pack.min.js"></script>
 	<script type="text/javascript">
 
 $(function() {
 
-	var map = new K.Kartograph('#map');
-	
+	var map = $K.map('#map'),
+		colscale = new chroma.ColorScale({
+    		colors: chroma.brewer.Blues,
+    		limits: [-2,-1,0,1,2,3,4,5,6,7]
+		}); 
+		
 	map.loadMap('world.svg', function(map) {
-		map.addLayer({
-			id: 'regions',
-			key: 'iso2'
-		});
+		
 		$.ajax({
 			url: 'datasets.json',
 			success: function(datasets) {
+		
 				var i,j,iso2,countries = {},d1 = {};
 				for (i=0;i<datasets.length;i++) {
 					for (j=0;j<datasets[i].territories.length;j++) {
@@ -32,16 +34,32 @@ $(function() {
 						countries[iso2].datasets.push(datasets[i]);
 					}
 				}
+				
+				map.addLayer({
+					id: 'regions',
+					className: 'bg',
+					filter: function(d) {
+						return !countries.hasOwnProperty(d.iso2);
+					}
+				});
+				
+				map.addLayer({
+					id: 'regions',
+					key: 'iso2',
+					filter: function(d) {
+						return countries.hasOwnProperty(d.iso2);
+					}
+				});
+				
 				map.choropleth({
 					data: d1,
-					colors: function(d) {
+					colors: function(d) {						
 						if (d === null) return '#e3e3e3';
-						console.log(d);
-						if (d == 1) return 'hsl(220,50%,80%)';
-						return 'hsl(220,50%,60%)';
-					}
-					
+						return colscale.getColor(d);
+					},
+					duration: 300
 				});
+				
 			}
 		});
 	});
@@ -58,9 +76,16 @@ body { background: #f9f9f9; }
 #map {
 	width: 640px; height: 370px;
 }
-#map svg path {
+#map svg path.regions {
 	stroke: #fff;
-	stroke-width: 0.1px;
+	stroke-width: 0.3px;
+}
+#map svg path.regions:hover {
+	fill: #c00;
+	cursor: pointer;
+}
+#map svg path.bg {
+	stroke: #ddd;
 	fill: #ddd;
 }
 	</style>
