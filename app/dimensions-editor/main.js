@@ -283,6 +283,11 @@
       } else {
         return 0;
       }
+    },
+    tabName: function(modelEditor, name) {
+      var meName;
+      meName = $(modelEditor).attr('id');
+      return "" + meName + "_dim_" + name;
     }
   };
 
@@ -312,12 +317,11 @@
     function DimensionWidget(name, container, nameContainer, modelEditor, options) {
       this.formFieldRequired = __bind(this.formFieldRequired, this);
       this.formFieldPrefix = __bind(this.formFieldPrefix, this);
-      var el, idx, meName;
+      var el, idx;
       this.name = name;
       el = $("<fieldset class='dimension tab-pane' data-dimension-name='" + this.name + "'>            </fieldset>").appendTo(container);
       DimensionWidget.__super__.constructor.call(this, el, options);
-      meName = $(modelEditor).attr('id');
-      this.id = "" + meName + "_dim_" + this.name;
+      this.id = util.tabName(modelEditor, name);
       idx = this.getInsertIndex(this.name, nameContainer);
       nameContainer.insertAt(idx, this.linkText());
       this.element.attr('id', this.id);
@@ -484,10 +488,9 @@
     };
 
     AddDimensionWidget.prototype.onAddDimensionClick = function(e) {
-      var name, type;
+      var name, tabTo, type;
       name = this.getName();
       type = this.getType();
-      log(name);
       if (!this.saneName(name)) {
         alert("Please use only letters, numbers and dashes for names");
         return;
@@ -496,10 +499,11 @@
         alert("That name is already taken.");
         return;
       }
-      log(name + ' ' + type);
       this.saveNewDimension(name, type);
       this.element.modal('hide');
-      return this.modelEditor.element.trigger('formChange');
+      this.modelEditor.element.trigger('formChange');
+      tabTo = 'li a[href="#' + util.tabName(this.modelEditor, name) + '"]';
+      return $(tabTo).click();
     };
 
     AddDimensionWidget.prototype.onCancelAddDimensionClick = function(e) {
@@ -588,10 +592,6 @@
       '.add_measure click': 'onAddMeasureClick',
       '.rm_dimension click': 'onRemoveDimensionClick',
       '.rm_all_dimensions click': 'onRemoveAllDimensionsClick'
-    };
-
-    DimensionsWidget.prototype.ayt = function() {
-      return log('yes i am');
     };
 
     function DimensionsWidget(element, modelEditor, options) {
