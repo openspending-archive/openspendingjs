@@ -29,9 +29,16 @@ ColDisplayTypes['growth']=2;
 ColDisplayTypes['inflation']=2;
 ColDisplayTypes['deficitpgdp']=2;
 // number of alternative models to be loaded
-var ExpectedResponses=5;
+var ExpectedResponses=6;
 var BudgetConfig = {
 	models: [
+		{
+			'title': 'Model 6',
+			'notes': '2011 November statment',
+			'columns': _COLS,
+			'spreadsheet_feed_url': 'http://spreadsheets.google.com/feeds/list/0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc/od9/public/values?alt=json-in-script&callback=?',
+			'spreadsheet_url': 'http://spreadsheets.google.com/ccc?key=0AjRWhOOrlkGIdEZnZ000Tk5qYTlyU3pVZF9xUVR2OXc#gid=7'
+		},
 		{
 			'title': 'Model 5',
 			'notes': '2011 March pre-budget',
