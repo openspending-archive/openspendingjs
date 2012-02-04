@@ -4,28 +4,18 @@
 <svg style="stroke-width:0.7pt; stroke-linejoin: round; stroke:#000; fill:#f3f3f0;" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, FreeSans, Sans, sans, sans-serif" height="451px" viewBox="0 0 890 451" width="890px" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 890 451">
 
 <defs>
-
-<style type="text/css">path { fill-rule: evenodd; }
+	<style type="text/css">path { fill-rule: evenodd; }
 #context path { fill: #eee; stroke: #bbb; } </style>
-
 </defs>
 
 <metadata>
-
-<views>
-
-<view padding="0.01" h="451" w="890.339981778">
-
-<proj lon0="0" id="naturalearth" flip="auto" />
-
-<bbox y="13.5" h="430.33" w="851.43" x="111.89" />
-
-<llbbox lon1="180" lon0="-180" lat1="90" lat0="-90" />
-
-</view>
-
-</views>
-
+	<views>
+		<view padding="0.01" h="451" w="890.339981778">
+			<proj lon0="0" id="naturalearth" flip="auto" />
+			<bbox y="13.5" h="430.33" w="851.43" x="111.89" />
+			<llbbox lon1="180" lon0="-180" lat1="90" lat0="-90" />
+		</view>
+	</views>
 </metadata>
 
 <g id="regions">
