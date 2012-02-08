@@ -234,24 +234,17 @@
       return $.inArray(type, ['attribute', 'value', 'date', 'measure']) === -1;
     },
     flattenForm: function(data, form) {
-      var el, elt_is_bool, k, str_of_bool, v, _ref, _results;
-      str_of_bool = function(b) {
-        if (b) {
-          return "true";
-        } else {
-          return "false";
-        }
-      };
-      elt_is_bool = function(elt) {
-        return elt.hasClass('boolean');
-      };
+      var el, k, v, _ref, _results;
       _ref = util.flattenObject(data);
       _results = [];
       for (k in _ref) {
         v = _ref[k];
         el = form.find("[name=\"" + k + "\"]");
-        v = elt_is_bool(el) ? str_of_bool(v) : v;
-        _results.push(el.val(v));
+        if (el.attr('type') === 'checkbox') {
+          _results.push(el.prop('checked', true));
+        } else {
+          _results.push(el.val(v));
+        }
       }
       return _results;
     },
@@ -534,18 +527,11 @@
       list = this.element.find('#uniques');
       list.empty();
       add = function(dim) {
-        var checked, falseX, optionHtml, trueX, txt;
+        var checked, txt;
         checked = _this.modelEditor.data[dim]['key'];
-        trueX = '';
-        falseX = '';
-        if (checked) {
-          trueX = ' selected';
-        } else {
-          falseX = ' selected';
-        }
-        optionHtml = ("<option value='true'" + trueX + ">Yes</option>") + ("<option value='false'" + falseX + ">No</option>");
-        txt = "<select name='" + dim + "'>" + optionHtml + "</select> " + dim;
-        return $("<li>" + txt + "</li>").appendTo(list);
+        txt = "<input name='" + dim + "' type='checkbox' value='true' /> " + dim;
+        $("<li>" + txt + "</li>").appendTo(list);
+        return list.find("[name=\"" + dim + "\"]").prop('checked', checked);
       };
       _results = [];
       for (dim in this.modelEditor.data) {
@@ -555,25 +541,21 @@
     };
 
     UniquesWidget.prototype.onSetUniquesClick = function(e) {
-      var found, list, selected,
+      var list,
         _this = this;
-      selected = function(index) {
-        return $(this).val() === 'true';
-      };
       list = this.element.find('#uniques');
-      found = list.find('select :selected').filter(selected);
-      if (found.length) {
-        list.find('select').each(function(idx, elt) {
+      if (!list.find(':checked').length) {
+        return alert("You must specify at least one dimension as unique");
+      } else {
+        list.find('input').each(function(idx, elt) {
           var dim, tgt;
           dim = $(elt).attr('name');
           tgt = $("[name=\"" + dim + "[key]\"]");
-          return tgt.val($(elt).val());
+          return tgt.prop('checked', $(elt).prop('checked'));
         });
         this.element.modal('hide');
         list.empty();
         return this.modelEditor.element.trigger('formChange');
-      } else {
-        return alert("You must specify at least one dimension as unique");
       }
     };
 
