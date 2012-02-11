@@ -152,7 +152,12 @@
   width: 5em;
 }
 
-.db-area-col.active .db-area-icon img {
-	/*background: rgba(131, 2, 66, 0.1);*/
+/*
+.db-area-icon circle {
+  fill: #88ff00;
 }
+
+.db-area-col.active .db-area-icon embed circle {
+}
+*/
 

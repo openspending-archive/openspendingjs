@@ -35,9 +35,9 @@
                 db.setIconLookup(function(name) {
                   var style = OpenSpending.Styles.Cofog[name];
                   if (style != undefined) {
-                    return style['icon'] + '.png';
+                    return style['icon'];
                   }
-                  return 'icons/unknown.svg.png';
+                  return 'icons/unknown.svg';
                 });
                 db.draw();
               }
