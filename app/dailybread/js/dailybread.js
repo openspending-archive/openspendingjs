@@ -73,7 +73,7 @@ OpenSpending.DailyBread = function (elem) {
       .addClass('active')
 
     self.drawTier(tierId + 1)
-
+	
     // Hide old tiers
     self.$e.find('.db-tier').each(function () {
       if ($(this).attr('data-db-tier') > tierId + 1) {
@@ -145,13 +145,15 @@ OpenSpending.DailyBread = function (elem) {
                 "<div class='db-area-row'>" +
                 "<% _.each(areas, function(area, idx) { %>" +
                 "  <div class='db-area-col' style='width: <%= width %>%;' data-db-area='<%= idx %>'>" +
-                "    <div class='db-area-icon'><img src='<%= icons[idx] %>'></div>" +
+                "    <div class='db-area-icon' data-svg-url='<%= icons[idx] %>'></div>" +
                 "    <div class='db-area-value'></div>" +
                 "  </div>" +
                 "<% }); %>" +
                 "</div>"
 
       t.html(_.template(tpl, { activeArea: self.areas[tierId], areas: data, width: w, icons: icons }))
+      
+      self.drawIcons(t);
     }
 
     // Update values
@@ -178,6 +180,26 @@ OpenSpending.DailyBread = function (elem) {
       }
     }
     return [tax, data]
+  }
+  
+  this.drawIcons = function(t) {
+    var iconRad = 35;
+    $('.db-area-icon svg', t).remove();
+    $('.db-area-icon', t).each(function(i,e) { 
+      var iconUrl, paper;
+      iconUrl = $(e).data('svg-url');
+      paper = Raphael(e, iconRad+iconRad,iconRad+iconRad);
+      paper.circle(iconRad,iconRad,iconRad).attr({ fill: '#830242', stroke: 'none' });
+      $.get(iconUrl, function(svg) {
+        var j, icon,
+        joined='',
+        paths = svg.getElementsByTagName('path');
+        for (j=0;j<paths.length;j++) joined += paths[j].getAttribute('d')+' ';
+        icon = paper.path(joined);
+        icon.attr({ fill: 'white', stroke: 'none' });
+        icon.scale(iconRad/50, iconRad/50, 0, 0);
+      });
+    });
   }
 
   this.init()
