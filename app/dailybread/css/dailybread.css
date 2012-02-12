@@ -152,11 +152,16 @@
   width: 5em;
 }
 
+.db-area-col.active .db-area-icon circle {
+  fill: #ffffff;
+  stroke: none;
+}
 
-.db-area-icon circle {
+.db-area-col.active .db-area-icon path {
   fill: #830242;
   stroke: none;
 }
+
 /*
 .db-area-col.active .db-area-icon embed circle {
 }
