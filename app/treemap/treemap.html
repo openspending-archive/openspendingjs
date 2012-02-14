@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WDMMG TreeMap</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js"></script>
+	  <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
+	  <script type="text/javascript" src="../../lib/utils/utils.js"></script>
+    <script src="js/thejit-2.js"></script>
+    <script src="js/treemap.js"></script>
+    <link rel="stylesheet" href="css/treemap.css" />
+    <style>
+      #treemap {
+        width: 70%;
+        margin: 0 auto;
+      }
+    </style>
+    <script>
+    (function ($) {
+      $(function () {
+        var db = new OpenSpending.TreeMap($('#treemap'));
+        new OpenSpending.Aggregator({
+              apiUrl: 'http://openspending.org/api',
+              dataset: 'ukgov-finances-cra',
+              drilldowns: ['cofog1'],
+              cuts: ['year:2008'],
+              rootNodeLabel: 'Total', 
+              callback: function(data) {
+                var baseUrl = this.apiUrl.substring(0, this.apiUrl.lastIndexOf("/"))
+                db.setDataFromAggregator(baseUrl, this.dataset, this.drilldowns[0], data);
+                db.draw();
+              }
+            });
+        })
+      })(jQuery)
+    </script>
+</head>
+<body>
+  <div id="treemap" class="treemap" style="width:940px; height: 500px;">
+  </div><!-- /#treemap -->
+</body>
+</html>

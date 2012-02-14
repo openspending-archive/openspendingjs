@@ -1,0 +1,28 @@
+.treemap {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.treemap div.desc {
+    padding: 0.8em;
+    font-weight: normal;
+    overflow: hidden;
+}
+
+.treemap h2 {
+    font-family: Share, Georgia, serif;
+    font-size: 1.6em;
+    color: #fff;
+    font-weight: normal;
+    margin: 0.1em;
+}
+
+#_tooltip {
+    background-color: #333;
+    color: #fff;
+    padding: 4px 6px;
+}
