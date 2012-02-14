@@ -10,7 +10,7 @@ OpenSpending.TreeMap = function (elem) {
   this.init = function () {
   }
 
-  this.setDataFromAggregator = function (dataset, dimension, data) {
+  this.setDataFromAggregator = function (url, dataset, dimension, data) {
     var needsColorization = true;
     this.data = {children: _.map(data.children, function(item) {
       if (item.color)
@@ -24,7 +24,7 @@ OpenSpending.TreeMap = function (elem) {
             value: item.amount,
             $area: Math.floor(item.amount / 10000),
             title: item.label || item.name,
-            link: 'http://openspending.org/' + dataset + '/' + dimension + '/' + item.name,
+            link: url + '/' + dataset + '/' + dimension + '/' + item.name,
             $color: item.color || '#333333'
           }
         };

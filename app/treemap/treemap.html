@@ -6,8 +6,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
     <script src="http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js"></script>
 	  <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/aggregator.js"></script>
-	  <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js"></script>
-	  <script type="text/javascript" src="http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js"></script>
+	  <script type="text/javascript" src="../../lib/utils/utils.js"></script>
     <script src="js/thejit-2.js"></script>
     <script src="js/treemap.js"></script>
     <link rel="stylesheet" href="css/treemap.css" />
@@ -28,7 +27,8 @@
               cuts: ['year:2008'],
               rootNodeLabel: 'Total', 
               callback: function(data) {
-                db.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
+                var baseUrl = this.apiUrl.substring(0, this.apiUrl.lastIndexOf("/"))
+                db.setDataFromAggregator(baseUrl, this.dataset, this.drilldowns[0], data);
                 db.draw();
               }
             });
