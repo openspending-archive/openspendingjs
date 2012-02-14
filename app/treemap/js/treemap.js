@@ -11,9 +11,12 @@ OpenSpending.TreeMap = function (elem) {
   }
 
   this.setDataFromAggregator = function (dataset, dimension, data) {
-    console.log(data);
+    var needsColorization = true;
     this.data = {children: _.map(data.children, function(item) {
-      var entry = {
+      if (item.color)
+        needsColorization = false;
+
+      return {
         children: [],
         id: item.id,
         name: item.label || item.name,
@@ -21,17 +24,29 @@ OpenSpending.TreeMap = function (elem) {
             value: item.amount,
             $area: Math.floor(item.amount / 10000),
             title: item.label || item.name,
-            show_title: true,
             link: 'http://openspending.org/' + dataset + '/' + dimension + '/' + item.name,
             $color: item.color || '#333333'
           }
         };
-      return entry;
     })};
-    console.log(this.data);
+
+    if (needsColorization) 
+      this.autoColorize();
+  }
+
+  this.autoColorize = function() {
+    var nodes = this.data.children.length;
+    var colors = OpenSpending.Utils.getColorPalette(nodes);
+    for (var i = 0; i < nodes; i++) {
+      this.data.children[i].data.$color = colors[i];
+    }
   }
 
   this.draw = function () {
+    if (!this.data.children.length) {
+      $(this.$e).hide();
+      return;
+    }
     var self = this;
     self.tm = new $jit.TM.Squarified({
         injectInto: self.$e[0],
@@ -110,12 +125,15 @@ OpenSpending.TreeMap = function (elem) {
         //Add the name of the node in the corresponding label
         //This method is called once, on label creation and only for DOM labels.
         onCreateLabel: function(domElement, node){
-            //console.log(node);
-            if (node.data.show_title) {
-                domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
-            } else {
-                domElement.innerHTML = "&nbsp;";
+            domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
+            /*
+            var desc = $(domElement.firstChild);
+            var elem = $(domElement);
+            if (desc.height() > elem.height() || desc.width() > elem.width()) {
+              console.log("foO");
+              desc.hide();
             }
+            */
         }
     });
     self.tm.loadJSON(this.data);
