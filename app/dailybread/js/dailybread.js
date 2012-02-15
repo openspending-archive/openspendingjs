@@ -188,9 +188,10 @@ OpenSpending.DailyBread = function (elem) {
     $('.db-area-icon', t).each(function(i,e) { 
       var iconUrl, paper;
       iconUrl = $(e).data('svg-url');
-      paper = Raphael(e, iconRad+iconRad,iconRad+iconRad);
+      paper = Raphael(e, iconRad+iconRad,iconRad+iconRad+5);
       paper.circle(iconRad,iconRad,iconRad).attr({ fill: '#830242', stroke: 'none' });
       $.get(iconUrl, function(svg) {
+        if (typeof(svg) == "string") svg = $(svg)[0];
         var j, icon,
         joined='',
         paths = svg.getElementsByTagName('path');

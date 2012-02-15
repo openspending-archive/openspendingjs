@@ -46,7 +46,9 @@
 /** Top bar */
 
 #db-topbar {
-	margin: 1em 0 0 0;
+	margin: 1em 0 1em;
+	height: 3em;
+	overflow: visible;
 }
 
 #db-topbar div h2 {
@@ -118,6 +120,7 @@
 .db-tier {
 	width: 100%;
 	margin: 1em 0 0 0;
+	clear: both;
 }
 
 .db-area-row {
@@ -138,12 +141,14 @@
 
 .db-area-title h3 {
 	font-size: 0.9em;
-	height: 4em;
+	line-height: 1.4em;
+	margin-bottom: 0.5em;
 }
 
 .db-area-col .db-area-icon {
 	height: 5em;
 	border-right: 1px solid #fff;
+	padding-top: 2px;
 /*	background: #ddd; */
 }
 
