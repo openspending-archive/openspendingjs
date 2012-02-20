@@ -192,7 +192,11 @@ OpenSpending.DailyBread = function (elem) {
       paper.circle(iconRad,iconRad,iconRad).attr({ fill: '#830242', stroke: 'none' });
       paper.circle(iconRad,iconRad,iconRad-2).attr({ fill: 'none', stroke: '#eee', opacity: .8, 'stroke-dasharray': '- ' });
       $.get(iconUrl, function(svg) {
-        if (typeof(svg) == "string") svg = $(svg)[0];
+        if (typeof(svg) == "string") {
+          svg = $(svg);
+          svg = svg[svg.length-1];
+        }
+        if (!svg.getElementsByTagName) return;
         var j, icon,
         joined='',
         paths = svg.getElementsByTagName('path');
