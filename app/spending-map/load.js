@@ -1,4 +1,4 @@
-$(function() {
+(function ($) {
 
 	var map = $K.map('#fp-map', 640),
 		colscale = new chroma.ColorScale({
@@ -9,20 +9,19 @@ $(function() {
 	map.loadMap('/static/app/spending-map/world.svg', function(map) {
 		
 		$.ajax({
-			url: '/datasets/territories',
-			success: function(territories) {
-		
-                var d1 = {}; 
-                for (var name in territories) {
-                  d1[name] = territories[name].count;
-                }
+			url: '/datasets.json',
+			success: function(resp) {
+                var d1 = {};
+                $.each(resp.territories, function(i, territory) {
+                    d1[territory.code] = territory.count;
+                });
 				
 				map.addLayer({
 					id: 'regions',
 					className: 'bg',
 					key: 'iso2',
 					filter: function(d) {
-						return !territories.hasOwnProperty(d.iso2);
+						return !d1.hasOwnProperty(d.iso2);
 					}
 				});
 				
@@ -30,7 +29,7 @@ $(function() {
 					id: 'regions',
 					key: 'iso2',
 					filter: function(d) {
-						return territories.hasOwnProperty(d.iso2);
+						return d1.hasOwnProperty(d.iso2);
 					}
 				});
 				
@@ -45,7 +44,7 @@ $(function() {
 				});
 				
 				map.onLayerEvent('click', function(d) {
-					location.href = territories[d.iso2].url;
+                    window.updateDatasetListing({territories: d.iso2});
 				});
 
 				// map.fadeIn({ layer: 'bg', duration: 4000 });				
@@ -54,5 +53,4 @@ $(function() {
 		});
 	}, { padding: 5 });
 
-});
-
+}(jQuery));
