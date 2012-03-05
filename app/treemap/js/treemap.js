@@ -2,15 +2,43 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
 (function ($) {
 
-OpenSpending.TreeMap = function (elem) {
+  OpenSpending.TreeMap = function (elem, context, state) {
   var self = this
 
+  var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",
+                 "http://assets.openspending.org/openspendingjs/master/lib/aggregator.js",
+                 "http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js",
+                 "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js",
+                 ];
+
+  this.elem = elem
   this.$e = $(elem)
 
+  this.context = context
+  this.state = state
+
+  this.serialize = function() { return state }
+
   this.init = function () {
+    var cuts = ['year:' + self.context.time];
+    for (field in self.state.cuts) {
+      cuts.push(field + ':' + self.state.cuts[field]);
+    }
+
+    new OpenSpending.Aggregator({
+      apiUrl: self.context.api,
+      dataset: self.context.dataset,
+      drilldowns: [self.state.drilldown],
+      cuts: cuts,
+      rootNodeLabel: 'Total', 
+      callback: function(data) {
+        self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
+        self.draw();
+      }
+    });
   }
 
-  this.setDataFromAggregator = function (url, dataset, dimension, data) {
+  this.setDataFromAggregator = function (dataset, dimension, data) {
     var needsColorization = true;
     this.data = {children: _.map(data.children, function(item) {
       if (item.color)
@@ -19,13 +47,13 @@ OpenSpending.TreeMap = function (elem) {
       return {
         children: [],
         id: item.id,
-        name: item.label || item.name,
+        name: item.label || item.name,
         data: {
             value: item.amount,
-            $area: Math.floor(item.amount / 10000),
-            title: item.label || item.name,
-            link: url + '/' + dataset + '/' + dimension + '/' + item.name,
-            $color: item.color || '#333333'
+            $area: item.amount,
+            title: item.label || item.name,
+            link: '/' + dataset + '/' + dimension + '/' + item.name,
+            $color: item.color || '#333333'
           }
         };
     })};
@@ -49,7 +77,7 @@ OpenSpending.TreeMap = function (elem) {
     }
     var self = this;
     self.tm = new $jit.TM.Squarified({
-        injectInto: self.$e[0],
+        injectInto: self.elem,
         levelsToShow: 1,
         titleHeight: 0,
         animate: true,
@@ -126,22 +154,24 @@ OpenSpending.TreeMap = function (elem) {
         //This method is called once, on label creation and only for DOM labels.
         onCreateLabel: function(domElement, node){
             domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
-            /*
-            var desc = $(domElement.firstChild);
-            var elem = $(domElement);
-            if (desc.height() > elem.height() || desc.width() > elem.width()) {
-              console.log("foO");
-              desc.hide();
             }
-            */
-        }
     });
     self.tm.loadJSON(this.data);
     self.tm.refresh();
   }
 
-  this.init()
-  return this
+  // The rest of this function is suitable for copypasta into other
+  // plugins: load all scripts we need, and return a promise object
+  // that will fire when the class is ready
+  var dfd = $.Deferred();
+  dfd.done(function(that) {that.init()});
+
+  // Brutal, but it makes debugging much easier
+  //$.ajaxSetup({cache: true});
+  var loaders = $.map(scripts, function(url, i) {return $.getScript(url)});
+  $.when.apply(null, loaders).done(function() {dfd.resolve(self)});
+
+  return dfd.promise();
 }
 
 })(jQuery)
