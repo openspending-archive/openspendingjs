@@ -25,6 +25,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
       cuts.push(field + ':' + self.state.cuts[field]);
     }
 
+    if (typeof self.context.member !== 'undefined' && typeof self.context.dimension !== 'undefined') {
+      cuts.push(self.context.dimension + ':' + self.context.member);
+    }
+
     new OpenSpending.Aggregator({
       apiUrl: self.context.api,
       dataset: self.context.dataset,
