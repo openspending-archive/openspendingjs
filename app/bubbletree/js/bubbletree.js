@@ -29,7 +29,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         self.bubbleTree = new BubbleTree({
             data: data,
             container: '#' + self.elem,
-            bubbleType: 'icon',
+            bubbleType: self.state.bubbleType || self.context.bubbleType || 'icon',
             // remove all colors coming from OpenSpending API
             clearColors: self.state.clearColors || false, 
             tooltip: {
@@ -51,12 +51,12 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
     // call openspending api for data
     new OpenSpending.Aggregator({
-        apiUrl: 'http://openspending.org/api',
-        dataset: 'ukgov-finances-cra',
-        rootNodeLabel: 'Total',
-        drilldowns: ['cofog1', 'cofog2', 'cofog3'],
-        cuts: ['year:2008'],
-        breakdown: 'region',
+        siteUrl: self.context.siteUrl,
+        dataset: self.context.dataset,
+        rootNodeLabel: self.context.rootNodeLabel || 'Total',
+        drilldowns: self.state.drilldowns || [],
+        cuts: self.state.cuts || [],
+        breakdown: self.state.breakdown,
         //localApiCache: 'aggregate.json',
         callback: self.dataLoaded
     });
