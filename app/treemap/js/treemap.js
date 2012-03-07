@@ -3,25 +3,25 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 (function ($) {
 
   OpenSpending.TreeMap = function (elem, context, state) {
-  var self = this
+  var self = this;
 
   var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",
                  "http://assets.openspending.org/openspendingjs/master/lib/aggregator.js",
                  "http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js",
-                 "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js",
+                 "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js"
                  ];
 
-  this.elem = elem
-  this.$e = $(elem)
+  this.elem = elem;
+  this.$e = $('#' + elem);
 
-  this.context = context
-  this.state = state
+  this.context = context;
+  this.state = state;
 
-  this.serialize = function() { return state }
+  this.serialize = function() { return state; };
 
   this.init = function () {
     var cuts = ['year:' + self.context.time];
-    for (field in self.state.cuts) {
+    for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);
     }
 
@@ -40,7 +40,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         self.draw();
       }
     });
-  }
+  };
 
   this.setDataFromAggregator = function (dataset, dimension, data) {
     var needsColorization = true;
@@ -64,7 +64,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
     if (needsColorization) 
       this.autoColorize();
-  }
+  };
 
   this.autoColorize = function() {
     var nodes = this.data.children.length;
@@ -72,7 +72,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     for (var i = 0; i < nodes; i++) {
       this.data.children[i].data.$color = colors[i];
     }
-  }
+  };
 
   this.draw = function () {
     if (!this.data.children.length) {
@@ -162,21 +162,21 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     });
     self.tm.loadJSON(this.data);
     self.tm.refresh();
-  }
+  };
 
   // The rest of this function is suitable for copypasta into other
   // plugins: load all scripts we need, and return a promise object
   // that will fire when the class is ready
   var dfd = $.Deferred();
-  dfd.done(function(that) {that.init()});
+  dfd.done(function(that) {that.init();});
 
   // Brutal, but it makes debugging much easier
   //$.ajaxSetup({cache: true});
-  var loaders = $.map(scripts, function(url, i) {return $.getScript(url)});
-  $.when.apply(null, loaders).done(function() {dfd.resolve(self)});
+  var loaders = $.map(scripts, function(url, i) {return $.getScript(url);});
+  $.when.apply(null, loaders).done(function() {dfd.resolve(self);});
 
   return dfd.promise();
-}
+};
 
-})(jQuery)
+})(jQuery);
 
