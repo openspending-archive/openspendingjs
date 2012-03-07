@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WDMMG BubbleTree</title>
+    <script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
+    <script src="js/bubbletree.js"></script>
+    <link rel="stylesheet" href="css/bubbletree.css" />
+    <style>
+      #widget {
+        width: 70%;
+        margin: 0 auto;
+      }
+    </style>
+    
+</head>
+<body>
+  <div id="widget" style="width:940px; height: 500px;">
+  </div><!-- /#widget -->
+  <script>
+    (function ($) {
+        var db = new OpenSpending.BubbleTree('widget',
+          {},
+          {});
+      })(jQuery)
+    </script>
+</body>
+</html>
