@@ -30,7 +30,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     }
 
     new OpenSpending.Aggregator({
-      apiUrl: self.context.api,
+      siteUrl: self.context.siteUrl,
       dataset: self.context.dataset,
       drilldowns: [self.state.drilldown],
       cuts: cuts,
