@@ -56,7 +56,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
             value: item.amount,
             $area: item.amount,
             title: item.label || item.name,
-            link: '/' + dataset + '/' + dimension + '/' + item.name,
+            link: self.context.siteUrl + '/' + dataset + '/' + dimension + '/' + item.name,
             $color: item.color || '#333333'
           }
         };
