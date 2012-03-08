@@ -20,6 +20,8 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.serialize = function() { return state; };
 
   this.init = function () {
+    self.$e.addClass("treepmap-widget");
+
     var cuts = ['year:' + self.context.time];
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);

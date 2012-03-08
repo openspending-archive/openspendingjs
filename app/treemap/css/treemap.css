@@ -1,4 +1,4 @@
-.treemap {
+.treemap-widget {
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -7,21 +7,21 @@
     font-weight: bold;
 }
 
-.treemap div.desc {
+.treemap-widget div.desc {
     padding: 0.8em;
     font-weight: normal;
     overflow: hidden;
 }
 
-.treemap h2 {
-    font-family: Share, Georgia, serif;
+.treemap-widget h2 {
+    font-family: OpenSans, Georgia, serif;
     font-size: 1.6em;
     color: #fff;
     font-weight: normal;
     margin: 0.1em;
 }
 
-#_tooltip {
+.treemap-widget #_tooltip {
     background-color: #333;
     color: #fff;
     padding: 4px 6px;
