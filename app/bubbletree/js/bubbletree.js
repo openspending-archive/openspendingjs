@@ -17,8 +17,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
                  "http://assets.openspending.org/openspendingjs/master/lib/vendor/bubbletree/2.0/bubbletree.js"
                  ];
 
-  this.elem = elem;
-  this.$e = $('#' + elem);
+  this.$e = elem;
 
   this.context = context;
   this.state = state;
@@ -28,7 +27,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     this.dataLoaded = function(data) {
         self.bubbleTree = new BubbleTree({
             data: data,
-            container: '#' + self.elem,
+            container: '#' + self.$e.prop('id'),
             bubbleType: self.state.bubbleType || self.context.bubbleType || 'icon',
             // remove all colors coming from OpenSpending API
             clearColors: self.state.clearColors || false, 

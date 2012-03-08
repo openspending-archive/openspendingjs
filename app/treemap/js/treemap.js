@@ -11,8 +11,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
                  "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js"
                  ];
 
-  this.elem = elem;
-  this.$e = $('#' + elem);
+  this.$e = elem;
 
   this.context = context;
   this.state = state;
@@ -83,7 +82,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     }
     var self = this;
     self.tm = new $jit.TM.Squarified({
-        injectInto: self.elem,
+        injectInto: self.$e.prop('id'),
         levelsToShow: 1,
         titleHeight: 0,
         animate: true,
