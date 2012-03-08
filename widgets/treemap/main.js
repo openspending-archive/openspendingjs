@@ -2,7 +2,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
 (function ($) {
 
-  OpenSpending.TreeMap = function (elem, context, state) {
+  OpenSpending.Treemap = function (elem, context, state) {
   var self = this;
 
   var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",

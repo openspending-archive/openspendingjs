@@ -3,7 +3,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
 (function ($) {
 
-  OpenSpending.BubbleTree = function (elem, context, state) {
+  OpenSpending.Bubbletree = function (elem, context, state) {
   var self = this;
 
   var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",

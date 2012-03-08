@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>WDMMG BubbleTree</title>
     <script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
-    <script src="js/bubbletree.js"></script>
+    <script src="main.js"></script>
     <link rel="stylesheet" href="css/bubbletree.css" />
     <style>
       #widget {
@@ -19,7 +19,7 @@
   </div><!-- /#widget -->
   <script>
     (function ($) {
-        var db = new OpenSpending.BubbleTree($('#widget'),
+        var db = new OpenSpending.Bubbletree($('#widget'),
           {
             siteUrl: 'http://openspending.org',
             rootNodeLabel: 'Total',

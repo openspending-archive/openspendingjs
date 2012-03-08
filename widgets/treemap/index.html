@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>WDMMG TreeMap</title>
     <script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
-    <script src="js/treemap.js"></script>
+    <script src="main.js"></script>
     <link rel="stylesheet" href="css/treemap.css" />
     <style>
       #widget {
@@ -19,7 +19,7 @@
 
   <script>
     (function ($) {
-        var db = new OpenSpending.TreeMap($('#widget'),
+        var db = new OpenSpending.Treemap($('#widget'),
           {
             siteUrl: 'http://openspending.org',
             dataset: 'ukgov-finances-cra',
