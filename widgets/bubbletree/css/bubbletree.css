@@ -14,6 +14,9 @@
 
 .bubbletree-widget .label { 
     position: absolute; 
+    background-color: rgba(0,0,0,0);
+    text-transform: none;
+    font-weight: normal;
     color: #fff; 
     text-align: center; 
     cursor: default; 
