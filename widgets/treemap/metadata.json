@@ -1,0 +1,3 @@
+OpenSpending.addWidgetMetadata("treemap", {
+    "title": "TreeMap Diagram"
+});
