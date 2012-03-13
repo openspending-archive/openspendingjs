@@ -21,7 +21,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.init = function () {
     self.$e.addClass("treemap-widget");
 
-    var cuts = ['year:' + self.context.time];
+    var cuts = [];
+    if (self.context.time) {
+      cuts.push('year:' + self.context.time);
+    }
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);
     }
@@ -30,17 +33,19 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
       cuts.push(self.context.dimension + ':' + self.context.member);
     }
 
-    new OpenSpending.Aggregator({
-      siteUrl: self.context.siteUrl,
-      dataset: self.context.dataset,
-      drilldowns: [self.state.drilldown],
-      cuts: cuts,
-      rootNodeLabel: 'Total', 
-      callback: function(data) {
-        self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
-        self.draw();
-      }
-    });
+    if (self.state.drilldown) {
+      new OpenSpending.Aggregator({
+        siteUrl: self.context.siteUrl,
+        dataset: self.context.dataset,
+        drilldowns: [self.state.drilldown],
+        cuts: cuts,
+        rootNodeLabel: 'Total', 
+        callback: function(data) {
+          self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
+          self.draw();
+        }
+      });
+    }
   };
 
   this.setDataFromAggregator = function (dataset, dimension, data) {

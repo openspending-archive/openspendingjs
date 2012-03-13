@@ -25,40 +25,42 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.serialize = function() { return state; };
 
     this.dataLoaded = function(data) {
-        self.bubbleTree = new BubbleTree({
-            data: data,
-            container: '#' + self.$e.prop('id'),
-            bubbleType: self.state.bubbleType || self.context.bubbleType || 'icon',
-            // remove all colors coming from OpenSpending API
-            clearColors: self.state.clearColors || false, 
-            tooltip: {
-                qtip: true,
-                delay: 800,
-                content: function(node) {
-                    return [node.label, '<div class="desc">'+(node.description ? node.description : 'No description given')+'</div><div class="amount">£ '+node.famount+'</div>'];
-                }
-            }
-        });
+      self.bubbleTree = new BubbleTree({
+          data: data,
+          container: '#' + self.$e.prop('id'),
+          bubbleType: self.state.bubbleType || self.context.bubbleType || 'icon',
+          // remove all colors coming from OpenSpending API
+          clearColors: self.state.clearColors || false,
+          tooltip: {
+              qtip: true,
+              delay: 800,
+              content: function(node) {
+                  return [node.label, '<div class="desc">'+(node.description ? node.description : 'No description given')+'</div><div class="amount">£ '+node.famount+'</div>'];
+              }
+          }
+      });
     };
-
+  
   this.init = function() {
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
     self.$e.append($tooltip);
     $tooltip.hide();
     
-    self.$e.addClass("bubbletree-widget")
+    self.$e.addClass("bubbletree-widget");
 
-    // call openspending api for data
-    new OpenSpending.Aggregator({
-        siteUrl: self.context.siteUrl,
-        dataset: self.context.dataset,
-        rootNodeLabel: self.context.rootNodeLabel || 'Total',
-        drilldowns: self.state.drilldowns || [],
-        cuts: self.state.cuts || [],
-        breakdown: self.state.breakdown,
-        //localApiCache: 'aggregate.json',
-        callback: self.dataLoaded
-    });
+    if (self.state.drilldowns) {
+      // call openspending api for data
+      new OpenSpending.Aggregator({
+          siteUrl: self.context.siteUrl,
+          dataset: self.context.dataset,
+          rootNodeLabel: self.context.rootNodeLabel || 'Total',
+          drilldowns: self.state.drilldowns || [],
+          cuts: self.state.cuts || [],
+          breakdown: self.state.breakdown,
+          //localApiCache: 'aggregate.json',
+          callback: self.dataLoaded
+      });
+    }
 };
 
   // The rest of this function is suitable for copypasta into other
