@@ -27,14 +27,18 @@
           name: 'time.year',
           label: _this.dimensions.time.label
         });
-        _this.table.addColumn({
-          name: 'from.label',
-          label: _this.dimensions.from.label
-        });
-        _this.table.addColumn({
-          name: 'to.label',
-          label: _this.dimensions.to.label
-        });
+        if (_this.dimensions.from != null) {
+          _this.table.addColumn({
+            name: 'from.label',
+            label: _this.dimensions.from.label
+          });
+        }
+        if (_this.dimensions.to != null) {
+          _this.table.addColumn({
+            name: 'to.label',
+            label: _this.dimensions.to.label
+          });
+        }
         _this.table.addColumn({
           name: 'amount',
           label: 'Amount',

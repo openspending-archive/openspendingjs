@@ -29,8 +29,10 @@ class OpenSpending.Browser
         @dimensions[d.key] = d
 
       @table.addColumn name: 'time.year', label: @dimensions.time.label
-      @table.addColumn name: 'from.label', label: @dimensions.from.label
-      @table.addColumn name: 'to.label', label: @dimensions.to.label
+      if @dimensions.from?
+        @table.addColumn name: 'from.label', label: @dimensions.from.label
+      if @dimensions.to?
+        @table.addColumn name: 'to.label', label: @dimensions.to.label
       @table.addColumn
         name: 'amount'
         label: 'Amount'
