@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bob the QueryBuilder</title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/ui-lightness/jquery-ui.css">
+    <!-- link rel="stylesheet" href="http://wheredoesmymoneygo.org/wp-content/themes/wdmmg/wdmmg.css" -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js"></script>
+    <script src="http://tryhandlebarsjs.com/js/libs/handlebars-1.0.0.beta.6.js"></script>
+    
+    <script src="bob.js"></script>
+    
+    <script>
+      $(function () {
+        var callback = function(state) {
+          console.log("Stateupdate");
+          console.log(state);
+        };
+        var qb = new OpenSpending.Widgets.QueryBuilder(
+          $("#playground"),
+          callback, 
+          {
+            dataset: "bremen",
+            siteUrl: "http://localhost:5000"
+          },
+          [
+            {
+              variable: 'measure',
+              label: 'Value to aggregate over:',
+              type: 'measure'
+            }, 
+            {
+              variable: 'breakdown',
+              label: 'Break-to-the-down:',
+              type: 'single-dimension',
+              nullable: true,
+              default: 'entryid'
+            }]);
+        qb.serialize();
+      });
+    </script>
+</head>
+<body>
+  <h1>Bob the Query Builder</h1>
+  <div id="playground"></div>
+</body>
+</html>
