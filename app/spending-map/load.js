@@ -6,8 +6,8 @@
     		limits: [-2,-1,0,1,2,3,4,5,6,7]
 		}); 
 		
-	map.loadMap(OpenSpending.script_root + '/app/spending-map/world.svg', function(map) {
-		
+	map.loadMap(OpenSpending.scriptRoot + '/app/spending-map/world.svg', function(map) {
+			
 		$.ajax({
 			url: '/datasets.json',
 			success: function(resp) {
@@ -44,7 +44,7 @@
 				});
 				
 				map.onLayerEvent('click', function(d) {
-                    window.updateDatasetListing({territories: d.iso2});
+					OpenSpending.getGlobal().updateDatasetListing({territories: d.iso2});
 				});
 
 				// map.fadeIn({ layer: 'bg', duration: 4000 });				
