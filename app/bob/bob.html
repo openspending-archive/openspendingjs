@@ -12,7 +12,6 @@
     <script src="http://tryhandlebarsjs.com/js/libs/handlebars-1.0.0.beta.6.js"></script>
     
     <script src="bob.js"></script>
-    <script src="customSelect.jquery.js"></script>
     
     <style>
       .query-builder select, .query-builder input, 
@@ -21,8 +20,20 @@
       }
 
       .query-builder .help-block {
-        margin-top: -0.2em;
+        margin-top: 0em;
         color: #999;
+      }
+
+      .query-builder .form-horizontal .control-group {
+        margin-bottom: 10px;
+      }
+
+      .query-builder form {
+        margin: 0px;
+      }
+
+      .query-builder .fields {
+        padding-top: 1em;
       }
     </style>
 
@@ -42,21 +53,25 @@
             {
               variable: 'measure',
               label: 'Aggregate over:',
-              type: 'measure',
+              type: 'select',
+              single: true,
+              options: 'measures',
               help: 'I am a banana!'
             }, 
             {
               variable: 'drilldowns',
               label: 'alice in the drilldown:',
-              type: 'multi-dimension',
+              type: 'select',
               default: ['entryid', 'to'],
               help: 'I am a banana!'
             }, 
             {
               variable: 'breakdown',
               label: 'Break-to-the-down:',
-              type: 'single-dimension',
+              type: 'select',
+              single: true,
               nullable: true,
+              options: 'measures',
               default: 'entryid',
               help: 'I am a banana!'
             },
