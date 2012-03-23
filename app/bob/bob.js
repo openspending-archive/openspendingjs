@@ -139,6 +139,7 @@ osw.SelectNode = function(builder, elem, obj, model) {
 
     self.removeLevel = function(e) {
         $(e.target).parents('.level').remove();
+        elem.trigger('change');
         return false;
     };
 
@@ -175,10 +176,10 @@ osw.CutsNode = function(builder, elem, obj, model) {
         ")
 
     self.nodeTemplate = Handlebars.compile(" \
-        <div class='{{obj.type}}' id='{{obj.id}}' class='control-group'> \
+        <div class='{{obj.type}} control-group' id='{{obj.id}}'> \
             <label for='{{obj.id}}' class='control-label'>{{obj.label}}</label> \
             <div class='controls'> \
-                <a class='add-filter btn btn-small' href='#'><i class='icon-plus-sign'></i>Add a filter</a> \
+                <a class='add-filter btn btn-small' href='#'><i class='icon-plus-sign'></i> Add a filter</a> \
                 {{#obj.help}}<p class='help-block'>{{this}}</p>{{/obj.help}} \
             </div> \
         </div>");
@@ -236,6 +237,7 @@ osw.CutsNode = function(builder, elem, obj, model) {
 
     self.removeFilter = function(e) {
         $(e.target).parents('.filter').remove();
+        elem.trigger('change');
         return false;
     };
 
