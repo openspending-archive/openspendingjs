@@ -3,13 +3,17 @@ OpenSpending.Widgets = OpenSpending.Widgets || {};
 
 (function ($) {
 
-OpenSpending.Widgets.QueryBuilder = function(elem, callback, context, spec) {
+var osw = OpenSpending.Widgets;
+
+osw.QueryBuilder = function(elem, callback, context, spec) {
     var self = this;
     self.nodes = {};
 
     self.template = Handlebars.compile(" \
-        <form id='{{id}}'> \
-        </form>");
+        <div class='well query-builder'> \
+            <form id='{{id}}' class='form-horizontal'> \
+            </form> \
+        </div>");
 
     self.serialize = function() {
         state = {};
@@ -32,6 +36,7 @@ OpenSpending.Widgets.QueryBuilder = function(elem, callback, context, spec) {
             model.measures = {};
             _.each(_.keys(model.mapping), function (k) {
                 var obj = model.mapping[k];
+                obj.name = k;
                 if (obj.type == 'measure') {
                     model.measures[k] = obj;
                 } else {
@@ -43,7 +48,7 @@ OpenSpending.Widgets.QueryBuilder = function(elem, callback, context, spec) {
             var form = $('#' + self.id);
             _.each(spec, function(obj) {
                 obj.id = obj.variable + '-' + Math.floor(Math.random()*11);
-                var nodeClass = OpenSpending.Widgets.QueryNodes[obj.type];
+                var nodeClass = osw.QueryNodes[obj.type];
                 if (nodeClass) {
                     self.nodes[obj.variable] = new nodeClass(self, form, obj, model);
                 }
@@ -56,22 +61,7 @@ OpenSpending.Widgets.QueryBuilder = function(elem, callback, context, spec) {
     this.render();
 };
 
-OpenSpending.Widgets.SingleDrilldownNode = function(builder, elem, obj, model) {
-    var self = this;
-
-    self.serialize = function() {
-        return elem.find('#' + obj.id).val();
-    };
-
-    var template = Handlebars.compile(" \
-        <div class='{{type}}'> \
-            <label for='{{id}}'>{{label}}</label> \
-            <input name='{{id}}' id='{{id}}' /> \
-        </div>");
-    elem.append(template(obj));
-};
-
-OpenSpending.Widgets.SingleDrilldownNode = function(builder, elem, obj, model) {
+osw.SingleDrilldownNode = function(builder, elem, obj, model) {
     var self = this;
 
     self.serialize = function() {
@@ -80,36 +70,128 @@ OpenSpending.Widgets.SingleDrilldownNode = function(builder, elem, obj, model) {
         return val;
     };
 
-    obj = _.extend({label: 'Drilldown', nullable: false}, obj);
+    obj = _.extend({label: 'Drilldown', nullable: false, options: 'dimensions'}, obj);
 
-    var dimensions = _.map(_.keys(model.dimensions), function(k) {
-        var o = model.dimensions[k];
-        o.name = k;
-        return o;
-    });
-    dimensions = _.sortBy(dimensions, function(o) {
+    self.options = _.sortBy(_.values(model[obj.options]), function(o) {
         return o.label;
     });
 
     var template = Handlebars.compile(" \
-        <div class='{{obj.type}}'> \
-            <label for='{{obj.id}}'>{{obj.label}}</label> \
-            <select name='{{obj.id}}' id='{{obj.id}}'> \
-                {{#obj.nullable}} \
-                    <option value=''>(no selection)</option> \
-                {{/obj.nullable}} \
-                {{#dimensions}} \
-                    <option value='{{name}}'>{{label}}</option> \
-                {{/dimensions}} \
-            </select> \
+        <div class='{{obj.type}}' class='control-group'> \
+            <label for='{{obj.id}}' class='control-label'>{{obj.label}}</label> \
+            <div class='controls'> \
+                <select name='{{obj.id}}' id='{{obj.id}}'> \
+                    {{#obj.nullable}} \
+                        <option value=''>(no selection)</option> \
+                    {{/obj.nullable}} \
+                    {{#options}} \
+                        <option value='{{name}}'>{{label}}</option> \
+                    {{/options}} \
+                </select> \
+                {{#obj.help}}<p class='help-block'>{{this}}</p>{{/obj.help}} \
+            </div> \
         </div>");
-    elem.append(template({obj: obj, dimensions: dimensions}));
+    elem.append(template({obj: obj, options: self.options}));
     if (obj['default']) {
         elem.find('#' + obj.id).val(obj['default']);
     }
 };
 
-OpenSpending.Widgets.MeasureNode = function(builder, elem, obj, model) {
+osw.MultiDrilldownNode = function(builder, elem, obj, model) {
+    var self = this;
+
+    obj = _.extend({
+        label: 'Drilldowns',
+        nullable: false,
+        options: 'dimensions',
+        single: false
+        }, obj);
+    var fallback = obj.single ? '' : [''];
+    var values = obj['default'] || fallback;
+
+    var options = _.sortBy(_.values(model[obj.options]), function(o) {
+        return o.label;
+    });
+
+
+    var nodeTemplate = Handlebars.compile(" \
+        <div class='{{obj.type}} control-group' id='{{obj.id}}'> \
+            <label for='{{obj.id}}' class='control-label'>{{obj.label}}</label> \
+            <div class='controls'> \
+                {{{levels}}} \
+                <a class='add-level btn btn-small' href='#'><i class='icon-plus-sign'></i> \
+                Add a level</a> \
+            </div> \
+        </div>");
+
+    var levelTemplate = Handlebars.compile(" \
+        <select class='level level{{i}}' data-level='{{i}}'> \
+            {{#obj.nullable}} \
+                <option value=''>(no selection)</option> \
+            {{/obj.nullable}} \
+            {{#options}} \
+                <option value='{{name}}'>{{label}}</option> \
+            {{/options}} \
+        </select> \
+        <a class='remove-level' data-level='{{i}}' href='#'><i class='icon-minus-sign'></i></a> \
+        <br/> \
+        ");
+
+    self.serialize = function() {
+        var vals = _.filter(values, function(e) { return e.length>0; });
+        if (obj.single) {
+            return vals[0];
+        }
+        return vals;
+    };
+
+    self.addLevel = function() {
+        values.push('');
+        self.render();
+        self.nodeElem.trigger('change');
+        return false;
+    };
+
+    self.removeLevel = function(e) {
+        var level = $(e.currentTarget).data('level');
+        if (values.length > 1) {
+            values = _.filter(values, function(e, i) { return i != level; });
+        }
+        self.render();
+        self.nodeElem.trigger('change');
+        return false;
+    };
+
+    self.updateLevel = function(e) {
+        var cur = $(e.currentTarget);
+        values[cur.data('level')] = cur.val();
+    };
+
+    self.render = function() {
+        var levels = '';
+        _.each(values, function(value, i) {
+            levels = levels + levelTemplate({i: i, obj: obj, options: options});
+        });
+        nodeHtml = nodeTemplate({obj: obj, levels: levels, nextLevel: values.length-1});
+        if (self.nodeElem) {
+            self.nodeElem.replaceWith(nodeHtml);
+        } else {
+            elem.append(nodeHtml);
+        }
+        self.nodeElem = elem.find('#' + obj.id);
+        
+        _.each(values, function(value, i) {
+            self.nodeElem.find('.level' + i).val(value);
+        });
+        self.nodeElem.find('.add-level').click(self.addLevel);
+        self.nodeElem.find('.remove-level').click(self.removeLevel);
+        self.nodeElem.find('.level').change(self.updateLevel);
+    };
+
+    self.render();
+};
+
+osw.MeasureNode = function(builder, elem, obj, model) {
     var self = this;
 
     self.serialize = function() {
@@ -119,27 +201,23 @@ OpenSpending.Widgets.MeasureNode = function(builder, elem, obj, model) {
     };
 
     obj = _.extend({label: 'Measure', nullable: false}, obj);
-
-    var measures = _.map(_.keys(model.measures), function(k) {
-        var o = model.measures[k];
-        o.name = k;
-        return o;
-    });
-    measures = _.sortBy(measures, function(o) {
+    var measures = _.sortBy(_.values(model.measures), function(o) {
         return o.label;
     });
 
     var template = Handlebars.compile(" \
-        <div class='{{obj.type}}'> \
-            <label for='{{obj.id}}'>{{obj.label}}</label> \
-            <select name='{{obj.id}}' id='{{obj.id}}'> \
-                {{#obj.nullable}} \
-                    <option value=''>(no selection)</option> \
-                {{/obj.nullable}} \
-                {{#measures}} \
-                    <option value='{{name}}'>{{label}}</option> \
-                {{/measures}} \
-            </select> \
+        <div class='{{obj.type}} control-group'> \
+            <label for='{{obj.id}}' class='control-label'>{{obj.label}}</label> \
+            <div class='controls'> \
+                <select name='{{obj.id}}' id='{{obj.id}}'> \
+                    {{#obj.nullable}} \
+                        <option value=''>(no selection)</option> \
+                    {{/obj.nullable}} \
+                    {{#measures}} \
+                        <option value='{{name}}'>{{label}}</option> \
+                    {{/measures}} \
+                </select> \
+            </div> \
         </div>");
     elem.append(template({obj: obj, measures: measures}));
     if (obj['default']) {
@@ -147,10 +225,104 @@ OpenSpending.Widgets.MeasureNode = function(builder, elem, obj, model) {
     }
 };
 
+osw.CutsNode = function(builder, elem, obj, model) {
+    var self = this;
 
-OpenSpending.Widgets.QueryNodes = {
-    'single-dimension': OpenSpending.Widgets.SingleDrilldownNode,
-    'measure': OpenSpending.Widgets.MeasureNode
+    self.filterTemplate = Handlebars.compile(" \
+        <div class='filter'> \
+            <select class='dimension'> \
+                {{#dimensions}} \
+                    <option value='{{name}}'>{{label}}</option> \
+                {{/dimensions}} \
+            </select> \
+            <select class='attribute'></select> \
+            <input class='value' /> \
+            <a class='remove-filter' href='#'><i class='icon-minus-sign'></i></a> \
+        </div> \
+        ")
+
+    self.nodeTemplate = Handlebars.compile(" \
+        <div class='{{obj.type}}' id='{{obj.id}}' class='control-group'> \
+            <label for='{{obj.id}}' class='control-label'>{{obj.label}}</label> \
+            <div class='controls'> \
+                <a class='add-filter btn btn-small' href='#'><i class='icon-plus-sign'></i>Add a filter</a> \
+            </div> \
+        </div>");
+
+    self.serialize = function() {
+        var val = {};
+        self.nodeElem.find('.filter').each(function(i, e) {
+            var el = $(e);
+            var key = el.find('.dimension').val();
+            var attribute = el.find('.attribute').val();
+            var value = el.find('.value').val();
+            if (attribute) {
+                key = key + '.' + attribute;
+            }
+            if (val[key]) {
+                val[key] = [value].concat(val[key]);    
+            } else {
+                val[key] = value;    
+            }
+            
+        });
+        return val;
+    };
+
+    obj = _.extend({label: 'Filters'}, obj);
+    var cuts = obj['default'] || {};
+    var dimensions = _.sortBy(_.values(model.dimensions), function(o) {
+        return o.label;
+    });
+
+    self.updateAttributes = function(e) {
+        var filter = $(e.target).parents('.filter');
+        var dimension = model.dimensions[filter.find('.dimension').val()];
+        var attributes = filter.find('.attribute');
+        if (dimension.attributes) {
+            attributes.empty();
+            _.each(_.keys(dimension.attributes), function (e) {
+                attributes.append("<option name='" + e + "'>" + e + "</option>");
+            });
+            attributes.show();
+        } else {
+            attributes.hide();
+        }
+    }
+
+    self.addFilter = function(e) {
+        var html = self.filterTemplate({dimensions: dimensions});
+        self.nodeElem.find('.add-filter').before(html);
+        var el = self.nodeElem.find('.filter').last();
+        el.find('.remove-filter').click(self.removeFilter);
+        el.find('.dimension').change(self.updateAttributes);
+        el.find('.dimension').trigger('change');
+        return false;
+    };
+
+    self.removeFilter = function(e) {
+        $(e.target).parents('.filter').remove();
+        return false;
+    };
+
+    elem.append(self.nodeTemplate({obj: obj}));
+    self.nodeElem = elem.find('#' + obj.id);
+    _.each(_.keys(cuts), function(e, i) {
+        self.addFilter();
+        var el = self.nodeElem.find('.filter').last();
+        e = e.split('.', 1);
+        el.find('.dimension').val(e[0]);
+        el.find('.attribute').val(e[1]);
+        el.find('.value').val(cuts[e]);
+    });
+    self.nodeElem.find('.add-filter').click(self.addFilter);
+};
+
+osw.QueryNodes = {
+    'single-dimension': osw.SingleDrilldownNode,
+    'multi-dimension': osw.MultiDrilldownNode,
+    'cuts': osw.CutsNode,
+    'measure': osw.MeasureNode
 };
 
 // end the local closure
