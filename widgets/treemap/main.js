@@ -5,15 +5,12 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   OpenSpending.Treemap = function (elem, context, state) {
   var self = this;
 
-  var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/aggregator.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js",
-                 "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js"
+  var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
+                 OpenSpending.scriptRoot + "/lib/aggregator.js",
+                 OpenSpending.scriptRoot + "/lib/utils/utils.js",
+                 OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.js",
+                 OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];
-
-  elem.html('<div class="treemap-qb"></div><div id="treemap-wrapper" class="treemap-vis"></div>');
-  this.$e = elem.find('.treemap-vis');
-  this.$qb = elem.find('.treemap-qb');
 
   this.context = context;
   this.state = state;
@@ -76,6 +73,9 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   };
 
   this.init = function () {
+    elem.html('<div class="treemap-qb"></div><div id="treemap-wrapper" class="treemap-vis"></div>');
+    self.$e = elem.find('.treemap-vis');
+    self.$qb = elem.find('.treemap-qb');
     self.$e.addClass("treemap-widget");
     self.update(self.state);
   };
@@ -114,7 +114,6 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   };
 
   this.draw = function () {
-    console.log(self.data);
     if (!self.data.children.length) {
       $(self.$e).hide();
       return;
@@ -210,11 +209,18 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   var dfd = $.Deferred();
   dfd.done(function(that) {that.init();});
 
-  // Brutal, but it makes debugging much easier
-  //$.ajaxSetup({cache: true});
-  var loaders = $.map(scripts, function(url, i) {return $.getScript(url);});
-  $.when.apply(null, loaders).done(function() {dfd.resolve(self);});
-
+  if (!window.treemapWidgetLoaded) {
+    yepnope({
+      load: resources,
+      complete: function() {
+        window.treemapWidgetLoaded = true;
+        dfd.resolve(self);
+      }
+    });
+  } else {
+    dfd.resolve(self);
+  }
+  
   return dfd.promise();
 };
 
