@@ -11,16 +11,39 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
                  "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js"
                  ];
 
-  this.$e = elem;
+  elem.html('<div class="treemap-qb"></div><div id="treemap-wrapper" class="treemap-vis"></div>');
+  this.$e = elem.find('.treemap-vis');
+  this.$qb = elem.find('.treemap-qb');
 
   this.context = context;
   this.state = state;
 
-  this.serialize = function() { return state; };
+  this.configure = function() {
+    self.context.label = 'Create a TreeMap visualisation';
+    var qb = new OpenSpending.Widgets.QueryBuilder(
+      self.$qb, self.update, self.context, [
+            {
+              variable: 'drilldown',
+              label: 'Tiles:',
+              type: 'select',
+              single: true,
+              'default': self.state.drilldown,
+              help: 'The sum for each member of this dimension will be presented as a tile on the treemap.'
+            },
+            {
+              variable: 'cuts',
+              label: 'Filters:',
+              type: 'cuts',
+              'default': self.state.cuts,
+              help: 'Limit the set of data to display.'
+            }
+          ]
+    );
+  };
 
-  this.init = function () {
-    self.$e.addClass("treemap-widget");
-
+  this.update = function(state) {
+    self.$e.empty();
+    self.state = state;
     var cuts = [];
     if (self.context.time) {
       cuts.push('year:' + self.context.time);
@@ -39,7 +62,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         dataset: self.context.dataset,
         drilldowns: [self.state.drilldown],
         cuts: cuts,
-        rootNodeLabel: 'Total', 
+        rootNodeLabel: 'Total',
         callback: function(data) {
           self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
           self.draw();
@@ -48,9 +71,18 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     }
   };
 
+  this.serialize = function() {
+    return self.state;
+  };
+
+  this.init = function () {
+    self.$e.addClass("treemap-widget");
+    self.update(self.state);
+  };
+
   this.setDataFromAggregator = function (dataset, dimension, data) {
     var needsColorization = true;
-    this.data = {children: _.map(data.children, function(item) {
+    self.data = {children: _.map(data.children, function(item) {
       if (item.color)
         needsColorization = false;
 
@@ -68,24 +100,26 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         };
     })};
 
-    if (needsColorization) 
+    if (needsColorization) {
       this.autoColorize();
+    }
   };
 
   this.autoColorize = function() {
-    var nodes = this.data.children.length;
+    var nodes = self.data.children.length;
     var colors = OpenSpending.Utils.getColorPalette(nodes);
     for (var i = 0; i < nodes; i++) {
-      this.data.children[i].data.$color = colors[i];
+      self.data.children[i].data.$color = colors[i];
     }
   };
 
   this.draw = function () {
-    if (!this.data.children.length) {
-      $(this.$e).hide();
+    console.log(self.data);
+    if (!self.data.children.length) {
+      $(self.$e).hide();
       return;
     }
-    var self = this;
+    $(self.$e).show();
     self.tm = new $jit.TM.Squarified({
         injectInto: self.$e.prop('id'),
         levelsToShow: 1,
