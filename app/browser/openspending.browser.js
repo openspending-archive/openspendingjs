@@ -17,33 +17,27 @@
     Browser.prototype.init = function() {
       var _this = this;
       return this.req.then(function(data) {
-        var d, facetDimensions, k, _i, _len;
+        var d, facetDimensions, k, _i, _j, _len, _len2, _ref;
         _this.dimensions = {};
         for (_i = 0, _len = data.length; _i < _len; _i++) {
           d = data[_i];
           _this.dimensions[d.key] = d;
         }
-        _this.table.addColumn({
-          name: 'time.year',
-          label: _this.dimensions.time.label
-        });
-        if (_this.dimensions.from != null) {
-          _this.table.addColumn({
-            name: 'from.label',
-            label: _this.dimensions.from.label
-          });
-        }
-        if (_this.dimensions.to != null) {
-          _this.table.addColumn({
-            name: 'to.label',
-            label: _this.dimensions.to.label
-          });
+        _ref = ['time', 'from', 'to'];
+        for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+          d = _ref[_j];
+          if (_this.dimensions[d] != null) {
+            _this.table.addColumn({
+              name: "" + d + ".label",
+              label: _this.dimensions[d].label
+            });
+          }
         }
         _this.table.addColumn({
           name: 'amount',
           label: 'Amount',
           data: function(data) {
-            return OpenSpending.Utils.formatAmountWithCommas(data.amount);
+            return OpenSpending.Utils.formatAmountWithCommas(data.amount || 0);
           }
         });
         _this.table.addColumn({
@@ -53,12 +47,12 @@
           sortable: false
         });
         facetDimensions = (function() {
-          var _ref, _results;
-          _ref = this.dimensions;
+          var _ref2, _results;
+          _ref2 = this.dimensions;
           _results = [];
-          for (k in _ref) {
-            if (!__hasProp.call(_ref, k)) continue;
-            d = _ref[k];
+          for (k in _ref2) {
+            if (!__hasProp.call(_ref2, k)) continue;
+            d = _ref2[k];
             if (d.facet) {
               _results.push(d);
             } else {

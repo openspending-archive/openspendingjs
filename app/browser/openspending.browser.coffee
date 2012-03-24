@@ -28,15 +28,14 @@ class OpenSpending.Browser
       for d in data
         @dimensions[d.key] = d
 
-      @table.addColumn name: 'time.year', label: @dimensions.time.label
-      if @dimensions.from?
-        @table.addColumn name: 'from.label', label: @dimensions.from.label
-      if @dimensions.to?
-        @table.addColumn name: 'to.label', label: @dimensions.to.label
+      for d in ['time', 'from', 'to']
+        if @dimensions[d]?
+          @table.addColumn name: "#{d}.label", label: @dimensions[d].label
+
       @table.addColumn
         name: 'amount'
         label: 'Amount'
-        data: (data) -> OpenSpending.Utils.formatAmountWithCommas(data.amount)
+        data: (data) -> OpenSpending.Utils.formatAmountWithCommas(data.amount or 0)
       @table.addColumn
         data: (data) => "<a href='/#{@dataset}/entries/#{data.id}'>details&raquo;</a>"
         sortable: false
