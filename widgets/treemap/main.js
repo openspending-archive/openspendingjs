@@ -16,6 +16,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.state = state;
 
   this.configure = function(endConfigure) {
+    self.$qb.empty();
     self.context.label = 'Create a TreeMap visualisation';
     var qb = new OpenSpending.Widgets.QueryBuilder(
       self.$qb, self.update, endConfigure, self.context, [
@@ -82,6 +83,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
   this.setDataFromAggregator = function (dataset, dimension, data) {
     var needsColorization = true;
+    self.total = data.amount;
     self.data = {children: _.map(data.children, function(item) {
       if (item.color)
         needsColorization = false;
@@ -196,8 +198,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         //Add the name of the node in the corresponding label
         //This method is called once, on label creation and only for DOM labels.
         onCreateLabel: function(domElement, node){
+          if ((node.data.value/self.total)>0.03) {
             domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
-            }
+          }
+        }
     });
     self.tm.loadJSON(this.data);
     self.tm.refresh();

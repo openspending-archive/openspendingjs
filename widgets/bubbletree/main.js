@@ -22,6 +22,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.state = state;
 
   this.configure = function(endConfigure) {
+    self.$qb.empty();
     self.context.label = 'Create a BubbleTree visualisation';
     var qb = new OpenSpending.Widgets.QueryBuilder(
       self.$qb, self.update, endConfigure, self.context, [
@@ -46,8 +47,6 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.serialize = function() { return state; };
 
   this.dataLoaded = function(data) {
-    console.log(self.$e);
-    //return;
     self.bubbleTree = new BubbleTree({
           data: data,
           container: '#' + self.$e.prop('id'),
