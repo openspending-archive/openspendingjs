@@ -6,15 +6,16 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   OpenSpending.Bubbletree = function (elem, context, state) {
   var self = this;
 
-  var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/aggregator.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/vendor/jquery.qtip.min.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/vendor/jquery.history.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/vendor/raphael-min.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/vendor/vis4.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/vendor/Tween.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/vendor/bubbletree/2.0/bubbletree.js"
+  var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
+                 OpenSpending.scriptRoot + "/lib/aggregator.js",
+                 OpenSpending.scriptRoot + "/lib/utils/utils.js",
+                 OpenSpending.scriptRoot + "/lib/vendor/jquery.qtip.min.js",
+                 OpenSpending.scriptRoot + "/lib/vendor/jquery.history.js",
+                 OpenSpending.scriptRoot + "/lib/vendor/raphael-min.js",
+                 OpenSpending.scriptRoot + "/lib/vendor/vis4.js",
+                 OpenSpending.scriptRoot + "/lib/vendor/Tween.js",
+                 OpenSpending.scriptRoot + "/lib/vendor/bubbletree/2.0/bubbletree.js",
+                 OpenSpending.scriptRoot + "/widgets/bubbletree/css/bubbletree.css"
                  ];
 
   this.$e = elem;
@@ -69,11 +70,24 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   var dfd = $.Deferred();
   dfd.done(function(that) {that.init();});
 
-  // Brutal, but it makes debugging much easier
-  //$.ajaxSetup({cache: true});
-  var loaders = $.map(scripts, function(url, i) {return $.getScript(url);});
-  $.when.apply(null, loaders).done(function() {dfd.resolve(self);});
+  // The rest of this function is suitable for copypasta into other
+  // plugins: load all scripts we need, and return a promise object
+  // that will fire when the class is ready
+  var dfd = $.Deferred();
+  dfd.done(function(that) {that.init();});
 
+  if (!window.bubbletreeWidgetLoaded) {
+    yepnope({
+      load: resources,
+      complete: function() {
+        window.bubbletreeWidgetLoaded = true;
+        dfd.resolve(self);
+      }
+    });
+  } else {
+    dfd.resolve(self);
+  }
+  
   return dfd.promise();
 };
 
