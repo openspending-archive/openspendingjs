@@ -18,15 +18,37 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
                  OpenSpending.scriptRoot + "/widgets/bubbletree/css/bubbletree.css"
                  ];
 
-  this.$e = elem;
-
   this.context = context;
   this.state = state;
 
+  this.configure = function(endConfigure) {
+    self.context.label = 'Create a BubbleTree visualisation';
+    var qb = new OpenSpending.Widgets.QueryBuilder(
+      self.$qb, self.update, endConfigure, self.context, [
+            {
+              variable: 'drilldowns',
+              label: 'Levels:',
+              type: 'select',
+              'default': self.state.drilldown,
+              help: 'Each selected dimension will display as an additional level of bubbles.'
+            },
+            {
+              variable: 'cuts',
+              label: 'Filters:',
+              type: 'cuts',
+              'default': self.state.cuts,
+              help: 'Limit the set of data to display.'
+            }
+          ]
+    );
+  };
+
   this.serialize = function() { return state; };
 
-    this.dataLoaded = function(data) {
-      self.bubbleTree = new BubbleTree({
+  this.dataLoaded = function(data) {
+    console.log(self.$e);
+    //return;
+    self.bubbleTree = new BubbleTree({
           data: data,
           container: '#' + self.$e.prop('id'),
           bubbleType: self.state.bubbleType || self.context.bubbleType || 'icon',
@@ -39,16 +61,18 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
                   return [node.label, '<div class="desc">'+(node.description ? node.description : 'No description given')+'</div><div class="amount">£ '+node.famount+'</div>'];
               }
           }
-      });
-    };
-  
-  this.init = function() {
-    var $tooltip = $('<div class="tooltip">Tooltip</div>');
-    self.$e.append($tooltip);
-    $tooltip.hide();
-    
-    self.$e.addClass("bubbletree-widget");
+    });
+  };
 
+  this.update = function(state) {
+    //console.log(state);
+    self.$e.empty();
+    self.state = state;
+
+    var cuts = [];
+    for (var field in self.state.cuts) {
+      cuts.push(field + ':' + self.state.cuts[field]);
+    }
     if (self.state.drilldowns) {
       // call openspending api for data
       new OpenSpending.Aggregator({
@@ -56,12 +80,24 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
           dataset: self.context.dataset,
           rootNodeLabel: self.context.rootNodeLabel || 'Total',
           drilldowns: self.state.drilldowns || [],
-          cuts: self.state.cuts || [],
+          cuts: cuts,
           breakdown: self.state.breakdown,
-          //localApiCache: 'aggregate.json',
           callback: self.dataLoaded
       });
     }
+  };
+  
+  this.init = function() {
+    elem.addClass('bubbletree-container');
+    elem.html('<div class="bubbletree-qb"></div><div class="bubbletree-widget-wrapper"><div id="bubbletree-wrapper" class="bubbletree-vis bubbletree-widget"></div></div>');
+    self.$e = elem.find('.bubbletree-vis');
+    self.$qb = elem.find('.bubbletree-qb');
+    var $tooltip = $('<div class="tooltip">Tooltip</div>');
+    elem.append($tooltip);
+    $tooltip.hide();
+  
+    this.update(self.state);
+    
 };
 
   // The rest of this function is suitable for copypasta into other

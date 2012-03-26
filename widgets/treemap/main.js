@@ -15,10 +15,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.context = context;
   this.state = state;
 
-  this.configure = function() {
+  this.configure = function(endConfigure) {
     self.context.label = 'Create a TreeMap visualisation';
     var qb = new OpenSpending.Widgets.QueryBuilder(
-      self.$qb, self.update, self.context, [
+      self.$qb, self.update, endConfigure, self.context, [
             {
               variable: 'drilldown',
               label: 'Tiles:',

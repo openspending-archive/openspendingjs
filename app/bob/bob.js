@@ -5,9 +5,10 @@ OpenSpending.Widgets = OpenSpending.Widgets || {};
 
 var osw = OpenSpending.Widgets;
 
-osw.QueryBuilder = function(elem, callback, context, spec) {
+osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     var self = this;
     self.nodes = {};
+    self.hasFinish = finish instanceof Function;
 
     self.template = Handlebars.compile(" \
         <div class='well query-builder'> \
@@ -15,6 +16,14 @@ osw.QueryBuilder = function(elem, callback, context, spec) {
                 <a class='qb-toggle close' href='#'><i class='icon-chevron-up'></i></a> \
                 <h3>{{context.label}}</h3> \
                 <div class='fields'> \
+                <div class='insert-here'></div> \
+                {{#hasFinish}} \
+                <div class='control-group'> \
+                    <div class='controls'> \
+                        <a href='#' class='btn finish'><i class='icon-ok'></i> Save or embed this view</a> \
+                    </div> \
+                </div> \
+                {{/hasFinish}} \
                 </div> \
             </form> \
         </div>");
@@ -53,7 +62,7 @@ osw.QueryBuilder = function(elem, callback, context, spec) {
             });
             self.id = 'qb' + Math.floor(Math.random()*11);
             elem.append(self.template(self));
-            var form = $('#' + self.id + ' .fields');
+            var form = $('#' + self.id + ' .insert-here');
             _.each(spec, function(obj) {
                 obj.id = obj.variable + '-' + Math.floor(Math.random()*11);
                 var nodeClass = osw.QueryNodes[obj.type];
@@ -64,11 +73,12 @@ osw.QueryBuilder = function(elem, callback, context, spec) {
             $('#' + self.id + ' .qb-toggle').click(function(e) {
                 var e = $(e.currentTarget);
                 e.find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
-                form.slideToggle('fast');
+                $('#' + self.id + ' .fields').slideToggle('fast');
                 return false;
             });
             form.change(self.update);
             form.submit(self.update);
+            elem.find('.finish').click(function(e){finish(); return false;});
         }, 'jsonp');
     };
 
