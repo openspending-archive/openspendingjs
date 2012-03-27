@@ -4,13 +4,16 @@
 OpenSpending.AggregateTable = function (elem, context, state) {
   var self = this;
 
-  var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
-                 OpenSpending.scriptRoot + "/lib/aggregator.js",
-                 OpenSpending.scriptRoot + "/lib/utils/utils.js",
-                 OpenSpending.scriptRoot + "/lib/vendor/datatables/js/jquery.dataTables.js",
-                 OpenSpending.scriptRoot + "/lib/vendor/datatables/css/jquery.dataTables.css",
-                 OpenSpending.scriptRoot + "/app/data_table/openspending.data_table.js"
-                 ];
+  var resources = [
+                OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
+                OpenSpending.scriptRoot + "/lib/aggregator.js",
+                OpenSpending.scriptRoot + "/lib/utils/utils.js",
+                OpenSpending.scriptRoot + "/lib/vendor/datatables/js/jquery.dataTables.js",
+                OpenSpending.scriptRoot + "/lib/vendor/datatables/css/jquery.dataTables.css",
+                OpenSpending.scriptRoot + "/app/data_table/openspending.data_table.js",
+                OpenSpending.scriptRoot + "/lib/vendor/datatables/dataTables.bootstrap.js",
+                OpenSpending.scriptRoot + "/lib/vendor/datatables/dataTables.bootstrap.css"
+            ];
 
   this.context = context;
   this.state = state;
@@ -73,7 +76,9 @@ OpenSpending.AggregateTable = function (elem, context, state) {
       resultCollection: 'drilldown',
       sorting: [],
       tableOptions: {
-        bFilter: false
+        bFilter: false,
+        sDom: "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+        sPaginationType: "bootstrap"
       },
       defaultParams: {
         dataset: context.dataset,
