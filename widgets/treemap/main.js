@@ -2,7 +2,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
 (function ($) {
 
-  OpenSpending.Treemap = function (elem, context, state) {
+OpenSpending.Treemap = function (elem, context, state) {
   var self = this;
 
   var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
@@ -17,7 +17,6 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
   this.configure = function(endConfigure) {
     self.$qb.empty();
-    self.context.label = 'Create a TreeMap visualisation';
     var qb = new OpenSpending.Widgets.QueryBuilder(
       self.$qb, self.update, endConfigure, self.context, [
             {
@@ -42,10 +41,13 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   this.update = function(state) {
     self.$e.empty();
     self.state = state;
-    var cuts = [];
+    self.state.cuts = self.state.cuts || {};
+
     if (self.context.time) {
-      cuts.push('year:' + self.context.time);
+      self.state.cuts.year = self.context.time;
     }
+
+    var cuts = [];
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);
     }
@@ -74,9 +76,9 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   };
 
   this.init = function () {
-    elem.html('<div class="treemap-qb"></div><div id="treemap-wrapper" class="treemap-vis"></div>');
-    self.$e = elem.find('.treemap-vis');
-    self.$qb = elem.find('.treemap-qb');
+    self.$e = elem;
+    self.$e.before('<div class="treemap-qb"></div>');
+    self.$qb = elem.prev();
     self.$e.addClass("treemap-widget");
     self.update(self.state);
   };

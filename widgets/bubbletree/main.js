@@ -23,7 +23,6 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
   this.configure = function(endConfigure) {
     self.$qb.empty();
-    self.context.label = 'Create a BubbleTree visualisation';
     var qb = new OpenSpending.Widgets.QueryBuilder(
       self.$qb, self.update, endConfigure, self.context, [
             {
@@ -44,7 +43,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     );
   };
 
-  this.serialize = function() { return state; };
+  this.serialize = function() { return self.state; };
 
   this.dataLoaded = function(data) {
     self.bubbleTree = new BubbleTree({
@@ -87,10 +86,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   };
   
   this.init = function() {
-    elem.addClass('bubbletree-container');
-    elem.html('<div class="bubbletree-qb"></div><div class="bubbletree-widget-wrapper"><div id="bubbletree-wrapper" class="bubbletree-vis bubbletree-widget"></div></div>');
-    self.$e = elem.find('.bubbletree-vis');
-    self.$qb = elem.find('.bubbletree-qb');
+    self.$e = elem;
+    self.$e.before('<div class="bubbletree-qb"></div>');
+    self.$qb = elem.prev();
+    self.$e.addClass("bubbletree-widget");
     var $tooltip = $('<div class="tooltip">Tooltip</div>');
     elem.append($tooltip);
     $tooltip.hide();

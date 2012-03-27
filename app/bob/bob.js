@@ -9,12 +9,15 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     var self = this;
     self.nodes = {};
     self.hasFinish = finish instanceof Function;
+    self.noFinish = !self.hasFinish;
 
     self.template = Handlebars.compile(" \
         <div class='well query-builder'> \
             <form id='{{id}}' class='form-horizontal'> \
+                {{#noFinish}} \
+                    <a class='qb-quit close' href='#'><i class='icon-remove'></i></a> \
+                {{/noFinish}} \
                 <a class='qb-toggle close' href='#'><i class='icon-chevron-up'></i></a> \
-                <h3>{{context.label}}</h3> \
                 <div class='fields'> \
                 <div class='insert-here'></div> \
                 {{#hasFinish}} \
@@ -74,6 +77,10 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
                 var e = $(e.currentTarget);
                 e.find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
                 $('#' + self.id + ' .fields').slideToggle('fast');
+                return false;
+            });
+            $('#' + self.id + ' .qb-quit').click(function(e) {
+                $('#' + self.id).parents('.query-builder').remove();
                 return false;
             });
             form.change(self.update);
