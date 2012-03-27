@@ -30,7 +30,6 @@ class Column
       @label = @name
 
   render: (obj, item) ->
-    console.log(item)
     if not item?.label?
       return item
     out = item.label;
@@ -42,7 +41,10 @@ class OpenSpending.DataTable
   options:
     source: '/api/2/search'
     columns: []
+    resultCollection: 'results'
+    fullCount: (data) -> data.stats.results_count_query
     defaultParams: {}
+    tableOptions: {}
 
   constructor: (element, options) ->
     @options = $.extend(true, {}, @options, options)
@@ -59,7 +61,7 @@ class OpenSpending.DataTable
       this.addColumn(colspec)
 
   init: () ->
-    @table = @element.find('table').dataTable
+    tableOptions = 
       bDestroy: true # destroy any previous datatable residing here
       bProcessing: true
       bServerSide: true
@@ -69,6 +71,7 @@ class OpenSpending.DataTable
       aaSorting: this._sorting()
       sAjaxSource: @options.source
       fnServerData: => this._serverData.apply(this, arguments)
+    @table = @element.find('table').dataTable $.extend(tableOptions, @options.tableOptions)
 
   addColumn: (colspec) ->
     c = new Column(colspec)
@@ -138,12 +141,12 @@ class OpenSpending.DataTable
 
     rq.then (data) =>
       $(conf.oInstance).trigger('xhr', conf)
-      callback(_parseResponse(data, params.sEcho))
+      callback(_parseResponse(data, params.sEcho, @options))
 
     conf.jqXHR = rq # provide compatibility with original "fnServerData"
 
-_parseResponse = (data, echo) ->
+_parseResponse = (data, echo, options) ->
   sEcho: echo
-  iTotalRecords: data.stats.results_count_query
-  iTotalDisplayRecords: data.stats.results_count_query
-  aaData: data.results
+  iTotalRecords: options.fullCount(data)
+  iTotalDisplayRecords: options.fullCount(data)
+  aaData: data[options.resultCollection]

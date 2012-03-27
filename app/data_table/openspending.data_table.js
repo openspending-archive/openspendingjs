@@ -23,7 +23,6 @@
 
     Column.prototype.render = function(obj, item) {
       var out;
-      console.log(item);
       if (!((item != null ? item.label : void 0) != null)) return item;
       out = item.label;
       if ((item != null ? item.html_url : void 0) != null) {
@@ -41,7 +40,12 @@
     DataTable.prototype.options = {
       source: '/api/2/search',
       columns: [],
-      defaultParams: {}
+      resultCollection: 'results',
+      fullCount: function(data) {
+        return data.stats.results_count_query;
+      },
+      defaultParams: {},
+      tableOptions: {}
     };
 
     function DataTable(element, options) {
@@ -60,8 +64,9 @@
     }
 
     DataTable.prototype.init = function() {
-      var _this = this;
-      return this.table = this.element.find('table').dataTable({
+      var tableOptions,
+        _this = this;
+      tableOptions = {
         bDestroy: true,
         bProcessing: true,
         bServerSide: true,
@@ -73,7 +78,8 @@
         fnServerData: function() {
           return _this._serverData.apply(_this, arguments);
         }
-      });
+      };
+      return this.table = this.element.find('table').dataTable($.extend(tableOptions, this.options.tableOptions));
     };
 
     DataTable.prototype.addColumn = function(colspec) {
@@ -158,7 +164,7 @@
       rq.fail(OpenSpending.ajaxError("Source request failed. Params: " + (JSON.stringify(params))));
       rq.then(function(data) {
         $(conf.oInstance).trigger('xhr', conf);
-        return callback(_parseResponse(data, params.sEcho));
+        return callback(_parseResponse(data, params.sEcho, _this.options));
       });
       return conf.jqXHR = rq;
     };
@@ -167,12 +173,12 @@
 
   })();
 
-  _parseResponse = function(data, echo) {
+  _parseResponse = function(data, echo, options) {
     return {
       sEcho: echo,
-      iTotalRecords: data.stats.results_count_query,
-      iTotalDisplayRecords: data.stats.results_count_query,
-      aaData: data.results
+      iTotalRecords: options.fullCount(data),
+      iTotalDisplayRecords: options.fullCount(data),
+      aaData: data[options.resultCollection]
     };
   };
 

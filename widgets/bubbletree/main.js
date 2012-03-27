@@ -29,7 +29,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
               variable: 'drilldowns',
               label: 'Levels:',
               type: 'select',
-              'default': self.state.drilldown,
+              'default': self.state.drilldowns,
               help: 'Each selected dimension will display as an additional level of bubbles.'
             },
             {

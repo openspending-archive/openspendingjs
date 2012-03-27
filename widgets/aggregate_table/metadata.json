@@ -1,0 +1,4 @@
+OpenSpending.addWidgetMetadata("aggregate_table", {
+    "title": "Table of aggregates",
+    "description": "Display a dynamic table listing the values of the dataset, summed by a selection of drilldown criteria."
+});
