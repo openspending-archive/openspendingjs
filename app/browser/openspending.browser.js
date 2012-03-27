@@ -29,13 +29,13 @@
         });
         if (_this.dimensions.from != null) {
           _this.table.addColumn({
-            name: 'from.label',
+            name: 'from',
             label: _this.dimensions.from.label
           });
         }
         if (_this.dimensions.to != null) {
           _this.table.addColumn({
-            name: 'to.label',
+            name: 'to',
             label: _this.dimensions.to.label
           });
         }
@@ -48,7 +48,7 @@
         });
         _this.table.addColumn({
           data: function(data) {
-            return "<a href='/" + _this.dataset + "/entries/" + data.id + "'>details&raquo;</a>";
+            return "<a href='" + data.html_url + "'>details&raquo;</a>";
           },
           sortable: false
         });

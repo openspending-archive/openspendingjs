@@ -30,15 +30,15 @@ class OpenSpending.Browser
 
       @table.addColumn name: 'time.year', label: @dimensions.time.label
       if @dimensions.from?
-        @table.addColumn name: 'from.label', label: @dimensions.from.label
+        @table.addColumn name: 'from', label: @dimensions.from.label
       if @dimensions.to?
-        @table.addColumn name: 'to.label', label: @dimensions.to.label
+        @table.addColumn name: 'to', label: @dimensions.to.label
       @table.addColumn
         name: 'amount'
         label: 'Amount'
         data: (data) -> OpenSpending.Utils.formatAmountWithCommas(data.amount)
       @table.addColumn
-        data: (data) => "<a href='/#{@dataset}/entries/#{data.id}'>details&raquo;</a>"
+        data: (data) => "<a href='#{data.html_url}'>details&raquo;</a>"
         sortable: false
 
       facetDimensions = for own k, d of @dimensions
