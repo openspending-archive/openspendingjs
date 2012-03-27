@@ -28,7 +28,7 @@
           d = _ref[_j];
           if (_this.dimensions[d] != null) {
             _this.table.addColumn({
-              name: "" + d + ".label",
+              name: "" + d,
               label: _this.dimensions[d].label
             });
           }
@@ -42,7 +42,7 @@
         });
         _this.table.addColumn({
           data: function(data) {
-            return "<a href='/" + _this.dataset + "/entries/" + data.id + "'>details&raquo;</a>";
+            return "<a href='" + data.html_url + "'>details&raquo;</a>";
           },
           sortable: false
         });

@@ -30,14 +30,14 @@ class OpenSpending.Browser
 
       for d in ['time', 'from', 'to']
         if @dimensions[d]?
-          @table.addColumn name: "#{d}.label", label: @dimensions[d].label
+          @table.addColumn name: "#{d}", label: @dimensions[d].label
 
       @table.addColumn
         name: 'amount'
         label: 'Amount'
         data: (data) -> OpenSpending.Utils.formatAmountWithCommas(data.amount or 0)
       @table.addColumn
-        data: (data) => "<a href='/#{@dataset}/entries/#{data.id}'>details&raquo;</a>"
+        data: (data) => "<a href='#{data.html_url}'>details&raquo;</a>"
         sortable: false
 
       facetDimensions = for own k, d of @dimensions

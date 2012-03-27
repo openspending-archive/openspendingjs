@@ -10,9 +10,6 @@ HTML = """
       <td class="dataTables_empty"> Loading data from server&hellip; </td>
     </tr>
   </tbody>
-  <tfoot>
-    <tr></tr>
-  </tfoot>
 </table>
 """
 
@@ -31,6 +28,15 @@ class Column
 
     if not @label?
       @label = @name
+
+  render: (obj, item) ->
+    console.log(item)
+    if not item?.label?
+      return item
+    out = item.label;
+    if item?.html_url?
+      out = '<a href="' + item.html_url + '">' + out + '</a>'
+    return out
 
 class OpenSpending.DataTable
   options:
@@ -57,6 +63,8 @@ class OpenSpending.DataTable
       bDestroy: true # destroy any previous datatable residing here
       bProcessing: true
       bServerSide: true
+      iDisplayLength: 20
+      bLengthChange: false
       aoColumnDefs: this._columnDefs()
       aaSorting: this._sorting()
       sAjaxSource: @options.source
@@ -66,7 +74,7 @@ class OpenSpending.DataTable
     c = new Column(colspec)
     @columns[c.name] = c
     @columnOrder.push(c.name)
-    @element.find('thead tr, tfoot tr').append("<td>#{c.label}</td>")
+    @element.find('thead tr').append("<td>#{c.label}</td>")
     @element.find('.dataTables_empty').attr('colspan', @columns.length)
 
   addFilter: (key, value) ->
@@ -86,6 +94,7 @@ class OpenSpending.DataTable
         aTargets: [i]
         mDataProp: @columns[name].data
         bSortable: @columns[name].sortable
+        fnRender: @columns[name].render
       i += 1
     out
 

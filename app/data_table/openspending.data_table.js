@@ -4,7 +4,7 @@
 
   $ = OpenSpending.$;
 
-  HTML = "<table class=\"table table-striped table-condensed\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n  <thead>\n    <tr></tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td class=\"dataTables_empty\"> Loading data from server&hellip; </td>\n    </tr>\n  </tbody>\n  <tfoot>\n    <tr></tr>\n  </tfoot>\n</table>";
+  HTML = "<table class=\"table table-striped table-condensed\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n  <thead>\n    <tr></tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td class=\"dataTables_empty\"> Loading data from server&hellip; </td>\n    </tr>\n  </tbody>\n</table>";
 
   Column = (function() {
 
@@ -20,6 +20,17 @@
       if (!(this.name != null)) this.label = '&nbsp;';
       if (!(this.label != null)) this.label = this.name;
     }
+
+    Column.prototype.render = function(obj, item) {
+      var out;
+      console.log(item);
+      if (!((item != null ? item.label : void 0) != null)) return item;
+      out = item.label;
+      if ((item != null ? item.html_url : void 0) != null) {
+        out = '<a href="' + item.html_url + '">' + out + '</a>';
+      }
+      return out;
+    };
 
     return Column;
 
@@ -54,6 +65,8 @@
         bDestroy: true,
         bProcessing: true,
         bServerSide: true,
+        iDisplayLength: 20,
+        bLengthChange: false,
         aoColumnDefs: this._columnDefs(),
         aaSorting: this._sorting(),
         sAjaxSource: this.options.source,
@@ -68,7 +81,7 @@
       c = new Column(colspec);
       this.columns[c.name] = c;
       this.columnOrder.push(c.name);
-      this.element.find('thead tr, tfoot tr').append("<td>" + c.label + "</td>");
+      this.element.find('thead tr').append("<td>" + c.label + "</td>");
       return this.element.find('.dataTables_empty').attr('colspan', this.columns.length);
     };
 
@@ -94,7 +107,8 @@
         out.push({
           aTargets: [i],
           mDataProp: this.columns[name].data,
-          bSortable: this.columns[name].sortable
+          bSortable: this.columns[name].sortable,
+          fnRender: this.columns[name].render
         });
         i += 1;
       }

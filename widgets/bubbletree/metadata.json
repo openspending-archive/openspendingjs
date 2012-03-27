@@ -1,0 +1,4 @@
+OpenSpending.addWidgetMetadata("bubbletree", {
+    "title": "BubbleTree",
+    "description": "The BubbleTree can display hierarchical spending data in an interactive visualization. It supports multiple levels of drill-downs and an edge breakdown which applies to all levels of the graphic."
+});

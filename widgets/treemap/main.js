@@ -2,26 +2,52 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
 (function ($) {
 
-  OpenSpending.TreeMap = function (elem, context, state) {
+OpenSpending.Treemap = function (elem, context, state) {
   var self = this;
 
-  var scripts = ["http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/aggregator.js",
-                 "http://assets.openspending.org/openspendingjs/master/lib/utils/utils.js",
-                 "http://assets.openspending.org/openspendingjs/master/app/treemap/js/thejit-2.js"
+  var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
+                 OpenSpending.scriptRoot + "/lib/aggregator.js",
+                 OpenSpending.scriptRoot + "/lib/utils/utils.js",
+                 OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.js",
+                 OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];
-
-  this.$e = elem;
 
   this.context = context;
   this.state = state;
 
-  this.serialize = function() { return state; };
+  this.configure = function(endConfigure) {
+    self.$qb.empty();
+    var qb = new OpenSpending.Widgets.QueryBuilder(
+      self.$qb, self.update, endConfigure, self.context, [
+            {
+              variable: 'drilldown',
+              label: 'Tiles:',
+              type: 'select',
+              single: true,
+              'default': self.state.drilldown,
+              help: 'The sum for each member of this dimension will be presented as a tile on the treemap.'
+            },
+            {
+              variable: 'cuts',
+              label: 'Filters:',
+              type: 'cuts',
+              'default': self.state.cuts,
+              help: 'Limit the set of data to display.'
+            }
+          ]
+    );
+  };
 
-  this.init = function () {
-    self.$e.addClass("treemap-widget");
+  this.update = function(state) {
+    self.$e.empty();
+    self.state = state;
+    self.state.cuts = self.state.cuts || {};
 
-    var cuts = ['year:' + self.context.time];
+    if (self.context.time) {
+      self.state.cuts.year = self.context.time;
+    }
+
+    var cuts = [];
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);
     }
@@ -30,22 +56,37 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
       cuts.push(self.context.dimension + ':' + self.context.member);
     }
 
-    new OpenSpending.Aggregator({
-      siteUrl: self.context.siteUrl,
-      dataset: self.context.dataset,
-      drilldowns: [self.state.drilldown],
-      cuts: cuts,
-      rootNodeLabel: 'Total', 
-      callback: function(data) {
-        self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
-        self.draw();
-      }
-    });
+    if (self.state.drilldown) {
+      new OpenSpending.Aggregator({
+        siteUrl: self.context.siteUrl,
+        dataset: self.context.dataset,
+        drilldowns: [self.state.drilldown],
+        cuts: cuts,
+        rootNodeLabel: 'Total',
+        callback: function(data) {
+          self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
+          self.draw();
+        }
+      });
+    }
+  };
+
+  this.serialize = function() {
+    return self.state;
+  };
+
+  this.init = function () {
+    self.$e = elem;
+    self.$e.before('<div class="treemap-qb"></div>');
+    self.$qb = elem.prev();
+    self.$e.addClass("treemap-widget");
+    self.update(self.state);
   };
 
   this.setDataFromAggregator = function (dataset, dimension, data) {
     var needsColorization = true;
-    this.data = {children: _.map(data.children, function(item) {
+    self.total = data.amount;
+    self.data = {children: _.map(data.children, function(item) {
       if (item.color)
         needsColorization = false;
 
@@ -63,24 +104,25 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         };
     })};
 
-    if (needsColorization) 
+    if (needsColorization) {
       this.autoColorize();
+    }
   };
 
   this.autoColorize = function() {
-    var nodes = this.data.children.length;
+    var nodes = self.data.children.length;
     var colors = OpenSpending.Utils.getColorPalette(nodes);
     for (var i = 0; i < nodes; i++) {
-      this.data.children[i].data.$color = colors[i];
+      self.data.children[i].data.$color = colors[i];
     }
   };
 
   this.draw = function () {
-    if (!this.data.children.length) {
-      $(this.$e).hide();
+    if (!self.data.children.length) {
+      $(self.$e).hide();
       return;
     }
-    var self = this;
+    $(self.$e).show();
     self.tm = new $jit.TM.Squarified({
         injectInto: self.$e.prop('id'),
         levelsToShow: 1,
@@ -158,8 +200,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
         //Add the name of the node in the corresponding label
         //This method is called once, on label creation and only for DOM labels.
         onCreateLabel: function(domElement, node){
+          if ((node.data.value/self.total)>0.03) {
             domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
-            }
+          }
+        }
     });
     self.tm.loadJSON(this.data);
     self.tm.refresh();
@@ -171,11 +215,18 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   var dfd = $.Deferred();
   dfd.done(function(that) {that.init();});
 
-  // Brutal, but it makes debugging much easier
-  //$.ajaxSetup({cache: true});
-  var loaders = $.map(scripts, function(url, i) {return $.getScript(url);});
-  $.when.apply(null, loaders).done(function() {dfd.resolve(self);});
-
+  if (!window.treemapWidgetLoaded) {
+    yepnope({
+      load: resources,
+      complete: function() {
+        window.treemapWidgetLoaded = true;
+        dfd.resolve(self);
+      }
+    });
+  } else {
+    dfd.resolve(self);
+  }
+  
   return dfd.promise();
 };
 

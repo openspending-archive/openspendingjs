@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bob the QueryBuilder</title>
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/themes/ui-lightness/jquery-ui.css">
+    <!-- link rel="stylesheet" href="http://wheredoesmymoneygo.org/wp-content/themes/wdmmg/wdmmg.css" -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+    <script src="http://assets.openspending.org/openspendingjs/master/lib/vendor/underscore.js"></script>
+    <script src="http://tryhandlebarsjs.com/js/libs/handlebars-1.0.0.beta.6.js"></script>
+
+    <script src="../lib/vendor/yepnope.min.js"></script>
+    
+    <script src="bob.js"></script>
+    
+    <style>
+      .query-builder select, .query-builder input, 
+      .query-builder .help-block {
+        margin-bottom: 0.4em;
+      }
+
+      .query-builder .help-block {
+        margin-top: 0em;
+        color: #999;
+      }
+
+      .query-builder .form-horizontal .control-group {
+        margin-bottom: 10px;
+      }
+
+      .query-builder form {
+        margin: 0px;
+      }
+
+      .query-builder .fields {
+        padding-top: 1em;
+      }
+    </style>
+
+    <script>
+      $(function () {
+        var callback = function(state) {
+          console.log(state);
+        };
+        var qb = new OpenSpending.Widgets.QueryBuilder(
+          $("#playground"),
+          callback, 
+          {
+            dataset: "bremen",
+            siteUrl: "http://localhost:5000"
+          },
+          [
+            {
+              variable: 'measure',
+              label: 'Aggregate over:',
+              type: 'select',
+              single: true,
+              options: 'measures',
+              help: 'I am a banana!'
+            }, 
+            {
+              variable: 'drilldowns',
+              label: 'alice in the drilldown:',
+              type: 'select',
+              default: ['entryid', 'to'],
+              help: 'I am a banana!'
+            }, 
+            {
+              variable: 'breakdown',
+              label: 'Break-to-the-down:',
+              type: 'select',
+              single: true,
+              nullable: true,
+              options: 'measures',
+              default: 'entryid',
+              help: 'I am a banana!'
+            },
+            {
+              variable: 'cuts',
+              label: 'Filter by this:',
+              type: 'cuts',
+              help: 'I am a banana!'
+            }]);
+        qb.serialize();
+      });
+    </script>
+</head>
+<body>
+  
+  <div class='container'>
+    <h2 class='page-header'>Bob the Query Builder</h2>
+    <div id="playground"></div>
+  </div>
+</body>
+</html>
