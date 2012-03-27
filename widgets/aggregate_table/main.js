@@ -24,7 +24,7 @@ OpenSpending.AggregateTable = function (elem, context, state) {
               label: 'Columns:',
               type: 'select',
               'default': self.state.drilldowns,
-              help: 'Each selected dimension will display as an additional level of bubbles.'
+              help: 'Each selected dimension will display as a column, and values will be drilled down by it.'
             },
             {
               variable: 'cuts',
@@ -37,7 +37,9 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     );
   };
 
-  this.serialize = function() { return self.state; };
+  this.serialize = function() {
+    return self.state;
+  };
 
   this.update = function(state) {
     //console.log(state);
@@ -54,14 +56,16 @@ OpenSpending.AggregateTable = function (elem, context, state) {
 
     var drilldowns = self.state.drilldowns || [];
     var columns = _.map(drilldowns, function(d) {
-      return {name: d, label: d};
+      return {name: d, label: self.mapping[d].label};
     });
     drilldowns = drilldowns.join('|');
     columns.push({
           'name': 'amount',
-          'label': 'Amount'
+          'label': self.mapping['amount'].label,
+          'render': function(coll, obj) {
+            return OpenSpending.Utils.formatAmountWithCommas(obj || 0);
+          }
         });
-    console.log(columns);
 
     self.dataTable = new OpenSpending.DataTable(self.$e, {
       source: context.siteUrl + '/api/2/aggregate',
@@ -78,18 +82,21 @@ OpenSpending.AggregateTable = function (elem, context, state) {
       },
       columns: columns
     });
-
     self.dataTable.init();
     
   };
   
   this.init = function() {
     self.$e = elem;
+    self.$e.empty();
     self.$e.before('<div class="table-qb"></div>');
     self.$qb = elem.prev();
     self.$e.addClass("table-widget");
-    this.update(self.state);
-    
+
+    $.get(context.siteUrl + '/' + context.dataset + '/model.json', function(data) {
+      self.mapping = data.mapping;
+      self.update(self.state);
+    });
 };
 
   // The rest of this function is suitable for copypasta into other
