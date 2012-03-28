@@ -65,15 +65,32 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     columns.push({
           'name': 'amount',
           'label': self.mapping['amount'].label,
+          'width': '15%',
           'render': function(coll, obj) {
             return OpenSpending.Utils.formatAmountWithCommas(obj || 0);
+          }
+        });
+    columns.push({
+          'name': '__amount_pct',
+          'label': '%',
+          'width': '7%',
+          'render': function(coll, obj) {
+            obj = (obj || 0) * 100;
+            return obj.toFixed(2) + '%';
           }
         });
 
     self.dataTable = new OpenSpending.DataTable(self.$e, {
       source: context.siteUrl + '/api/2/aggregate',
       fullCount: function(data) {return data.summary.num_drilldowns;},
-      resultCollection: 'drilldown',
+      resultCollection: function(data) {
+        return _.map(data.drilldown, function(d) {
+          if (data.summary.amount) {
+            d.__amount_pct = d.amount / data.summary.amount;
+          }
+          return d;
+        });
+      },
       sorting: [],
       tableOptions: {
         bFilter: false,

@@ -40,7 +40,9 @@
     DataTable.prototype.options = {
       source: '/api/2/search',
       columns: [],
-      resultCollection: 'results',
+      resultCollection: function(data) {
+        return data.results;
+      },
       fullCount: function(data) {
         return data.stats.results_count_query;
       },
@@ -85,9 +87,10 @@
     DataTable.prototype.addColumn = function(colspec) {
       var c;
       c = new Column(colspec);
+      c.width = c.width || 'auto';
       this.columns[c.name] = c;
       this.columnOrder.push(c.name);
-      this.element.find('thead tr').append("<td>" + c.label + "</td>");
+      this.element.find('thead tr').append("<td width='" + c.width + "'>" + c.label + "</td>");
       return this.element.find('.dataTables_empty').attr('colspan', this.columns.length);
     };
 
@@ -178,7 +181,7 @@
       sEcho: echo,
       iTotalRecords: options.fullCount(data),
       iTotalDisplayRecords: options.fullCount(data),
-      aaData: data[options.resultCollection]
+      aaData: options.resultCollection(data)
     };
   };
 

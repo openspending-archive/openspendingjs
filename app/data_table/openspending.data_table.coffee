@@ -41,7 +41,7 @@ class OpenSpending.DataTable
   options:
     source: '/api/2/search'
     columns: []
-    resultCollection: 'results'
+    resultCollection: (data) -> data.results
     fullCount: (data) -> data.stats.results_count_query
     defaultParams: {}
     tableOptions: {}
@@ -75,9 +75,10 @@ class OpenSpending.DataTable
 
   addColumn: (colspec) ->
     c = new Column(colspec)
+    c.width = c.width or 'auto'
     @columns[c.name] = c
     @columnOrder.push(c.name)
-    @element.find('thead tr').append("<td>#{c.label}</td>")
+    @element.find('thead tr').append("<td width='#{c.width}'>#{c.label}</td>")
     @element.find('.dataTables_empty').attr('colspan', @columns.length)
 
   addFilter: (key, value) ->
@@ -149,4 +150,4 @@ _parseResponse = (data, echo, options) ->
   sEcho: echo
   iTotalRecords: options.fullCount(data)
   iTotalDisplayRecords: options.fullCount(data)
-  aaData: data[options.resultCollection]
+  aaData: options.resultCollection(data)
