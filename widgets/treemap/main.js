@@ -93,7 +93,6 @@ OpenSpending.Treemap = function (elem, context, state) {
     self.data = {children: _.map(data.children, function(item) {
       if (item.color)
         needsColorization = false;
-
       return {
         children: [],
         id: item.id,
@@ -102,7 +101,7 @@ OpenSpending.Treemap = function (elem, context, state) {
             value: item.amount,
             $area: item.amount,
             title: item.label || item.name,
-            link: self.context.siteUrl + '/' + dataset + '/' + dimension + '/' + item.name,
+            link: item.html_url,
             $color: item.color || '#333333'
           }
         };
