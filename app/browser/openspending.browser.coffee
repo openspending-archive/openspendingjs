@@ -28,7 +28,11 @@ class OpenSpending.Browser
       for d in data
         @dimensions[d.key] = d
 
-      for d in ['time', 'from', 'to']
+      @table.addColumn
+        name: 'time.year'
+        label: @dimensions['time'].label
+
+      for d in ['from', 'to']
         if @dimensions[d]?
           @table.addColumn name: "#{d}", label: @dimensions[d].label
 
@@ -76,6 +80,9 @@ class OpenSpending.Browser
     @table = new OpenSpending.DataTable(tableEl,
       sorting: [['amount', 'desc']]
       defaultParams: { dataset: @dataset }
+      tableOptions:
+        sDom: "<'row'<'span0'l><'span9'f>r>t<'row'<'span4'i><'span5'p>>"
+        sPaginationType: "bootstrap"
     )
 
   # Private: build the Faceter instance for this browser

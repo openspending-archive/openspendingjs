@@ -23,7 +23,11 @@
           d = data[_i];
           _this.dimensions[d.key] = d;
         }
-        _ref = ['time', 'from', 'to'];
+        _this.table.addColumn({
+          name: 'time.year',
+          label: _this.dimensions['time'].label
+        });
+        _ref = ['from', 'to'];
         for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
           d = _ref[_j];
           if (_this.dimensions[d] != null) {
@@ -93,6 +97,10 @@
         sorting: [['amount', 'desc']],
         defaultParams: {
           dataset: this.dataset
+        },
+        tableOptions: {
+          sDom: "<'row'<'span0'l><'span9'f>r>t<'row'<'span4'i><'span5'p>>",
+          sPaginationType: "bootstrap"
         }
       });
     };
