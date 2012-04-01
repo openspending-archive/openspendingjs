@@ -49,6 +49,10 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     self.$e.empty();
     self.state = state;
 
+    if (self.context.time) {
+      self.state.cuts.year = self.context.time;
+    }
+
     var cuts = [];
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);

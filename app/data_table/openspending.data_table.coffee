@@ -65,7 +65,7 @@ class OpenSpending.DataTable
       bDestroy: true # destroy any previous datatable residing here
       bProcessing: true
       bServerSide: true
-      iDisplayLength: 20
+      iDisplayLength: 15
       bLengthChange: false
       aoColumnDefs: this._columnDefs()
       aaSorting: this._sorting()
@@ -78,7 +78,7 @@ class OpenSpending.DataTable
     c.width = c.width or 'auto'
     @columns[c.name] = c
     @columnOrder.push(c.name)
-    @element.find('thead tr').append("<td width='#{c.width}'>#{c.label}</td>")
+    @element.find('thead tr').append("<th width='#{c.width}'>#{c.label}</th>")
     @element.find('.dataTables_empty').attr('colspan', @columns.length)
 
   addFilter: (key, value) ->

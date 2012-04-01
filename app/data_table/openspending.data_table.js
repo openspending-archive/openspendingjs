@@ -72,7 +72,7 @@
         bDestroy: true,
         bProcessing: true,
         bServerSide: true,
-        iDisplayLength: 20,
+        iDisplayLength: 15,
         bLengthChange: false,
         aoColumnDefs: this._columnDefs(),
         aaSorting: this._sorting(),
@@ -90,7 +90,7 @@
       c.width = c.width || 'auto';
       this.columns[c.name] = c;
       this.columnOrder.push(c.name);
-      this.element.find('thead tr').append("<td width='" + c.width + "'>" + c.label + "</td>");
+      this.element.find('thead tr').append("<th width='" + c.width + "'>" + c.label + "</th>");
       return this.element.find('.dataTables_empty').attr('colspan', this.columns.length);
     };
 
