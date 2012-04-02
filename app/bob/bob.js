@@ -7,6 +7,11 @@ var osw = OpenSpending.Widgets;
 
 osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     var self = this;
+
+    var resources = [OpenSpending.scriptRoot + "/app/bob/js/jquery-ui-1.8.18.custom.min.js",
+                     OpenSpending.scriptRoot + "/app/bob/css/query-builder/jquery-ui-1.8.18.custom.css"
+                 ];
+
     self.nodes = {};
     self.hasFinish = finish instanceof Function;
     self.noFinish = !self.hasFinish;
@@ -17,7 +22,9 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
                 {{#noFinish}} \
                     <a class='qb-quit close' href='#'><i class='icon-remove'></i></a> \
                 {{/noFinish}} \
-                <a class='qb-toggle close' href='#'><i class='icon-chevron-up'></i></a> \
+                {{#hasFinish}} \
+                    <a class='qb-toggle close' href='#'><i class='icon-chevron-up'></i></a> \
+                {{/hasFinish}} \
                 <div class='fields'> \
                 <div class='insert-here'></div> \
                 {{#hasFinish}} \
@@ -32,7 +39,6 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
         </div>");
 
     self.context = _.extend({
-        label: 'Define the data'
         }, context);
 
     self.serialize = function() {
@@ -51,6 +57,7 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     };
 
     self.render = function() {
+        //console.log(spec);
         $.get(context.siteUrl + '/' + context.dataset + '/model.json', function(model) {
             model.dimensions = {};
             model.measures = {};
@@ -74,8 +81,8 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
                 }
             });
             $('#' + self.id + ' .qb-toggle').click(function(e) {
-                var e = $(e.currentTarget);
-                e.find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
+                var el = $(e.currentTarget);
+                el.find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
                 $('#' + self.id + ' .fields').slideToggle('fast');
                 return false;
             });
@@ -89,7 +96,76 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
         }, 'jsonp');
     };
 
-    this.render();
+    self.fetchDistinct = function(dimension, attribute, query) {
+        var dfd = $.get(context.siteUrl + '/' + context.dataset + '/' + dimension + '.distinct',
+            {attribute: attribute, q: query});
+        return dfd.promise();
+    };
+
+    window.bob = this;
+
+    if (!window.queryBuilderLoaded) {
+        yepnope({
+            load: resources,
+            complete: function() {
+                window.queryBuilderLoaded = true;
+                self.render();
+            }
+        });
+    } else {
+        self.render();
+    }
+};
+
+osw.SliderNode = function(builder, elem, obj, model) {
+    var self = this;
+
+    obj = _.extend({
+        label: 'Year',
+        dimension: 'time',
+        attribute: 'year'
+        }, obj);
+
+    self.serialize = function() {
+        return self.value;
+    };
+
+    self.update = function(value) {
+        if (value != self.value) {
+            self.value = value;
+            self.nodeElem.find('.num').html(value);
+            builder.update();
+        }
+    };
+
+    self.nodeTemplate = Handlebars.compile(" \
+        <div class='{{obj.type}} control-group' id='{{obj.id}}'> \
+            <label for='{{obj.id}}' class='control-label'>{{obj.label}}</label> \
+            <div class='controls'> \
+                <div class='num'></div> \
+                <div class='slider'></div> \
+                {{#obj.help}}<p class='help-block'>{{this}}</p>{{/obj.help}} \
+            </div> \
+        </div>");
+
+    elem.append(self.nodeTemplate({obj: obj}));
+    self.nodeElem = elem.find('#' + obj.id);
+    self.sliderElem = self.nodeElem.find('.slider');
+    builder.fetchDistinct(obj.dimension, obj.attribute).then(function(distinct) {
+        var values = _.map(distinct, function(d) {
+            return d[obj.attribute];
+        });
+        self.sliderElem.slider({
+            value: self.value,
+            min: _.min(values),
+            max: _.max(values),
+            step: 1,
+            change: function(event, ui) {
+                self.update(ui.value);
+            }
+        });
+        self.sliderElem.slider('value', obj['default'] || _.max(values));
+    });
 };
 
 osw.SelectNode = function(builder, elem, obj, model) {
@@ -167,7 +243,7 @@ osw.SelectNode = function(builder, elem, obj, model) {
         self.nodeElem.find('.drilldown').val(obj['default']);
         self.nodeElem.find('.add-level').remove();
     } else {
-        _.each(_.keys(values), function(e, i) {
+        _.each(values, function(e) {
             self.addLevel();
             var el = self.nodeElem.find('.level').last();
             el.find('.drilldown').val(e);
@@ -273,7 +349,8 @@ osw.CutsNode = function(builder, elem, obj, model) {
 
 osw.QueryNodes = {
     'select': osw.SelectNode,
-    'cuts': osw.CutsNode
+    'cuts': osw.CutsNode,
+    'slider': osw.SliderNode
 };
 
 // end the local closure

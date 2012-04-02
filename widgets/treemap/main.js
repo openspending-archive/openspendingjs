@@ -32,12 +32,22 @@ OpenSpending.Treemap = function (elem, context, state) {
               help: 'The sum for each member of this dimension will be presented as a tile on the treemap.'
             },
             {
+              variable: 'year',
+              label: 'Year:',
+              type: 'slider',
+              'dimension': 'time',
+              'attribute': 'year',
+              'default': self.state.year,
+              help: 'Filter by year.'
+            },
+            {
               variable: 'cuts',
               label: 'Filters:',
               type: 'cuts',
               'default': self.state.cuts,
               help: 'Limit the set of data to display.'
             }
+            
           ]
     );
   };
@@ -47,13 +57,13 @@ OpenSpending.Treemap = function (elem, context, state) {
     self.state = state;
     self.state.cuts = self.state.cuts || {};
 
-    if (self.context.time) {
-      self.state.cuts.year = self.context.time;
-    }
-
     var cuts = [];
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);
+    }
+
+    if (self.state.year) {
+      cuts.push('time.year:' + self.state.year);
     }
 
     if (typeof self.context.member !== 'undefined' && typeof self.context.dimension !== 'undefined') {

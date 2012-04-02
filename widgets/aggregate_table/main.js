@@ -30,6 +30,15 @@ OpenSpending.AggregateTable = function (elem, context, state) {
               help: 'Each selected dimension will display as a column, and values will be drilled down by it.'
             },
             {
+              variable: 'year',
+              label: 'Year:',
+              type: 'slider',
+              'dimension': 'time',
+              'attribute': 'year',
+              'default': self.state.year,
+              help: 'Filter by year.'
+            },
+            {
               variable: 'cuts',
               label: 'Filters:',
               type: 'cuts',
@@ -49,14 +58,15 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     self.$e.empty();
     self.state = state;
 
-    if (self.context.time) {
-      self.state.cuts.year = self.context.time;
-    }
-
     var cuts = [];
     for (var field in self.state.cuts) {
       cuts.push(field + ':' + self.state.cuts[field]);
     }
+
+    if (self.state.year) {
+      cuts.push('time.year:' + self.state.year);
+    }
+
     if (cuts.length) {
       cuts = cuts.join('|');
     }
