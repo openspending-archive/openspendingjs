@@ -34,7 +34,7 @@ class Column
       return item
     out = item.label;
     if item?.html_url?
-      out = '<a href="' + item.html_url + '">' + out + '</a>'
+      out = '<a data-name="' + item.name + '" href="' + item.html_url + '">' + out + '</a>'
     return out
 
 class OpenSpending.DataTable
@@ -137,7 +137,11 @@ class OpenSpending.DataTable
     newparams.q = params.sSearch
 
     # Make data request
-    rq = $.get(@options.source, newparams)
+    rq = $.ajax
+      url: @options.source
+      data: newparams
+      dataType: 'jsonp'
+    
     rq.fail OpenSpending.ajaxError("Source request failed. Params: #{JSON.stringify(params)}")
 
     rq.then (data) =>

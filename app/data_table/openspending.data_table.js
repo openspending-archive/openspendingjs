@@ -26,7 +26,7 @@
       if (!((item != null ? item.label : void 0) != null)) return item;
       out = item.label;
       if ((item != null ? item.html_url : void 0) != null) {
-        out = '<a href="' + item.html_url + '">' + out + '</a>';
+        out = '<a data-name="' + item.name + '" href="' + item.html_url + '">' + out + '</a>';
       }
       return out;
     };
@@ -163,7 +163,11 @@
       }
       newparams.filter = newparams.filter.join("|");
       newparams.q = params.sSearch;
-      rq = $.get(this.options.source, newparams);
+      rq = $.ajax({
+        url: this.options.source,
+        data: newparams,
+        dataType: 'jsonp'
+      });
       rq.fail(OpenSpending.ajaxError("Source request failed. Params: " + (JSON.stringify(params))));
       rq.then(function(data) {
         $(conf.oInstance).trigger('xhr', conf);

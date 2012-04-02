@@ -16,7 +16,11 @@ OpenSpending.Treemap = function (elem, context, state) {
     resources.push(OpenSpending.scriptRoot + "/widgets/treemap/js/excanvas.js");
   }
 
-  this.context = context;
+  self.context = _.extend({
+    click: function(node) {
+      document.location.href = node.data.link;
+    }
+  }, context);
   this.state = state;
 
   this.configure = function(endConfigure) {
@@ -112,6 +116,7 @@ OpenSpending.Treemap = function (elem, context, state) {
             $area: item.amount,
             title: item.label || item.name,
             link: item.html_url,
+            name: item.name,
             $color: item.color || '#333333'
           }
         };
@@ -160,7 +165,7 @@ OpenSpending.Treemap = function (elem, context, state) {
           enable: true,
           onClick: function(node) {
             if(node) {
-                document.location.href = node.data.link;
+                self.context.click(node);
             }
           },
           onRightClick: function() {

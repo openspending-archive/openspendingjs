@@ -132,14 +132,8 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     $.get(context.siteUrl + '/' + context.dataset + '/model.json', function(data) {
       self.mapping = data.mapping;
       self.update(self.state);
-    });
+    }, 'jsonp');
 };
-
-  // The rest of this function is suitable for copypasta into other
-  // plugins: load all scripts we need, and return a promise object
-  // that will fire when the class is ready
-  var dfd = $.Deferred();
-  dfd.done(function(that) {that.init();});
 
   // The rest of this function is suitable for copypasta into other
   // plugins: load all scripts we need, and return a promise object
