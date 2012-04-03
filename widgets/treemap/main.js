@@ -19,6 +19,11 @@ OpenSpending.Treemap = function (elem, context, state) {
   self.context = _.extend({
     click: function(node) {
       document.location.href = node.data.link;
+    },
+    createLabel: function(widget, domElement, node) {
+      if ((node.data.value/self.total)>0.03) {
+        domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
+      }
     }
   }, context);
   this.state = state;
@@ -218,9 +223,7 @@ OpenSpending.Treemap = function (elem, context, state) {
         //Add the name of the node in the corresponding label
         //This method is called once, on label creation and only for DOM labels.
         onCreateLabel: function(domElement, node){
-          if ((node.data.value/self.total)>0.03) {
-            domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
-          }
+          self.context.createLabel(self, domElement, node);
         }
     });
     self.tm.loadJSON(this.data);
