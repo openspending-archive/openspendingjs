@@ -109,7 +109,8 @@ OpenSpending.AggregateTable = function (elem, context, state) {
       tableOptions: {
         bFilter: false,
         sDom: "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
-        sPaginationType: "bootstrap"
+        sPaginationType: "bootstrap",
+        iDisplayLength: context.pagesize || 15
       },
       defaultParams: {
         dataset: context.dataset,
