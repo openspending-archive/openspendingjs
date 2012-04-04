@@ -322,6 +322,16 @@ osw.CutsNode = function(builder, elem, obj, model) {
         self.updateValues(filter);
     };
 
+    self.autoComplete = function(dimension, attribute) {
+        return function(request, response) {
+            builder.fetchDistinct(dimension, attribute, request.term).then(function(distinct) {
+                response(_.map(distinct.results, function(res) {
+                    return attribute ? res[attribute] : res;
+                }));
+            });
+        }
+    };
+
     self.updateValues = function(el) {
         el.find('.value').hide();
         var key = el.find('.dimension').val();
@@ -329,6 +339,12 @@ osw.CutsNode = function(builder, elem, obj, model) {
         builder.fetchDistinct(key, attribute).then(function(distinct) {
             if (distinct.count > 20) {
                 el.find('.value').replaceWith("<input class='value' />");
+                el.find('.value').autocomplete({
+                    source: self.autoComplete(key, attribute),
+                    select: function(e) {
+                        el.find('.value').trigger('change');
+                    }
+                });
             } else {
                 el.find('.value').replaceWith("<select class='value' />");
                 var elVal = el.find('.value');
