@@ -97,12 +97,13 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     };
 
     self.fetchDistinct = function(dimension, attribute, query) {
-        var dfd = $.get(context.siteUrl + '/' + context.dataset + '/' + dimension + '.distinct',
-            {attribute: attribute, q: query});
+        var dfd = $.ajax({
+            url: context.siteUrl + '/' + context.dataset + '/' + dimension + '.distinct',
+            data: {attribute: attribute, q: query},
+            dataType: 'jsonp'
+            });
         return dfd.promise();
     };
-
-    window.bob = this;
 
     if (!window.queryBuilderLoaded) {
         yepnope({
@@ -152,7 +153,7 @@ osw.SliderNode = function(builder, elem, obj, model) {
     self.nodeElem = elem.find('#' + obj.id);
     self.sliderElem = self.nodeElem.find('.slider');
     builder.fetchDistinct(obj.dimension, obj.attribute).then(function(distinct) {
-        var values = _.map(distinct, function(d) {
+        var values = _.map(distinct.results, function(d) {
             return d[obj.attribute];
         });
         self.sliderElem.slider({
@@ -306,16 +307,40 @@ osw.CutsNode = function(builder, elem, obj, model) {
     self.updateAttributes = function(e) {
         var filter = $(e.target).parents('.filter');
         var dimension = model.dimensions[filter.find('.dimension').val()];
-        var attributes = filter.find('.attribute');
+        var attribute = filter.find('.attribute');
+        attribute.empty();
         if (dimension.attributes) {
-            attributes.empty();
-            _.each(_.keys(dimension.attributes), function (e) {
-                attributes.append("<option name='" + e + "'>" + e + "</option>");
+            _.each(_.keys(dimension.attributes), function (a) {
+                attribute.append("<option name='" + a + "'>" + a + "</option>");
             });
-            attributes.show();
+            attribute.val('label');
+            attribute.show();
         } else {
-            attributes.hide();
+            attribute.val('');
+            attribute.hide();
         }
+        self.updateValues(filter);
+    };
+
+    self.updateValues = function(el) {
+        el.find('.value').hide();
+        var key = el.find('.dimension').val();
+        var attribute = el.find('.attribute').val();
+        builder.fetchDistinct(key, attribute).then(function(distinct) {
+            if (distinct.count > 20) {
+                el.find('.value').replaceWith("<input class='value' />");
+            } else {
+                el.find('.value').replaceWith("<select class='value' />");
+                var elVal = el.find('.value');
+                _.each(distinct.results, function(d) {
+                    if (typeof d !== 'string' && attribute) {
+                        d = d[attribute];
+                    }
+                    elVal.append('<option value="' + d + '">' + d + '</option>');
+                });
+                elVal.trigger('change');
+            }
+        });
     };
 
     self.addFilter = function(e) {
@@ -324,6 +349,9 @@ osw.CutsNode = function(builder, elem, obj, model) {
         var el = self.nodeElem.find('.filter').last();
         el.find('.remove-filter').click(self.removeFilter);
         el.find('.dimension').change(self.updateAttributes);
+        el.find('.attribute').change(function(e) {
+            self.updateValues($(e.target).parents('.filter'));
+        });
         el.find('.dimension').trigger('change');
         return false;
     };
