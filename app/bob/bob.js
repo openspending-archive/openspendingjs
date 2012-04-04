@@ -99,7 +99,7 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     self.fetchDistinct = function(dimension, attribute, query) {
         var dfd = $.ajax({
             url: context.siteUrl + '/' + context.dataset + '/' + dimension + '.distinct',
-            data: {attribute: attribute, q: query},
+            data: {attribute: attribute, q: query, limit: 20},
             dataType: 'jsonp'
             });
         return dfd.promise();
@@ -304,24 +304,6 @@ osw.CutsNode = function(builder, elem, obj, model) {
         return o.label;
     });
 
-    self.updateAttributes = function(e) {
-        var filter = $(e.target).parents('.filter');
-        var dimension = model.dimensions[filter.find('.dimension').val()];
-        var attribute = filter.find('.attribute');
-        attribute.empty();
-        if (dimension.attributes) {
-            _.each(_.keys(dimension.attributes), function (a) {
-                attribute.append("<option name='" + a + "'>" + a + "</option>");
-            });
-            attribute.val('label');
-            attribute.show();
-        } else {
-            attribute.val('');
-            attribute.hide();
-        }
-        self.updateValues(filter);
-    };
-
     self.autoComplete = function(dimension, attribute) {
         return function(request, response) {
             builder.fetchDistinct(dimension, attribute, request.term).then(function(distinct) {
@@ -332,43 +314,70 @@ osw.CutsNode = function(builder, elem, obj, model) {
         }
     };
 
-    self.updateValues = function(el) {
-        el.find('.value').hide();
-        var key = el.find('.dimension').val();
-        var attribute = el.find('.attribute').val();
-        builder.fetchDistinct(key, attribute).then(function(distinct) {
+    self.setFilter = function(el, dimension, attribute, value) {
+        var dimEl = el.find('.dimension');
+        var attrEl = el.find('.attribute');
+        var valueEl = el.find('.value').hide();
+        dimension = dimEl.val(dimension).val();
+        var dimModel = model.dimensions[dimension];
+        attrEl.empty();
+        if (dimModel.attributes) {
+            _.each(_.keys(dimModel.attributes), function (a) {
+                attrEl.append("<option name='" + a + "'>" + a + "</option>");
+            });
+            attribute = attrEl.val(attribute || 'label').val();
+            attrEl.show();
+        } else {
+            attrEl.val('');
+            attrEl.hide();
+        }
+
+        builder.fetchDistinct(dimension, attribute).then(function(distinct) {
             if (distinct.count > 20) {
-                el.find('.value').replaceWith("<input class='value' />");
-                el.find('.value').autocomplete({
-                    source: self.autoComplete(key, attribute),
+                valueEl.replaceWith("<input class='value' />");
+                valueEl = el.find('.value');
+                valueEl.autocomplete({
+                    source: self.autoComplete(dimension, attribute),
                     select: function(e) {
-                        el.find('.value').trigger('change');
+                        valueEl.trigger('change');
                     }
                 });
             } else {
-                el.find('.value').replaceWith("<select class='value' />");
-                var elVal = el.find('.value');
+                valueEl.replaceWith("<select class='value' />");
+                valueEl = el.find('.value');
                 _.each(distinct.results, function(d) {
                     if (typeof d !== 'string' && attribute) {
                         d = d[attribute];
                     }
-                    elVal.append('<option value="' + d + '">' + d + '</option>');
+                    valueEl.append('<option value="' + d + '">' + d + '</option>');
                 });
-                elVal.trigger('change');
             }
+            valueEl.val(value);
+            elem.trigger('change');
         });
     };
 
-    self.addFilter = function(e) {
+    self.dimensionChange = function(e) {
+        var filter = $(e.target).parents('.filter');
+        self.setFilter(filter, filter.find('.dimension').val()); 
+        return false;
+    }
+
+    self.attributeChange = function(e) {
+        var filter = $(e.target).parents('.filter');
+        self.setFilter(filter, filter.find('.dimension').val(),
+            filter.find('.attribute').val()); 
+        return false;
+    }
+
+    self.addFilter = function(e, dimension, attribute, value) {
         var html = self.filterTemplate({dimensions: dimensions});
         self.nodeElem.find('.add-filter').before(html);
         var el = self.nodeElem.find('.filter').last();
         el.find('.remove-filter').click(self.removeFilter);
-        el.find('.dimension').change(self.updateAttributes);
-        el.find('.attribute').change(function(e) {
-            self.updateValues($(e.target).parents('.filter'));
-        });
-        el.find('.dimension').trigger('change');
+        el.find('.dimension').change(self.dimensionChange);
+        el.find('.attribute').change(self.attributeChange);
+        self.setFilter(el, dimension, attribute, value);
         return false;
     };
 
@@ -381,12 +390,8 @@ osw.CutsNode = function(builder, elem, obj, model) {
     elem.append(self.nodeTemplate({obj: obj}));
     self.nodeElem = elem.find('#' + obj.id);
     _.each(_.keys(cuts), function(e, i) {
-        self.addFilter();
-        var el = self.nodeElem.find('.filter').last();
         e = e.split('.', 1);
-        el.find('.dimension').val(e[0]);
-        el.find('.attribute').val(e[1]);
-        el.find('.value').val(cuts[e]);
+        self.addFilter(null, e[0], e[1], cuts[e]);
     });
     self.nodeElem.find('.add-filter').click(self.addFilter);
 };
