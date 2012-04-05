@@ -2,11 +2,12 @@
 ## general
 *.orig
 *~
+.DS_Store
 .*.swp
 sandbox/*
 ## specific
 scripts/localconfig.js
 src/flash-ordnance
-.DS_Store
 src/dfid
 src/flash-working
+/node_modules

@@ -1,37 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen" />
+  <meta charset="utf-8">
+  <title>Test Suite</title>
+  <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+</head>
+<body>
+  <div id="mocha"></div>
   <script src="../lib/vendor/jquery.js"></script>
   <script src="../lib/vendor/underscore.js"></script>
   <script src="../lib/vendor/backbone.js"></script>
-  <script src="qunit/qunit.js"></script>
+
+  <script src="vendor/coffee-script.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="vendor/sinon.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/sinon-chai/lib/sinon-chai.js"></script>
+  <script>
+    mocha.setup('bdd');
+    window.expect = chai.expect;
+    chai.use(sinonChai);
+    
+    // Replace the default CS loader with a synchronous one.
+    CoffeeScript.load = function (url, callback) {
+      jQuery.ajax({
+        async: false,
+        url: url,
+        cache: false,
+        dataType: 'text'
+      }).done(function (data) {
+        CoffeeScript.run(data);
+      }).always(callback);
+    };
+    
+    jQuery(function () {
+      mocha.run().globals(['OpenSpending', 'jQuery', 'XMLHttpRequest']);
+    })
+  </script>
 
   <script src="fixtures.js"></script>
 
-  <script src="../lib/utils/utils.js"></script>
-  <script src="test_utils.js"></script>
-
-  <script src="../lib/utils/gdocs.js"></script>
-  <script src="test_gdocs.js"></script>
-
-  <script src="../lib/utils/wdmmg.js"></script>
-  <script src="test_wdmmg.js"></script>
-
-  <script src="../lib/utils/tree.js"></script>
-  <script src="test_tree.js"></script>
-  <script src="../lib/datastore.js"></script>
-  <script src="test_datastore.js"></script>
-  <script src="../lib/model.js"></script>
-  <script src="test_model.js"></script>
-
+  <script src="../lib/boot.js"></script>
   <script src="../lib/aggregator.js"></script>
-  <script src="test_aggregator.js"></script>
-</head>
-<body>
-  <h1 id="qunit-header">QUnit example</h1>
-  <h2 id="qunit-banner"></h2>
-  <h2 id="qunit-userAgent"></h2>
-  <ol id="qunit-tests"></ol>
+  <script src="../lib/datastore.js"></script>
+  <script src="../lib/main.js"></script>
+  <script src="../lib/model.js"></script>
+  <script src="../lib/utils/gdocs.js"></script>
+  <script src="../lib/utils/tree.js"></script>
+  <script src="../lib/utils/utils.js"></script>
+  <script src="../lib/widgets.js"></script>
+
+  <script type="text/coffeescript" src="spec/lib/boot.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/aggregator.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/datastore.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/main.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/model.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/utils/gdocs.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/utils/tree.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/utils/utils.coffee"></script>
+  <script type="text/coffeescript" src="spec/lib/widgets.coffee"></script>
+
 </body>
 </html>
