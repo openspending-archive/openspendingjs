@@ -165,6 +165,8 @@
       newparams.q = params.sSearch;
       rq = $.ajax({
         url: this.options.source,
+        jsonpCallback: 'key_' + btoa($.param(newparams)).replace(/\=/g, ''),
+        cache: true,
         data: newparams,
         dataType: 'jsonp'
       });

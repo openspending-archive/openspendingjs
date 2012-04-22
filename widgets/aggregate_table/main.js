@@ -130,10 +130,16 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     self.$qb = elem.prev();
     self.$e.addClass("table-widget");
 
-    $.get(context.siteUrl + '/' + context.dataset + '/model.json', function(data) {
-      self.mapping = data.mapping;
-      self.update(self.state);
-    }, 'jsonp');
+    $.ajax({
+      url: context.siteUrl + '/' + context.dataset + '/model.json', 
+      cache: true,
+      jsonpCallback: 'model',
+      success: function(data) {
+        self.mapping = data.mapping;
+        self.update(self.state);
+        }, 
+      dataType: 'jsonp'
+      });
 };
 
   // The rest of this function is suitable for copypasta into other

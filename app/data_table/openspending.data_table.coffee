@@ -139,6 +139,8 @@ class OpenSpending.DataTable
     # Make data request
     rq = $.ajax
       url: @options.source
+      jsonpCallback: 'key_' + btoa($.param(newparams)).replace(/\=/g, '')
+      cache: true
       data: newparams
       dataType: 'jsonp'
     

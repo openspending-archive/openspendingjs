@@ -58,49 +58,56 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
 
     self.render = function() {
         //console.log(spec);
-        $.get(context.siteUrl + '/' + context.dataset + '/model.json', function(model) {
-            model.dimensions = {};
-            model.measures = {};
-            _.each(_.keys(model.mapping), function (k) {
-                var obj = model.mapping[k];
-                obj.name = k;
-                if (obj.type == 'measure') {
-                    model.measures[k] = obj;
-                } else {
-                    model.dimensions[k] = obj;
-                }
-            });
-            self.id = 'qb' + Math.floor(Math.random()*11);
-            elem.append(self.template(self));
-            var form = $('#' + self.id + ' .insert-here');
-            _.each(spec, function(obj) {
-                obj.id = obj.variable + '-' + Math.floor(Math.random()*11);
-                var nodeClass = osw.QueryNodes[obj.type];
-                if (nodeClass) {
-                    self.nodes[obj.variable] = new nodeClass(self, form, obj, model);
-                }
-            });
-            $('#' + self.id + ' .qb-toggle').click(function(e) {
-                var el = $(e.currentTarget);
-                el.find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
-                $('#' + self.id + ' .fields').slideToggle('fast');
-                return false;
-            });
-            $('#' + self.id + ' .qb-quit').click(function(e) {
-                $('#' + self.id).parents('.query-builder').remove();
-                return false;
-            });
-            form.change(self.update);
-            form.submit(self.update);
-            elem.find('.finish').click(function(e){finish(); return false;});
-        }, 'jsonp');
+        $.ajax({
+            url: context.siteUrl + '/' + context.dataset + '/model.json', 
+            cache: true,
+            jsonpCallback: 'qbmodel',
+            success: function(model) {
+                model.dimensions = {};
+                model.measures = {};
+                _.each(_.keys(model.mapping), function (k) {
+                    var obj = model.mapping[k];
+                    obj.name = k;
+                    if (obj.type == 'measure') {
+                        model.measures[k] = obj;
+                    } else {
+                        model.dimensions[k] = obj;
+                    }
+                });
+                self.id = 'qb' + Math.floor(Math.random()*11);
+                elem.append(self.template(self));
+                var form = $('#' + self.id + ' .insert-here');
+                _.each(spec, function(obj) {
+                    obj.id = obj.variable + '-' + Math.floor(Math.random()*11);
+                    var nodeClass = osw.QueryNodes[obj.type];
+                    if (nodeClass) {
+                        self.nodes[obj.variable] = new nodeClass(self, form, obj, model);
+                    }
+                });
+                $('#' + self.id + ' .qb-toggle').click(function(e) {
+                    var el = $(e.currentTarget);
+                    el.find('i').toggleClass('icon-chevron-up').toggleClass('icon-chevron-down');
+                    $('#' + self.id + ' .fields').slideToggle('fast');
+                    return false;
+                });
+                $('#' + self.id + ' .qb-quit').click(function(e) {
+                    $('#' + self.id).parents('.query-builder').remove();
+                    return false;
+                });
+                form.change(self.update);
+                form.submit(self.update);
+                elem.find('.finish').click(function(e){finish(); return false;});
+            }, 
+            dataType: 'jsonp'});
     };
 
     self.fetchDistinct = function(dimension, attribute, query) {
         var dfd = $.ajax({
             url: context.siteUrl + '/' + context.dataset + '/' + dimension + '.distinct',
             data: {attribute: attribute, q: query, limit: 20},
-            dataType: 'jsonp'
+            dataType: 'jsonp',
+            cache: true,
+            jsonpCallback: 'distinct_' + dimension + '__' + attribute + '__' + btoa(query).replace(/\=/g, '')
             });
         return dfd.promise();
     };
