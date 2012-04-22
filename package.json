@@ -1,0 +1,11 @@
+{
+  "name": "openspending",
+  "version": "0.0.1",
+  "devDependencies": {
+    "coffee-script": "1.2.x",
+    "chai": "0.5.x",
+    "mocha": "1.0.x",
+    "sinon": "1.3.x",
+    "sinon-chai": "1.1.x"
+  }
+}
