@@ -78,10 +78,11 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     drilldowns = drilldowns.join('|');
     columns.push({
           'name': 'amount',
-          'label': self.mapping['amount'].label,
+          'label': self.mapping['amount'].label + ' (<span class="currency"></span>)',
           'width': '15%',
           'render': function(coll, obj) {
-            return OpenSpending.Utils.formatAmountWithCommas(obj || 0);
+            return OpenSpending.Utils.formatAmountWithCommas(obj || 0, 
+              0, coll.aData['__amount_currency']);
           }
         });
     columns.push({
@@ -102,6 +103,8 @@ OpenSpending.AggregateTable = function (elem, context, state) {
           if (data.summary.amount) {
             d.__amount_pct = d.amount / data.summary.amount;
           }
+          var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
+          self.$e.find('.currency').text(symbol);
           return d;
         });
       },
