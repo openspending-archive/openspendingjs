@@ -73,7 +73,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
     }
     if (self.state.drilldowns) {
       // call openspending api for data
-      new OpenSpending.Aggregator({
+      self.aggregator = new OpenSpending.Aggregator({
           siteUrl: self.context.siteUrl,
           dataset: self.context.dataset,
           rootNodeLabel: self.context.rootNodeLabel || 'Total',
@@ -83,6 +83,10 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
           callback: self.dataLoaded
       });
     }
+  };
+
+  this.getDownlaodURL = function() {
+    return self.aggregator.getCSVURL();
   };
   
   this.init = function() {

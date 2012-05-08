@@ -80,7 +80,7 @@ OpenSpending.Treemap = function (elem, context, state) {
     }
 
     if (self.state.drilldown) {
-      new OpenSpending.Aggregator({
+      self.aggregator = new OpenSpending.Aggregator({
         siteUrl: self.context.siteUrl,
         dataset: self.context.dataset,
         drilldowns: [self.state.drilldown],
@@ -92,6 +92,10 @@ OpenSpending.Treemap = function (elem, context, state) {
         }
       });
     }
+  };
+
+  this.getDownloadURL = function() {
+    return self.aggregator.getCSVURL();
   };
 
   this.serialize = function() {

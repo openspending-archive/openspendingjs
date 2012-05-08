@@ -53,6 +53,12 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     return self.state;
   };
 
+  this.getDownloadURL = function() {
+    var data = self.dataTable.lastParams;
+    data['format'] = 'csv';
+    return self.dataTable.options.source + '?' + $.param(data);
+  };
+
   this.update = function(state) {
     //console.log(state);
     self.$e.empty();
