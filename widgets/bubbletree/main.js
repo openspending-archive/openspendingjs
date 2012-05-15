@@ -33,6 +33,15 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
               help: 'Each selected dimension will display as an additional level of bubbles.'
             },
             {
+              variable: 'year',
+              label: 'Year:',
+              type: 'slider',
+              'dimension': 'time',
+              'attribute': 'year',
+              'default': self.state.year,
+              help: 'Filter by year.'
+            },
+            {
               variable: 'cuts',
               label: 'Filters:',
               type: 'cuts',
