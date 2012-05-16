@@ -108,6 +108,8 @@ OpenSpending.AggregateTable = function (elem, context, state) {
         return _.map(data.drilldown, function(d) {
           if (data.summary.amount) {
             d.__amount_pct = d.amount / data.summary.amount;
+          } else {
+            d.__amount_pct = 0.0;
           }
           var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
           self.$e.find('.currency').text(symbol);
