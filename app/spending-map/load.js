@@ -36,7 +36,7 @@
 				map.choropleth({
 					data: d1,
 					colors: function(d) {						
-						if (d === null) return '#e3e0e0';
+						if (d === null) return '#fff';
 						return colscale.getColor(d);
 					},
 					duration: function(d) { return Math.min(900,300*d) },
