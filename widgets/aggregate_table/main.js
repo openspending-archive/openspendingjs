@@ -53,6 +53,12 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     return self.state;
   };
 
+  this.getDownloadURL = function() {
+    var data = self.dataTable.lastParams;
+    data['format'] = 'csv';
+    return self.dataTable.options.source + '?' + $.param(data);
+  };
+
   this.update = function(state) {
     //console.log(state);
     self.$e.empty();
@@ -78,10 +84,11 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     drilldowns = drilldowns.join('|');
     columns.push({
           'name': 'amount',
-          'label': self.mapping['amount'].label,
+          'label': self.mapping['amount'].label + ' (<span class="currency"></span>)',
           'width': '15%',
           'render': function(coll, obj) {
-            return OpenSpending.Utils.formatAmountWithCommas(obj || 0);
+            return OpenSpending.Utils.formatAmountWithCommas(obj || 0, 
+              0, coll.aData['__amount_currency']);
           }
         });
     columns.push({
@@ -101,7 +108,11 @@ OpenSpending.AggregateTable = function (elem, context, state) {
         return _.map(data.drilldown, function(d) {
           if (data.summary.amount) {
             d.__amount_pct = d.amount / data.summary.amount;
+          } else {
+            d.__amount_pct = 0.0;
           }
+          var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
+          self.$e.find('.currency').text(symbol);
           return d;
         });
       },

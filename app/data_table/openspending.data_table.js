@@ -163,6 +163,7 @@
       }
       newparams.filter = newparams.filter.join("|");
       newparams.q = params.sSearch;
+      this.lastParams = newparams;
       rq = $.ajax({
         url: this.options.source,
         jsonpCallback: 'key_' + btoa($.param(newparams)).replace(/\=/g, ''),

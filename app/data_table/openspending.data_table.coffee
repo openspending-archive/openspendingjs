@@ -135,6 +135,7 @@ class OpenSpending.DataTable
 
     # query
     newparams.q = params.sSearch
+    @lastParams = newparams
 
     # Make data request
     rq = $.ajax

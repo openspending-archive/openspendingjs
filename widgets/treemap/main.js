@@ -23,7 +23,7 @@ OpenSpending.Treemap = function (elem, context, state) {
     },
     createLabel: function(widget, domElement, node) {
       if ((node.data.value/self.total)>0.03) {
-        domElement.innerHTML = "<div class='desc'><div class='amount'>" + OpenSpending.Utils.formatAmount(node.data.value) + "</div><div class='lbl'>" + node.name + "</div></div>";
+        domElement.innerHTML = "<div class='desc'><div class='amount'>" + OpenSpending.Utils.formatAmountWithCommas(node.data.value,0,self.currency) + "</div><div class='lbl'>" + node.name + "</div></div>";
       }
     }
   }, context);
@@ -81,7 +81,7 @@ OpenSpending.Treemap = function (elem, context, state) {
     }
 
     if (self.state.drilldown) {
-      new OpenSpending.Aggregator({
+      self.aggregator = new OpenSpending.Aggregator({
         siteUrl: self.context.siteUrl,
         dataset: self.context.dataset,
         drilldowns: [self.state.drilldown],
@@ -93,6 +93,10 @@ OpenSpending.Treemap = function (elem, context, state) {
         }
       });
     }
+  };
+
+  this.getDownloadURL = function() {
+    return self.aggregator.getCSVURL();
   };
 
   this.serialize = function() {
@@ -110,6 +114,8 @@ OpenSpending.Treemap = function (elem, context, state) {
   this.setDataFromAggregator = function (dataset, dimension, data) {
     var needsColorization = true;
     self.total = data.amount;
+    console.log(data);
+    self.currency = data.currency;
     self.data = {children: _.map(data.children, function(item) {
       if (item.color)
         needsColorization = false;
