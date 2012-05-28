@@ -8,7 +8,8 @@ OpenSpending.Treemap = function (elem, context, state) {
   var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
                  OpenSpending.scriptRoot + "/lib/aggregator.js",
                  OpenSpending.scriptRoot + "/lib/utils/utils.js",
-                 OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.js",
+                 //OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.js",
+                 'http://localhost/inc/_libraries_/jit/Jit/jit.js',
                  OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];
 
@@ -22,7 +23,7 @@ OpenSpending.Treemap = function (elem, context, state) {
     },
     createLabel: function(widget, domElement, node) {
       if ((node.data.value/self.total)>0.03) {
-        domElement.innerHTML = "<div class='desc'><h2>" + OpenSpending.Utils.formatAmount(node.data.value) + "</h2>" + node.name + "</div>";
+        domElement.innerHTML = "<div class='desc'><div class='amount'>" + OpenSpending.Utils.formatAmount(node.data.value) + "</div><div class='lbl'>" + node.name + "</div></div>";
       }
     }
   }, context);
@@ -151,6 +152,7 @@ OpenSpending.Treemap = function (elem, context, state) {
         levelsToShow: 1,
         titleHeight: 0,
         animate: true,
+        transition: $jit.Trans.Expo.easeOut,
 
         offset: 2,
         Label: {
