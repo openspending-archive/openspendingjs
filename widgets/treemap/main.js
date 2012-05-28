@@ -8,8 +8,7 @@ OpenSpending.Treemap = function (elem, context, state) {
   var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
                  OpenSpending.scriptRoot + "/lib/aggregator.js",
                  OpenSpending.scriptRoot + "/lib/utils/utils.js",
-                 //OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.js",
-                 'http://localhost/inc/_libraries_/jit/Jit/jit.js',
+                 OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.js",
                  OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];
 
