@@ -80,6 +80,11 @@ OpenSpending.DailyBread = function (elem) {
         $(this).hide()
       }
     })
+
+    // Simulate a click so that auto resize can happen on
+    // wheredoesmymoneygo.com. Sadly custom events won't work here, and only
+    // click appears to do the trick.
+    $(self.$e).click();
   }
 
   this.setData = function (data) {
