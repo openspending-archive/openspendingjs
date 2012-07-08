@@ -2,6 +2,8 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 
 (function ($) {
 
+TAXMAN_URL = 'http://taxman.openspending.org';
+
 var formatCurrency = function (val, prec, sym, dec, sep) {
   prec = prec === undefined ? 2 : prec
   sym = sym || '£'
@@ -34,7 +36,7 @@ OpenSpending.DailyBread = function (elem) {
   this.iconLookup = function (name) { return undefined; };
 
   this.init = function () {
-    this.setSalary(22000) // default starting salary
+    this.setSalary(22000); // default starting salary
 
     this.$e.find('.wdmmg-slider').slider({
       value: this.salaryVal,
@@ -42,17 +44,21 @@ OpenSpending.DailyBread = function (elem) {
       max: 200000,
       step: 10,
       animate: true,
-      slide: function () { self.sliderUpdated.apply(self, arguments) }
+      slide: function () { self.sliderSlide.apply(self, arguments) },
+      change: function () { self.sliderChange.apply(self, arguments) }
     })
 
-    this.$e.delegate('.db-area-col', 'click', this.handleClick)
+    this.$e.delegate('.db-area-col', 'click', self.handleClick)
   }
 
-  this.sliderUpdated = function (evt, sld) {
-    self.setSalary(sld.value)
-    self.sliderUpdate = true
-    self.draw()
-    self.sliderUpdate = false
+  this.sliderSlide = function (evt, sld) {
+    self.setSalary(sld.value);
+    self.drawTotals();
+  }
+
+  this.sliderChange = function (evt, sld) {
+    self.setSalary(sld.value);
+    self.draw(true);
   }
 
   this.handleClick = function () {
@@ -73,7 +79,7 @@ OpenSpending.DailyBread = function (elem) {
       .addClass('active')
 
     self.drawTier(tierId + 1)
-	
+
     // Hide old tiers
     self.$e.find('.db-tier').each(function () {
       if ($(this).attr('data-db-tier') > tierId + 1) {
@@ -96,11 +102,11 @@ OpenSpending.DailyBread = function (elem) {
       return _.map(
         _.filter(node.children, function(child) {
           return _.indexOf(skip, child.name);
-        }), 
+        }),
         function(child) {
           var daily = (child.amount / node.amount);
           if (absolute) daily = daily / 365.0;
-          return [child.name, child.label, daily, handleChildren(child, false)]; 
+          return [child.name, child.label, daily, handleChildren(child, false)];
         });
     }
     self.setData(handleChildren(data, true));
@@ -111,15 +117,41 @@ OpenSpending.DailyBread = function (elem) {
   }
 
   this.setSalary = function (salary) {
-    self.salaryVal = salary
-    self.taxVal = 0.4 * salary
+    self.salaryVal = salary;
   }
 
-  this.draw = function () {
-    self.drawTotals()
-    self.drawTier(0)
-    for (var i = 0, tot = self.tiers.length; i < tot; i += 1) {
-      self.drawTier(i)
+  this.getTaxVal = function () {
+    var rq = $.getJSON(TAXMAN_URL + '/gb?callback=?', {
+      year: 2009,
+      indirects: true,
+      income: self.salaryVal
+    });
+
+    rq.then(function (data) {
+      self.taxVal = data.calculation.directs.total + data.calculation.indirects.total;
+    })
+
+    return rq;
+  }
+
+  this.draw = function (sliderUpdate) {
+    var _draw = function _draw () {
+      self.drawTotals();
+      if (self.tiers.length === 0) {
+        self.drawTier(0, sliderUpdate);
+      } else {
+        for (var i = 0, tot = self.tiers.length; i < tot; i += 1) {
+          self.drawTier(i, sliderUpdate);
+        }
+      }
+    };
+
+    var taxUndef = (typeof self.taxVal === 'undefined' || self.taxVal == null);
+
+    if (sliderUpdate || taxUndef) {
+      self.getTaxVal().then(_draw);
+    } else {
+      _draw();
     }
   }
 
@@ -128,7 +160,7 @@ OpenSpending.DailyBread = function (elem) {
     $('#db-tax p').text(formatCurrency(self.taxVal, 0))
   }
 
-  this.drawTier = function (tierId) {
+  this.drawTier = function (tierId, sliderUpdate) {
     var tdAry = self.taxAndDataForTier(tierId)
     if (!tdAry) { return } // No child tier for selected area.
     var tax = tdAry[0], data = tdAry[1]
@@ -136,10 +168,10 @@ OpenSpending.DailyBread = function (elem) {
     var t = self.tiers[tierId] = self.tiers[tierId] || $("<div class='db-tier' data-db-tier='" + tierId + "'></div>").appendTo(self.$e)
     var n = data.length
     var w = 100.0 / n
-  
+
     var icons = _.map(data, function(d) { return self.iconLookup(d[0]); });
 
-    if (!self.sliderUpdate) {
+    if (!sliderUpdate) {
       var tpl = "<div class='db-area-row'>" +
                 "<% _.each(areas, function(area, idx) { %>" +
                 "  <div class='db-area-col db-area-title' style='width: <%= width %>%;' data-db-area='<%= idx %>'>" +
@@ -157,7 +189,7 @@ OpenSpending.DailyBread = function (elem) {
                 "</div>"
 
       t.html(_.template(tpl, { activeArea: self.areas[tierId], areas: data, width: w, icons: icons }))
-      
+
       self.drawIcons(t);
     }
 
@@ -186,11 +218,11 @@ OpenSpending.DailyBread = function (elem) {
     }
     return [tax, data]
   }
-  
+
   this.drawIcons = function(t) {
     var iconRad = 35;
     $('.db-area-icon svg', t).remove();
-    $('.db-area-icon', t).each(function(i,e) { 
+    $('.db-area-icon', t).each(function(i,e) {
       var iconUrl, paper;
       iconUrl = $(e).data('svg-url');
       paper = Raphael(e, iconRad+iconRad,iconRad+iconRad+5);
