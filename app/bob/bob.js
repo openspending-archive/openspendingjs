@@ -397,8 +397,9 @@ osw.CutsNode = function(builder, elem, obj, model) {
     elem.append(self.nodeTemplate({obj: obj}));
     self.nodeElem = elem.find('#' + obj.id);
     _.each(_.keys(cuts), function(e, i) {
-        e = e.split('.', 1);
-        self.addFilter(null, e[0], e[1], cuts[e]);
+        var dimension = e.split('.')[0],
+            attribute = e.split('.')[1];
+        self.addFilter(null, dimension, attribute, cuts[e]);
     });
     self.nodeElem.find('.add-filter').click(self.addFilter);
 };
