@@ -15,9 +15,15 @@ class OpenSpending.Browser
   # dataset - The name of the dataset
   #
   # Returns: the Browser instance
-  constructor: (element, @dataset) ->
+  options:
+    source: '',
+    table: {}
+    facets: {}
+
+  constructor: (element, @dataset, options) ->
     @element = $(element)
-    @req = $.getJSON('/' + @dataset + '/dimensions.json')
+    @options = $.extend(true, {}, @options, options)
+    @req = $.getJSON(@options.source + '/' + @dataset + '/dimensions.json')
 
     this._buildTable()
     this._buildFacets()
@@ -77,13 +83,15 @@ class OpenSpending.Browser
     if tableEl.length is 0
       tableEl = $('<div class="browser_datatable"></div>').appendTo(@element)
 
-    @table = new OpenSpending.DataTable(tableEl,
+    options = $.extend(true, {
+      source: @options.source + '/api/2/search'
       sorting: [['amount', 'desc']]
       defaultParams: { dataset: @dataset }
       tableOptions:
         sDom: "<'row'<'span0'l><'span9'f>r>t<'row'<'span4'i><'span5'p>>"
         sPaginationType: "bootstrap"
-    )
+    }, @options.table)
+    @table = new OpenSpending.DataTable(tableEl, options)
 
   # Private: build the Faceter instance for this browser
   _buildFacets: ->
@@ -91,12 +99,14 @@ class OpenSpending.Browser
 
     if facetEl.length is 0
       facetEl = $('<div class="browser_faceter"></div>').appendTo(@element)
-
-    @faceter = new OpenSpending.Faceter(facetEl, [], {
+    
+    options = $.extend(true, {
+      source: @options.source + '/api/2/search'
       defaultParams:
         dataset: @dataset
         expand_facet_dimensions: true
-    })
+    }, @options.faceter)
+    @faceter = new OpenSpending.Faceter(facetEl, [], options)
 
     # Rebind the addFilter/removeFilter events raised by the Faceter instance
     # to add/remove filters from the DataTable instance and redraw the table

@@ -6,10 +6,17 @@
 
   OpenSpending.Browser = (function() {
 
-    function Browser(element, dataset) {
+    Browser.prototype.options = {
+      source: '',
+      table: {},
+      facets: {}
+    };
+
+    function Browser(element, dataset, options) {
       this.dataset = dataset;
       this.element = $(element);
-      this.req = $.getJSON('/' + this.dataset + '/dimensions.json');
+      this.options = $.extend(true, {}, this.options, options);
+      this.req = $.getJSON(this.options.source + '/' + this.dataset + '/dimensions.json');
       this._buildTable();
       this._buildFacets();
     }
@@ -88,12 +95,13 @@
     };
 
     Browser.prototype._buildTable = function() {
-      var tableEl;
+      var options, tableEl;
       tableEl = this.element.find('.browser_datatable')[0];
       if (tableEl.length === 0) {
         tableEl = $('<div class="browser_datatable"></div>').appendTo(this.element);
       }
-      return this.table = new OpenSpending.DataTable(tableEl, {
+      options = $.extend(true, {
+        source: this.options.source + '/api/2/search',
         sorting: [['amount', 'desc']],
         defaultParams: {
           dataset: this.dataset
@@ -102,22 +110,25 @@
           sDom: "<'row'<'span0'l><'span9'f>r>t<'row'<'span4'i><'span5'p>>",
           sPaginationType: "bootstrap"
         }
-      });
+      }, this.options.table);
+      return this.table = new OpenSpending.DataTable(tableEl, options);
     };
 
     Browser.prototype._buildFacets = function() {
-      var facetEl,
+      var facetEl, options,
         _this = this;
       facetEl = this.element.find('.browser_faceter');
       if (facetEl.length === 0) {
         facetEl = $('<div class="browser_faceter"></div>').appendTo(this.element);
       }
-      this.faceter = new OpenSpending.Faceter(facetEl, [], {
+      options = $.extend(true, {
+        source: this.options.source + '/api/2/search',
         defaultParams: {
           dataset: this.dataset,
           expand_facet_dimensions: true
         }
-      });
+      }, this.options.faceter);
+      this.faceter = new OpenSpending.Faceter(facetEl, [], options);
       this.faceter.element.off('faceter:addFilter');
       this.faceter.element.off('faceter:removeFilter');
       this.faceter.element.on('faceter:addFilter', function(e, k, v) {
