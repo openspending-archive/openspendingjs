@@ -1,5 +1,5 @@
 for f in $(./libfiles .js); do
-  if [[ ! "$f" =~ ".min.js$" ]]; then
+  if [[ ! "$f" =~ .min.js$ ]]; then
     echo ${f%.*}.min.js  
   fi
 done |
