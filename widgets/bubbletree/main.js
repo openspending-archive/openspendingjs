@@ -65,7 +65,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
               qtip: true,
               delay: 800,
               content: function(node) {
-                  var formattedAmount = OpenSpending.Utils.currencySymbol(node.currency)+' '+node.famount;
+                  var formattedAmount = OpenSpending.Utils.formatAmountWithCommas(node.amount,0,node.currency);
                   return [node.label, '<div class="desc">'+(node.description ? node.description : 'No description given')+'</div><div class="amount">'+formattedAmount+'</div>'];
               }
           }

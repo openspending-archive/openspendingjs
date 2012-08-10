@@ -18,7 +18,13 @@ OpenSpending.Treemap = function (elem, context, state) {
 
   self.context = _.extend({
     click: function(node) {
-      document.location.href = node.data.link;
+      if (node.data.link) {
+        var link = context.embed ? node.data.link + '?embed=true' : node.data.link;
+        document.location.href = link;
+      }
+    },
+    hasClick: function(node) {
+      return node.data.link !== undefined;
     },
     createLabel: function(widget, domElement, node) {
       if ((node.data.value/self.total)>0.03) {
@@ -185,11 +191,13 @@ OpenSpending.Treemap = function (elem, context, state) {
           },
           onMouseEnter: function(node, eventInfo) {
             if(node) {
+              if (!self.context.hasClick(node)) {
+                self.$e.find('#'+node.id).css('cursor', 'default');
+              }
               node.setCanvasStyle('shadowBlur', 8);
               node.orig_color = node.getData('color');
               node.setData('color', '#A3B3C7');
               self.tm.fx.plotNode(node, self.tm.canvas);
-              // tm.labels.plotLabel(tm.canvas, node);
             }
           },
           onMouseLeave: function(node) {
