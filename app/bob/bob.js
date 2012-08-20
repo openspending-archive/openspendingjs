@@ -107,7 +107,7 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
             data: {attribute: attribute, q: query, limit: 20},
             dataType: 'jsonp',
             cache: true,
-            jsonpCallback: 'distinct_' + dimension + '__' + attribute + '__' + btoa(query).replace(/\=/g, '')
+            jsonpCallback: 'distinct_' + btoa(dimension + '__' + attribute + '__' + query).replace(/\=/g, '')
             });
         return dfd.promise();
     };
