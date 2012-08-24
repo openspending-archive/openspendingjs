@@ -5,9 +5,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
 OpenSpending.Treemap = function (elem, context, state) {
   var self = this;
 
-  var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
-                 OpenSpending.scriptRoot + "/lib/aggregator.js",
-                 OpenSpending.scriptRoot + "/lib/utils/utils.js",
+  var resources = [
                  OpenSpending.scriptRoot + "/widgets/treemap/js/thejit-2.min.js",
                  OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];

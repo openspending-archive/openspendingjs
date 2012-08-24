@@ -5,9 +5,6 @@ OpenSpending.AggregateTable = function (elem, context, state) {
   var self = this;
 
   var resources = [
-                OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
-                OpenSpending.scriptRoot + "/lib/aggregator.js",
-                OpenSpending.scriptRoot + "/lib/utils/utils.js",
                 OpenSpending.scriptRoot + "/lib/vendor/datatables/js/jquery.dataTables.js",
                 OpenSpending.scriptRoot + "/lib/vendor/datatables/css/jquery.dataTables.css",
                 OpenSpending.scriptRoot + "/app/data_table/openspending.data_table.js",

@@ -6,9 +6,7 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   OpenSpending.Bubbletree = function (elem, context, state) {
   var self = this;
 
-  var resources = [OpenSpending.scriptRoot + "/lib/vendor/underscore.js",
-                 OpenSpending.scriptRoot + "/lib/aggregator.js",
-                 OpenSpending.scriptRoot + "/lib/utils/utils.js",
+  var resources = [
                  OpenSpending.scriptRoot + "/lib/vendor/jquery.qtip.min.js",
                  OpenSpending.scriptRoot + "/lib/vendor/jquery.history.js",
                  OpenSpending.scriptRoot + "/lib/vendor/raphael-min.js",
