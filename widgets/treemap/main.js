@@ -60,7 +60,6 @@ OpenSpending.Treemap = function (elem, context, state) {
               'default': self.state.cuts,
               help: 'Limit the set of data to display.'
             }
-            
           ]
     );
   };
