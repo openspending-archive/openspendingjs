@@ -37,12 +37,11 @@ OpenSpending.Treemap = function (elem, context, state) {
     var qb = new OpenSpending.Widgets.QueryBuilder(
       self.$qb, self.update, endConfigure, self.context, [
             {
-              variable: 'drilldown',
+              variable: 'drilldowns',
               label: 'Tiles:',
               type: 'select',
-              single: true,
-              'default': self.state.drilldown,
-              help: 'The sum for each member of this dimension will be presented as a tile on the treemap.'
+              'default': self.state.drilldowns,
+              help: 'Each selected dimension will display as an additional level of tiles for the treemap.'
             },
             {
               variable: 'year',
@@ -65,8 +64,8 @@ OpenSpending.Treemap = function (elem, context, state) {
   };
 
   this.update = function(state) {
-    self.$e.empty();
     self.state = state;
+    self.state.drilldowns = self.state.drilldowns || [self.state.drilldown];
     self.state.cuts = self.state.cuts || {};
 
     var cuts = [];
@@ -82,16 +81,16 @@ OpenSpending.Treemap = function (elem, context, state) {
       cuts.push(self.context.dimension + ':' + self.context.member);
     }
 
-    if (self.state.drilldown) {
+    //console.log(self.state);
+    if (self.state.drilldowns) {
       self.aggregator = new OpenSpending.Aggregator({
         siteUrl: self.context.siteUrl,
         dataset: self.context.dataset,
-        drilldowns: [self.state.drilldown],
+        drilldowns: self.state.drilldowns,
         cuts: cuts,
         rootNodeLabel: 'Total',
         callback: function(data) {
-          self.setDataFromAggregator(this.dataset, this.drilldowns[0], data);
-          self.draw();
+          self.setDataFromAggregator(this.dataset, data);
         }
       });
     }
@@ -113,12 +112,17 @@ OpenSpending.Treemap = function (elem, context, state) {
     self.update(self.state);
   };
 
-  this.setDataFromAggregator = function (dataset, dimension, data) {
-    var needsColorization = true;
-    self.total = data.amount;
+  this.setDataFromAggregator = function (dataset, data) {
     console.log(data);
     self.currency = data.currency;
-    self.data = {children: _.map(data.children, function(item) {
+    self.level = 0;
+    self.setNode(data);
+  };
+
+  this.setNode = function (node) {
+    var needsColorization = true;
+    self.total = node.amount;
+    self.data = {children: _.map(node.children, function(item) {
       if (item.color)
         needsColorization = false;
       return {
@@ -126,6 +130,7 @@ OpenSpending.Treemap = function (elem, context, state) {
         id: item.id,
         name: item.label || item.name,
         data: {
+            node: item,
             value: item.amount,
             $area: item.amount,
             title: item.label || item.name,
@@ -139,6 +144,16 @@ OpenSpending.Treemap = function (elem, context, state) {
     if (needsColorization) {
       this.autoColorize();
     }
+    self.draw();
+
+  };
+
+  this.drilldown = function(tile) {
+    if (!tile.data.node.children.length) {
+      self.context.click(tile);
+    } else {
+      self.setNode(tile.data.node);
+    }
   };
 
   this.autoColorize = function() {
@@ -150,6 +165,7 @@ OpenSpending.Treemap = function (elem, context, state) {
   };
 
   this.draw = function () {
+    self.$e.empty();
     if (!self.data.children.length) {
       $(self.$e).hide();
       return;
@@ -180,7 +196,7 @@ OpenSpending.Treemap = function (elem, context, state) {
           enable: true,
           onClick: function(node) {
             if(node) {
-                self.context.click(node);
+              self.drilldown(node);
             }
           },
           onRightClick: function() {
