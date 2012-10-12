@@ -1,0 +1,62 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>OffenerHaushalt TreeTable</title>
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="http://clients.openspending.org/zebralog/bonn/style.css">
+  
+  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+  
+</head>
+<body>
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+  <div class="container">
+<a class='openspending-link-filter btn' data-year='2011' href='#'>2011</a>
+    <a class='openspending-link-filter btn' data-year='2012' href='#'>2012</a>
+   <!-- <a class='openspending-link-filter btn' data-year='2014' href='#'>2014</a>-->
+
+    <a class='openspending-link-filter btn' data-art='Ertrag' href='#'>Ertrag</a>
+    <a class='openspending-link-filter btn' data-art='Aufwand' href='#'>Aufwand</a>
+
+    <br/><br/>
+
+    <div class='openspending' id='vis_widget' style='height: 400px;'></div>
+    <div class='openspending' id='table_widget' style='height: 600px;'></div>
+  </div>
+
+  <style>
+    
+  </style>
+
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+  <script type="text/javascript" src="http://localhost/openspendingjs/prod/boot.js"></script>
+  <script type="text/javascript" src="http://localhost/openspendingjs/lib/vendor/backbone-0.9.1.js"></script>
+  <script type="text/javascript" src="http://localhost/openspendingjs/lib/widgets.js"></script>
+  <script type="text/javascript" src="http://localhost/openspendingjs/widgets/treemap/main.js"></script>
+  <script type="text/javascript" src="http://localhost/openspendingjs/widgets/aggregate_table/main.js"></script>
+  <script type="text/javascript" src="treetable.js"></script>
+  <script>
+    $(function() {
+      Backbone.history.start();
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+.openspending-link-filter {
+
+}
+
+.openspending-link-filter.disable {
+  color: #ddd;
+  text-decoration: none;
+}
+
+.openspending#table_widget {
+  margin-top: 1em;
+}
+
+.openspending#table_widget .dataTables_info,
+.openspending#table_widget .dataTables_paginate {
+  display: none;
+}
