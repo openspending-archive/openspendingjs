@@ -30,7 +30,7 @@ OpenSpending.Treemap = function (elem, context, state) {
       }
     }
   }, context);
-  this.state = state;
+  self.state = state;
 
   this.configure = function(endConfigure) {
     self.$qb.empty();
@@ -109,13 +109,11 @@ OpenSpending.Treemap = function (elem, context, state) {
     self.$e.before('<div class="treemap-qb"></div>');
     self.$qb = elem.prev();
     self.$e.addClass("treemap-widget");
-    self.update(self.state);
+    self.update(state);
   };
 
   this.setDataFromAggregator = function (dataset, data) {
-    console.log(data);
     self.currency = data.currency;
-    self.level = 0;
     self.setNode(data);
   };
 
