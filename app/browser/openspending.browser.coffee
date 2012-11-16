@@ -27,6 +27,7 @@ class OpenSpending.Browser
 
     this._buildTable()
     this._buildFacets()
+    this._loadRoute()
 
   init: () ->
     @req.then (data) =>
@@ -65,16 +66,34 @@ class OpenSpending.Browser
   addFilter: (key, value) ->
     @faceter.addFilter(key, value)
     @table.addFilter(key, value)
+    this._updateRoute()
 
   # Public: remove any filters on 'key'
   removeFilter: (key) ->
     @faceter.removeFilter(key)
     @table.removeFilter(key)
+    this._updateRoute()
 
   # Public: refetch and redraw all subcomponents of the browser
   redraw: () ->
     @faceter.redraw()
     @table.redraw()
+
+  # Private: update the URL with current filters
+  _updateRoute: ->
+    hash = ("#{k}:#{encodeURIComponent(v)}" for own k, v of @faceter.filters).join("/")
+    window.location.hash = hash
+
+  # Private: add filters from current URL
+  _loadRoute: ->
+    hash = window.location.hash.substr(1)
+    return if hash == ""
+
+    filters = (val.split(":") for val in hash.split("/"))
+    for filterValue in filters
+      key = filterValue[0]
+      value = decodeURIComponent(filterValue[1])
+      @addFilter(key, value)
 
   # Private: build the DataTable instance for this browser
   _buildTable: ->
