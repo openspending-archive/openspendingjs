@@ -15,3 +15,7 @@
 .openspending#table_widget .dataTables_paginate {
   display: none;
 }
+
+#vis_widget {
+  height: 400px;
+}

@@ -85,10 +85,12 @@ $(function() {
       return filters;
     },
 
-    initialize: function(context, filters, drilldowns) {
+    initialize: function(elem, context, filters, drilldowns) {
       this.context = context;
       this.filters = filters;
       this.drilldowns = drilldowns;
+      this.treemapElem = $('<div id="vis_widget" />').appendTo(elem);
+      this.aggregateTableElem = $('<div id="table_widget" />').appendTo(elem);
     },
 
     render: function(state, callback) {
@@ -97,10 +99,10 @@ $(function() {
       });
       this.context.render(this, state);
 
-      new OpenSpending.Treemap($('.openspending#vis_widget'), treemap_ctx, state);
-      new OpenSpending.AggregateTable($('.openspending#table_widget'), context, state).then(function(w) {
-        $('.openspending#table_widget').unbind('click', 'td a');
-        $('.openspending#table_widget').on('click', 'td a', function(e) {
+      new OpenSpending.Treemap(this.treemapElem, treemap_ctx, state);
+      new OpenSpending.AggregateTable(this.aggregateTableElem, context, state).then(function(widget) {
+        widget.$e.unbind('click', 'td a');
+        widget.$e.on('click', 'td a', function(e) {
           var name = $(e.target).data('name') + '';
           callback(name);
           return false;
@@ -109,5 +111,5 @@ $(function() {
     }
   });
 
-  OpenSpending.app = new OpenSpending.WidgetLink(context, {'kontotyp': 'Ertrag', 'year': '2012'}, ['teilhaushalt', 'kostentraeger']);
+  OpenSpending.app = new OpenSpending.WidgetLink($('#treetable_widget'), context, {'kontotyp': 'Ertrag', 'year': '2012'}, ['teilhaushalt', 'kostentraeger']);
 });
