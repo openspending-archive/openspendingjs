@@ -1,3 +1,5 @@
+OpenSpending = "OpenSpending" in window ? OpenSpending : {};
+
 $(function() {
   var context = {
     dataset: "kosice",
