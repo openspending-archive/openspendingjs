@@ -1,8 +1,4 @@
-.openspending-link-filter {
-
-}
-
-.openspending-link-filter.disable {
+.disable, .disable:hover {
   color: #ddd;
   text-decoration: none;
 }

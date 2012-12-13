@@ -1,4 +1,4 @@
-OpenSpending.Treetable = function (elem, context, filters, drilldowns) {
+OpenSpending.Treetable = function (elem, context, drilldowns) {
   var treemapElem = $('<div id="vis_widget" />').appendTo(elem);
   var aggregateTableElem = $('<div id="table_widget" />').appendTo(elem);
 
@@ -18,10 +18,27 @@ OpenSpending.Treetable = function (elem, context, filters, drilldowns) {
     });
   }
 
+  function drilldown(filters, callback) {
+    var currentDrilldown = _.find(drilldowns, function(d) {
+      return -1 == _.indexOf(_.keys(filters), d);
+    });
+
+    var state = {
+      drilldowns: [currentDrilldown],
+      cuts: filters
+    };
+
+    render(state, function(name) {
+      if (_.indexOf(drilldowns, currentDrilldown) >= drilldowns.length-1) {
+        context.callback(name);
+      } else {
+        callback(name, filters, currentDrilldown);
+      }
+    });
+  }
+
   return {
     render: render,
-    context: context,
-    filters: filters,
-    drilldowns: drilldowns
+    drilldown: drilldown
   }
 };

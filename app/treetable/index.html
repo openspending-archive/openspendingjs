@@ -20,14 +20,7 @@
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 
   <div class="container">
-<a class='openspending-link-filter btn' data-year='2011' href='#'>2011</a>
-    <a class='openspending-link-filter btn' data-year='2012' href='#'>2012</a>
-   <!-- <a class='openspending-link-filter btn' data-year='2014' href='#'>2014</a>-->
-
-    <a class='openspending-link-filter btn' data-kontotyp='Ertrag' href='#'>Ertrag</a>
-    <a class='openspending-link-filter btn' data-kontotyp='Aufwand' href='#'>Aufwand</a>
-
-    <br/><br/>
+    <div id="years"></div>
 
     <div id="treetable_widget"></div>
   </div>
@@ -38,15 +31,16 @@
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
-  <script type="text/javascript" src="http://localhost/openspendingjs/prod/boot.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/lib/vendor/backbone-0.9.1.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/lib/widgets.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/widgets/treemap/main.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/widgets/aggregate_table/main.js"></script>
+  <script type="text/javascript" src="/openspendingjs/prod/boot.js"></script>
+  <script type="text/javascript" src="/openspendingjs/lib/vendor/backbone-0.9.1.js"></script>
+  <script type="text/javascript" src="/openspendingjs/lib/widgets.js"></script>
+  <script type="text/javascript" src="/openspendingjs/widgets/treemap/main.js"></script>
+  <script type="text/javascript" src="/openspendingjs/widgets/aggregate_table/main.js"></script>
   <script type="text/javascript" src="treetable.js"></script>
   <script type="text/javascript" src="main.js"></script>
   <script>
     $(function() {
+      OpenSpending.scriptRoot = "/openspendingjs";
       Backbone.history.start();
     });
   </script>

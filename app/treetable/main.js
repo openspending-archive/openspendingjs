@@ -1,34 +1,12 @@
 $(function() {
   var context = {
-    dataset: "de_he_giessen",
+    dataset: "kosice",
     siteUrl: "http://openspending.org",
     pagesize: 50,
     callback: function(name) {
       console.log("HUHU");
-      },
-    render: function(router, state) {
-      $('.openspending-link-filter').each(function(i, el) {
-        el = $(el);
-        var cuts = state.cuts;
-        if (el.data('year')) {
-          if (el.data('year')==cuts.year) {
-            el.addClass('disable');
-          } else {
-            el.removeClass('disable');
-          }
-        }
-        if (el.data('kontotyp')) {
-          if (el.data('kontotyp')==cuts.kontotyp) {
-            el.addClass('disable');
-          } else {
-            el.removeClass('disable');
-          }
-        }
-      });
-      }
-    };
-
-  OpenSpending.scriptRoot = "/openspendingjs";
+    }
+  };
 
   OpenSpending.WidgetLink = Backbone.Router.extend({
     routes: {
@@ -37,30 +15,16 @@ $(function() {
     },
 
     home: function() {
-      this.setFilters(this.treetable.filters);
+      this.setFilters(this.initialFilters);
     },
 
     drilldown: function(args) {
-      var widget = this.treetable;
+      var router = this;
       var currentFilters = this.getFilters();
-      var currentDrilldown = _.find(widget.drilldowns, function(d) {
-        return -1 == _.indexOf(_.keys(currentFilters), d);
-      });
-
-      var state = {
-        drilldowns: [currentDrilldown],
-        cuts: currentFilters
-      };
-
-      widget.context.render(this, state);
-      widget.render(state, function(name) {
-        if (_.indexOf(widget.drilldowns, currentDrilldown) >= widget.drilldowns.length-1) {
-          widget.context.callback(name);
-        } else {
-          var filters = _.extend({}, currentFilters);
-          filters[currentDrilldown] = name
-          this.setFilters(filters);
-        }
+      router.treetable.drilldown(currentFilters, function (name, filters, drilldown) {
+        var filters = _.extend({}, filters);
+        filters[drilldown] = name;
+        this.setFilters(filters);
       });
     },
 
@@ -84,16 +48,56 @@ $(function() {
       return filters;
     },
 
+    setupYearsLinks: function(yearsContainer) {
+      var router = this;
+
+      function fetchDistinct(dimension, attribute, query) {
+        var dfd = $.ajax({
+            url: context.siteUrl + '/' + context.dataset + '/' + dimension + '.distinct',
+            data: {attribute: attribute, q: query, limit: 20},
+            dataType: 'jsonp',
+            cache: true,
+            jsonpCallback: 'distinct_' + btoa(dimension + '__' + attribute + '__' + query).replace(/\=/g, '')
+            });
+        return dfd.promise();
+      }
+
+      function renderYears(years) {
+        _.each(years.sort(), function (year) {
+          yearsContainer.append("<a class='btn' data-year='"+year+"' href='#'>"+year+"</a>");
+        });
+      }
+
+      function setupYearsEvents() {
+        yearsContainer.find('a').click(function () {
+          var element = $(this);
+          element.siblings().removeClass('disable')
+          element.addClass('disable');
+          router.setFilters(element.data());
+          return false;
+        });
+      }
+
+      return fetchDistinct("time", "year").then(function (distinct) {
+        var years = _.map(distinct.results, function (result) {
+          return result.year;
+        });
+
+        renderYears(years);
+        setupYearsEvents();
+      }).promise();
+    },
+
     initialize: function(elem, context, filters, drilldowns) {
-      this.treetable = OpenSpending.Treetable(elem, context, filters, drilldowns);
+      this.treetable = OpenSpending.Treetable(elem, context, drilldowns);
+      this.initialFilters = filters;
+
+      var yearsContainer = $('<div class="openspending-link-filter" />').insertBefore(elem);
+      this.setupYearsLinks(yearsContainer).then(function () {
+        yearsContainer.find(':last').click();
+      });
     },
   });
 
-  OpenSpending.app = new OpenSpending.WidgetLink($('#treetable_widget'), context, {'kontotyp': 'Ertrag', 'year': '2012'}, ['teilhaushalt', 'kostentraeger']);
-
-  $('.openspending-link-filter').click(function () {
-    var element = $(this);
-    OpenSpending.app.setFilters(element.data());
-    return false;
-  });
+  OpenSpending.app = new OpenSpending.WidgetLink($('#treetable_widget'), context, {'year': '2012'}, ['group']);
 });
