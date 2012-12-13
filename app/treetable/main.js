@@ -9,24 +9,21 @@ $(function() {
     render: function(router, state) {
       $('.openspending-link-filter').each(function(i, el) {
         el = $(el);
-        var f = $.extend({}, state.cuts);
+        var cuts = state.cuts;
         if (el.data('year')) {
-          if (el.data('year')==f.year) {
+          if (el.data('year')==cuts.year) {
             el.addClass('disable');
           } else {
-            f.year = el.data('year');
             el.removeClass('disable');
           }
         }
-        if (el.data('art')) {
-          if (el.data('art')==f.kontotyp) {
+        if (el.data('kontotyp')) {
+          if (el.data('kontotyp')==cuts.kontotyp) {
             el.addClass('disable');
           } else {
-            f.kontotyp = el.data('art');
             el.removeClass('disable');
           }
         }
-        el.prop('href', '#' + router.getFragment(f));
       });
       }
     };
@@ -74,7 +71,8 @@ $(function() {
     },
 
     setFilters: function(filters) {
-      this.navigate(this.getFragment(filters), {trigger: true});
+      var newFilters = $.extend({}, this.getFilters(), filters);
+      this.navigate(this.getFragment(newFilters), {trigger: true});
     },
 
     getFilters: function() {
@@ -92,4 +90,10 @@ $(function() {
   });
 
   OpenSpending.app = new OpenSpending.WidgetLink($('#treetable_widget'), context, {'kontotyp': 'Ertrag', 'year': '2012'}, ['teilhaushalt', 'kostentraeger']);
+
+  $('.openspending-link-filter').click(function () {
+    var element = $(this);
+    OpenSpending.app.setFilters(element.data());
+    return false;
+  });
 });
