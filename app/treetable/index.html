@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width">
 
   <link rel="stylesheet" href="css/bootstrap.css">
-  <link rel="stylesheet" href="http://clients.openspending.org/zebralog/bonn/style.css">
+  <link rel="stylesheet" href="style.css">
   
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
   
@@ -20,17 +20,9 @@
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
 
   <div class="container">
-<a class='openspending-link-filter btn' data-year='2011' href='#'>2011</a>
-    <a class='openspending-link-filter btn' data-year='2012' href='#'>2012</a>
-   <!-- <a class='openspending-link-filter btn' data-year='2014' href='#'>2014</a>-->
+    <div id="years"></div>
 
-    <a class='openspending-link-filter btn' data-art='Ertrag' href='#'>Ertrag</a>
-    <a class='openspending-link-filter btn' data-art='Aufwand' href='#'>Aufwand</a>
-
-    <br/><br/>
-
-    <div class='openspending' id='vis_widget' style='height: 400px;'></div>
-    <div class='openspending' id='table_widget' style='height: 600px;'></div>
+    <div id="treetable_widget"></div>
   </div>
 
   <style>
@@ -39,14 +31,16 @@
 
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
-  <script type="text/javascript" src="http://localhost/openspendingjs/prod/boot.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/lib/vendor/backbone-0.9.1.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/lib/widgets.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/widgets/treemap/main.js"></script>
-  <script type="text/javascript" src="http://localhost/openspendingjs/widgets/aggregate_table/main.js"></script>
+  <script type="text/javascript" src="/openspendingjs/prod/boot.js"></script>
+  <script type="text/javascript" src="/openspendingjs/lib/vendor/backbone-0.9.1.js"></script>
+  <script type="text/javascript" src="/openspendingjs/lib/widgets.js"></script>
+  <script type="text/javascript" src="/openspendingjs/widgets/treemap/main.js"></script>
+  <script type="text/javascript" src="/openspendingjs/widgets/aggregate_table/main.js"></script>
   <script type="text/javascript" src="treetable.js"></script>
+  <script type="text/javascript" src="main.js"></script>
   <script>
     $(function() {
+      OpenSpending.scriptRoot = "/openspendingjs";
       Backbone.history.start();
     });
   </script>
