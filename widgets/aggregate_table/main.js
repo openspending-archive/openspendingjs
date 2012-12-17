@@ -101,18 +101,7 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     self.dataTable = new OpenSpending.DataTable(self.$e, {
       source: context.siteUrl + '/api/2/aggregate',
       fullCount: function(data) {return data.summary.num_drilldowns;},
-      resultCollection: function(data) {
-        return _.map(data.drilldown, function(d) {
-          if (data.summary.amount) {
-            d.__amount_pct = d.amount / data.summary.amount;
-          } else {
-            d.__amount_pct = 0.0;
-          }
-          var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
-          self.$e.find('.currency').text(symbol);
-          return d;
-        });
-      },
+      resultCollection: self.calculateRowsValues,
       sorting: [],
       tableOptions: {
         bFilter: false,
@@ -131,6 +120,19 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     
   };
   
+  this.calculateRowsValues = function(data) {
+    return _.map(data.drilldown, function(d) {
+      if (data.summary.amount) {
+        d.__amount_pct = d.amount / data.summary.amount;
+      } else {
+        d.__amount_pct = 0.0;
+      }
+      var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
+      self.$e.find('.currency').text(symbol);
+      return d;
+    });
+  };
+
   this.init = function() {
     self.$e = elem;
     self.$e.empty();
