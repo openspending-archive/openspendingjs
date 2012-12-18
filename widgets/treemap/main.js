@@ -28,6 +28,9 @@ OpenSpending.Treemap = function (elem, context, state) {
       if ((node.data.value/self.total)>0.03) {
         domElement.innerHTML = "<div class='desc'><div class='amount'>" + OpenSpending.Utils.formatAmountWithCommas(node.data.value,0,self.currency) + "</div><div class='lbl'>" + node.name + "</div></div>";
       }
+    },
+    tooltipMessage: function(widget, node) {
+      return node.name + ": " + OpenSpending.Utils.formatAmount(node.data.value);
     }
   }, context);
   self.state = state;
@@ -227,8 +230,8 @@ OpenSpending.Treemap = function (elem, context, state) {
           offsetX: 20,
           offsetY: 20,
           onShow: function(tip, node, isLeaf, domElement) {
-            var html = '<div class="tip-title">' + node.name +
-                ': ' + OpenSpending.Utils.formatAmount(node.data.value) +
+            var html = '<div class="tip-title">' +
+                self.context.tooltipMessage(self, node) +
                 '</div><div class="tip-text">';
             var data = node.data;
             tip.innerHTML = html; 
