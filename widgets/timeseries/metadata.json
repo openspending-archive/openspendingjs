@@ -1,0 +1,4 @@
+OpenSpending.addWidgetMetadata("timeseries", {
+    "title": "TimeSeries",
+    "description": "TimeSeries graphs are good to visualize the behavior of data over time."
+});
