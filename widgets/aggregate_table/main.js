@@ -107,7 +107,8 @@ OpenSpending.AggregateTable = function (elem, context, state) {
         bFilter: false,
         sDom: "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
         sPaginationType: "bootstrap",
-        iDisplayLength: context.pagesize || 15
+        iDisplayLength: context.pagesize || 15,
+        fnDrawCallback: self.addClassToTotalRow
       },
       defaultParams: {
         dataset: context.dataset,
@@ -116,21 +117,53 @@ OpenSpending.AggregateTable = function (elem, context, state) {
       },
       columns: columns
     });
+
     self.dataTable.init();
-    
   };
   
   this.calculateRowsValues = function(data) {
-    return _.map(data.drilldown, function(d) {
+    function _showCurrencySymbol() {
+      var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
+      self.$e.find('.currency').text(symbol);
+    };
+    function _calculateTotalRow(data) {
+      var total = {
+        __amount_pct: 1,
+        amount: data.summary.amount,
+        num_entries: data.summary.num_entries
+      }
+      if (data.drilldown.length > 0) {
+        var sampleData = data.drilldown[0];
+        var drilldowns = _.difference(_.keys(sampleData), _.keys(total));
+        var drilldownTotal = {
+          label: 'Total'
+        };
+        for (var i in drilldowns) {
+          total[drilldowns[i]] = drilldownTotal;
+        }
+      }
+      return total;
+    };
+
+    var rows = _.map(data.drilldown, function(d) {
       if (data.summary.amount) {
         d.__amount_pct = d.amount / data.summary.amount;
       } else {
         d.__amount_pct = 0.0;
       }
-      var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
-      self.$e.find('.currency').text(symbol);
       return d;
     });
+
+    rows.push(_calculateTotalRow(data));
+    _showCurrencySymbol();
+
+    return rows;
+  };
+
+  this.addClassToTotalRow = function(oSettings) {
+    var data = oSettings.aoData;
+    var lastIndex = data.length - 1;
+    $(data[lastIndex].nTr).addClass('total');
   };
 
   this.init = function() {
