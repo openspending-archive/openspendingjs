@@ -30,7 +30,8 @@ OpenSpending.Treemap = function (elem, context, state) {
       }
     },
     tooltipMessage: function(widget, node) {
-      return node.name + ": " + OpenSpending.Utils.formatAmount(node.data.value);
+      var percentualValue = (node.data.value * 100)/widget.total;
+      return node.name + " (" + percentualValue.toFixed(2) + "%)";
     }
   }, context);
   self.state = state;
