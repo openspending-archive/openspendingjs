@@ -159,7 +159,9 @@ OpenSpending.AggregateTable = function (elem, context, state) {
       return d;
     });
 
-    rows.push(_calculateTotalRow(data));
+    if (data.summary.num_entries > 0) {
+      rows.push(_calculateTotalRow(data));
+    }
     _showCurrencySymbol();
 
     return rows;
@@ -167,8 +169,10 @@ OpenSpending.AggregateTable = function (elem, context, state) {
 
   this.addClassToTotalRow = function(oSettings) {
     var data = oSettings.aoData;
-    var lastIndex = data.length - 1;
-    $(data[lastIndex].nTr).addClass('total');
+    var totalRow = data[data.length - 1];
+    if (totalRow) {
+      $(totalRow.nTr).addClass('total');
+    }
   };
 
   this.init = function() {
