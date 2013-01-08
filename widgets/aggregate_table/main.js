@@ -123,6 +123,7 @@ OpenSpending.AggregateTable = function (elem, context, state) {
             return obj.toFixed(2) + '%';
           }
         });
+    return columns;
   };
 
   this.calculateRowsValues = function(data) {
