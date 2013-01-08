@@ -75,28 +75,8 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     }
 
     var drilldowns = self.state.drilldowns || [];
-    var columns = _.map(drilldowns, function(d) {
-      return {name: d, label: self.mapping[d].label};
-    });
+    var columns = self.generateColumns(drilldowns);
     drilldowns = drilldowns.join('|');
-    columns.push({
-          'name': 'amount',
-          'label': self.mapping['amount'].label + ' (<span class="currency"></span>)',
-          'width': '15%',
-          'render': function(coll, obj) {
-            return OpenSpending.Utils.formatAmountWithCommas(obj || 0, 
-              0, coll.aData['__amount_currency']);
-          }
-        });
-    columns.push({
-          'name': '__amount_pct',
-          'label': '%',
-          'width': '7%',
-          'render': function(coll, obj) {
-            obj = (obj || 0) * 100;
-            return obj.toFixed(2) + '%';
-          }
-        });
 
     self.dataTable = new OpenSpending.DataTable(self.$e, {
       source: context.siteUrl + '/api/2/aggregate',
@@ -121,6 +101,30 @@ OpenSpending.AggregateTable = function (elem, context, state) {
     self.dataTable.init();
   };
   
+  this.generateColumns = function(drilldowns) {
+    var columns = _.map(drilldowns, function(d) {
+      return {name: d, label: self.mapping[d].label};
+    });
+    columns.push({
+          'name': 'amount',
+          'label': self.mapping['amount'].label + ' (<span class="currency"></span>)',
+          'width': '15%',
+          'render': function(coll, obj) {
+            return OpenSpending.Utils.formatAmountWithCommas(obj || 0,
+              0, coll.aData['__amount_currency']);
+          }
+        });
+    columns.push({
+          'name': '__amount_pct',
+          'label': '%',
+          'width': '7%',
+          'render': function(coll, obj) {
+            obj = (obj || 0) * 100;
+            return obj.toFixed(2) + '%';
+          }
+        });
+  };
+
   this.calculateRowsValues = function(data) {
     function _showCurrencySymbol() {
       var symbol = OpenSpending.Utils.currencySymbol(data.summary.currency.amount);
