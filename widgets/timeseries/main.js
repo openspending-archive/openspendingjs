@@ -100,17 +100,22 @@ OpenSpending.Timeseries = function (elem, context, state) {
   };
 
   self.draw = function () {
+    var yAxisElement;
+    var graphElement;
+    var legendElement;
     self.$e.empty();
     if (!self.data.length) {
       $(self.$e).hide();
       return;
     }
     $(self.$e).show();
+    self.$e[0].innerHTML = '<div id="y-axis"></div><div id="graph"></div><div id="legend"></div>';
+    yAxisElement = document.querySelector('#y-axis');
+    graphElement = document.querySelector('#graph');
+    legendElement = document.querySelector('#legend');
 
     self.graph = new Rickshaw.Graph({
-      element: self.$e[0],
-      width: 700,
-      height: 500,
+      element: graphElement,
       renderer: self.context.renderer || 'line',
       series: self.data
     });
@@ -121,11 +126,11 @@ OpenSpending.Timeseries = function (elem, context, state) {
       graph: self.graph,
       orientation: 'left',
       tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-      element: document.getElementById('y_axis'),
+      element: yAxisElement
     });
 
     var legend = new Rickshaw.Graph.Legend({
-      element: document.querySelector('#legend'),
+      element: legendElement,
       graph: self.graph
     });
 

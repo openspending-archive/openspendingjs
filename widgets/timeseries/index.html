@@ -10,18 +10,30 @@
     <script src="main.js"></script>
     <style>
       #widget {
-        float: left;
+        width: 960px;
+        margin: auto;
       }
-      #y_axis {
+      #graph {
+        float: left;
+        height: 400px;
+        width: 95%;
+      }
+      #y-axis {
         float: left;
         width: 40px;
+      }
+      #legend {
+        width: 100%;
+      }
+      #legend li {
+        width: 48%;
+        float: left;
+        clear: none;
       }
     </style>
 </head>
 <body>
-  <div id="y_axis"></div>
   <div id="widget"></div>
-  <div id="legend"></div>
 
   <script>
     (function ($) {
