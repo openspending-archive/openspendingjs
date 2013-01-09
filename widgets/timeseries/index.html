@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>WDMMG TreeMap</title>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
     <script type="text/javascript" src="../../lib/vendor/yepnope.min.js"></script>
     <script src="main.js"></script>
     <style>
-      #widget {
+      #content {
         width: 960px;
         margin: auto;
       }
@@ -33,23 +33,27 @@
     </style>
 </head>
 <body>
-  <div id="widget"></div>
+  <div id="content">
+    <div id="query-builder"></div>
+    <div id="widget"></div>
+  </div>
 
   <script>
     (function ($) {
       OpenSpending.scriptRoot = "";
-        var db = new OpenSpending.Timeseries($('#widget'),
-          {
-            siteUrl: 'http://openspending.org',
-            dataset: 'ukgov-25k-spending',
-            renderer: 'stack'
-          },
-          {
-            drilldowns: ['to'],
-            year: 2012,
-            order: 'amount:desc',
-            pagesize: 10
-          });
+      var timeseries = new OpenSpending.Timeseries($('#widget'),
+        {
+          siteUrl: 'http://openspending.org',
+          dataset: 'ukgov-25k-spending',
+          renderer: 'scatterplot',
+          order: 'amount:desc',
+          numberOfEntities: 10
+        },
+        {
+          drilldowns: ['from'],
+          year: 2012
+        });
+      timeseries.done(function(widget) { widget.configure(); });
       })(jQuery)
   </script>
 </body>
