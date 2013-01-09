@@ -168,7 +168,7 @@ osw.SliderNode = function(builder, elem, obj, model) {
     self.sliderElem = self.nodeElem.find('.slider');
     builder.fetchDistinct(obj.dimension, obj.attribute).then(function(distinct) {
         var values = _.map(distinct.results, function(d) {
-            return d[obj.attribute];
+            return parseFloat(d[obj.attribute]);
         });
         self.sliderElem.slider({
             value: self.value,
