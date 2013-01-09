@@ -8,7 +8,7 @@ var osw = OpenSpending.Widgets;
 osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     var self = this;
 
-    var resources = [OpenSpending.scriptRoot + "/app/bob/js/jquery-ui-1.8.18.custom.min.js",
+    var resources = ["//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js",
                      OpenSpending.scriptRoot + "/app/bob/css/query-builder/jquery-ui-1.8.18.custom.css",
                      OpenSpending.scriptRoot + "/lib/vendor/handlebars.js"
                  ];
