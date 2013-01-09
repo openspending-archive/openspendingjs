@@ -9,7 +9,8 @@ OpenSpending.Timeseries = function (elem, context, state) {
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/d3.min.js",
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/d3.layout.min.js",
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/rickshaw.min.js",
-                 OpenSpending.scriptRoot + "/widgets/timeseries/css/rickshaw.min.css"
+                 OpenSpending.scriptRoot + "/widgets/timeseries/css/rickshaw.min.css",
+                 OpenSpending.scriptRoot + "/lib/aggregator.js"
                  ];
 
   self.context = context;
@@ -34,14 +35,17 @@ OpenSpending.Timeseries = function (elem, context, state) {
     }
 
     if (self.state.drilldowns) {
-      var searchApiUri = self.context.siteUrl + '/api/2/search';
-      $.getJSON(searchApiUri,
-          {
-            dataset: self.context.dataset
-          },
-          function (data) {
-            self.setDataFromAggregator(self.dataset, data);
-          });
+      self.aggregator = new OpenSpending.Aggregator({
+        siteUrl: self.context.siteUrl,
+        dataset: self.context.dataset,
+        drilldowns: self.state.drilldowns,
+        order: self.state.order,
+        cuts: cuts,
+        rootNodeLabel: 'Total',
+        callback: function(data) {
+          self.setDataFromAggregator(this.dataset, data);
+        }
+      });
     }
   };
 
@@ -63,21 +67,22 @@ OpenSpending.Timeseries = function (elem, context, state) {
 
   self.setNode = function (node) {
     var data = [];
-    var groupedNodes = _.groupBy(node.results, function (item) { return item.to.label; });
-    for (var key in groupedNodes) {
-      var result = {
-        name: key,
+    var results = node.children.slice(0, self.state.pagesize);
+    for (var i in results) {
+      var result = results[i];
+      var resultData = {
+        name: result.label,
         color: self.palette.color(),
         data: []
       };
-      var values = _.map(groupedNodes[key], function (node) {
-        return { x: Date.parse(node.time.name)/1000, y: node.amount };
+      var values = _.map(result.children, function (node) {
+        return { x: Date.parse(node.name)/1000, y: node.amount };
       });
 
-      result.data = values.sort(function (a, b) { return a.x - b.x; });
+      resultData.data = values.sort(function (a, b) { return a.x - b.x; });
 
       if (values.length !== 0) {
-          data.push(result);
+          data.push(resultData);
       }
     };
 

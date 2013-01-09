@@ -30,10 +30,13 @@
           {
             siteUrl: 'http://openspending.org',
             dataset: 'ukgov-25k-spending',
-            time: 2012,
             renderer: 'stack'
           },
           {
+            drilldowns: ['to'],
+            year: 2012,
+            order: 'amount:desc',
+            pagesize: 10
           });
       })(jQuery)
   </script>
