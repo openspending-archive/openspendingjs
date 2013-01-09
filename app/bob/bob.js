@@ -9,34 +9,13 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     var self = this;
 
     var resources = [OpenSpending.scriptRoot + "/app/bob/js/jquery-ui-1.8.18.custom.min.js",
-                     OpenSpending.scriptRoot + "/app/bob/css/query-builder/jquery-ui-1.8.18.custom.css"
+                     OpenSpending.scriptRoot + "/app/bob/css/query-builder/jquery-ui-1.8.18.custom.css",
+                     OpenSpending.scriptRoot + "/lib/vendor/handlebars.js"
                  ];
 
     self.nodes = {};
     self.hasFinish = finish instanceof Function;
     self.noFinish = !self.hasFinish;
-
-    self.template = Handlebars.compile(" \
-        <div class='well query-builder'> \
-            <form id='{{id}}' class='form-horizontal'> \
-                {{#noFinish}} \
-                    <a class='qb-quit close' href='#'><i class='icon-remove'></i></a> \
-                {{/noFinish}} \
-                {{#hasFinish}} \
-                    <a class='qb-toggle close' href='#'><i class='icon-chevron-up'></i></a> \
-                {{/hasFinish}} \
-                <div class='fields'> \
-                <div class='insert-here'></div> \
-                {{#hasFinish}} \
-                <div class='control-group'> \
-                    <div class='controls'> \
-                        <a href='#' class='btn finish'><i class='icon-ok'></i> Save or embed this view</a> \
-                    </div> \
-                </div> \
-                {{/hasFinish}} \
-                </div> \
-            </form> \
-        </div>");
 
     self.context = _.extend({
         }, context);
@@ -57,7 +36,6 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     };
 
     self.render = function() {
-        //console.log(spec);
         $.ajax({
             url: context.siteUrl + '/' + context.dataset + '/model.json', 
             cache: true,
@@ -112,16 +90,45 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
         return dfd.promise();
     };
 
+    self.initTemplates = function() {
+        self.template = Handlebars.compile(" \
+            <div class='well query-builder'> \
+                <form id='{{id}}' class='form-horizontal'> \
+                    {{#noFinish}} \
+                        <a class='qb-quit close' href='#'><i class='icon-remove'></i></a> \
+                    {{/noFinish}} \
+                    {{#hasFinish}} \
+                        <a class='qb-toggle close' href='#'><i class='icon-chevron-up'></i></a> \
+                    {{/hasFinish}} \
+                    <div class='fields'> \
+                    <div class='insert-here'></div> \
+                    {{#hasFinish}} \
+                    <div class='control-group'> \
+                        <div class='controls'> \
+                            <a href='#' class='btn finish'><i class='icon-ok'></i> Save or embed this view</a> \
+                        </div> \
+                    </div> \
+                    {{/hasFinish}} \
+                    </div> \
+                </form> \
+            </div>");
+    };
+
+    self.init = function() {
+        self.initTemplates();
+        self.render();
+    };
+
     if (!window.queryBuilderLoaded) {
         yepnope({
             load: resources,
             complete: function() {
                 window.queryBuilderLoaded = true;
-                self.render();
+                self.init();
             }
         });
     } else {
-        self.render();
+        self.init();
     }
 };
 
