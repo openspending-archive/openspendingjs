@@ -120,7 +120,7 @@ OpenSpending.AggregateTable = function (elem, context, state) {
           'width': '7%',
           'render': function(coll, obj) {
             obj = (obj || 0) * 100;
-            return obj.toFixed(2) + '%';
+            return OpenSpending.Utils.formatAmountWithCommas(obj, 2) + '%';
           }
         });
     return columns;
