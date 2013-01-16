@@ -31,7 +31,7 @@ OpenSpending.Treemap = function (elem, context, state) {
     },
     tooltipMessage: function(widget, node) {
       var percentualValue = (node.data.value * 100)/widget.total;
-      return node.name + " (" + OpenSpending.Utils.formatAmountWithCommas(obj, 2) + "%)";
+      return node.name + " (" + OpenSpending.Utils.formatAmountWithCommas(percentualValue, 2) + "%)";
     }
   }, context);
   self.state = state;
