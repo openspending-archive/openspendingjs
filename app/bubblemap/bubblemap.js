@@ -8,9 +8,12 @@ OpenSpending.getBubbleMapDependencies = function(os_path) {
         os_path + '/lib/utils/utils.js',
         os_path + '/lib/aggregator.js',
         os_path + '/lib/vendor/bubbletree/2.0/bubbletree.js',
-        //  '/js/bubbletree.js',
         os_path + '/lib/vendor/vis4.js',
         os_path + '/lib/vendor/Tween.js',
+        os_path + '/lib/vendor/raphael-min.js',
+        os_path + '/lib/vendor/kartograph-201301.min.js',
+        os_path + '/lib/vendor/chroma.js',
+        os_path + '/lib/vendor/jquery.qtip.min.js',
         os_path + '/lib/vendor/jquery.history.js',
         os_path + '/lib/vendor/bubbletree/1.0/bubbletree.css',
         os_path + '/lib/vendor/datatables/js/jquery.dataTables.js',
@@ -110,28 +113,19 @@ OpenSpending.BubbleMap = function (config) {
                      OpenSpending.Utils.currencySymbol(currency));
 
         // apply colors to map
-        self.map.choropleth({
-            data: function(e) {
-                return node.breakdownsByName[e[opts.map.keyAttribute]];
-            },
-            colors: function(d) {
-                if (d === undefined || isNaN(d.amount)) return '#ccc';
-                return colsc.getColor(d.amount);
-            }
-            //,duration: 200
+        self.layer.style('fill', function(data) {
+          d = node.breakdownsByName[data[opts.map.keyAttribute]];
+          if (d === undefined || isNaN(d.amount)) return '#ccc';
+          return colsc.getColor(d.amount);
         });
 
-        self.map.tooltips({
-            layer: opts.map.layerName,
-            content: function (e) {
-                var v = node.breakdownsByName[e];
-                if (v === undefined ) return ['', ''];
-                var famount = OpenSpending.Utils.formatAmountWithCommas(v.amount, 0, currency);
-                return [v.label, '<div class="amount">'+famount+'</div>'];
-            },
-            delay: 300
+        self.layer.tooltips(function (data) {
+          var d = node.breakdownsByName[data[opts.map.keyAttribute]];
+          if (d === undefined ) return '';
+          var famount = OpenSpending.Utils.formatAmountWithCommas(d.amount, 0, currency);
+          return '<div class="amount">'+famount+'</div>';
         });
-        // create tooltips
+
         currentNode = node;
         updateTable();
     };
@@ -213,21 +207,20 @@ OpenSpending.BubbleMap = function (config) {
         });
 
         // init map
-        var map = self.map = $K.map('#wdmmg-map');
-        map.loadStyles(opts.openspendingjs + '/app/bubblemap/map.css', function() {
-            map.loadMap(opts.map.url, function() {
-                map.addLayer({
-                    id: opts.map.layerName,
-                    key: opts.map.keyAttribute
-                });
+        self.map = Kartograph.map('#wdmmg-map');
+        self.map.loadMap(opts.map.url, function() {
+            self.map.addLayer(opts.map.layerName, {
+                key: opts.map.keyAttribute
+            });
 
-                map.onLayerEvent('click', function(d) {
-                    var a = d[opts.map.keyAttribute];
-                    selectedRegion = selectedRegion==a ? null : a;
-                    loadData();
-                });
-            }); // map.loadMap(function())
-        }); // map.loadStyles(function())
+            self.layer = self.map.getLayer(opts.map.layerName);
+
+            self.layer.on('click', function(d) {
+                var a = d[opts.map.keyAttribute];
+                selectedRegion = selectedRegion==a ? null : a;
+                loadData();
+            });
+        }); // map.loadMap(function())
     };
 
     var updateTable = function() {
