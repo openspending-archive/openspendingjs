@@ -10,7 +10,7 @@ OpenSpending.getBubbleMapDependencies = function(os_path) {
         os_path + '/lib/vendor/bubbletree/2.0/bubbletree.js',
         os_path + '/lib/vendor/vis4.js',
         os_path + '/lib/vendor/Tween.js',
-        os_path + '/lib/vendor/raphael-min.js',
+        '//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js',
         os_path + '/lib/vendor/kartograph-201301.min.js',
         os_path + '/lib/vendor/chroma.js',
         os_path + '/lib/vendor/jquery.qtip.min.js',
