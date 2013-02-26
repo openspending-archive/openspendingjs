@@ -4,16 +4,21 @@
 }
 
 #y-axis {
-  width: 5%;
+  width: 40px;
 }
 
 #graph {
+  height: 400px;
+}
+
+#graph, .rickshaw_legend {
   width: 90%;
+  width: -webkit-calc(100% - 80px);
+  width: -moz-calc(100% - 80px);
 }
 
 .rickshaw_legend {
-  width: 90%;
-  margin-left: 5%;
+  margin-left: 40px;
   background: white;
   color: #333;
 }
