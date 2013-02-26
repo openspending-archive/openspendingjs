@@ -13,7 +13,8 @@ OpenSpending.Timeseries = function (elem, context, state) {
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/rickshaw.min.js",
                  OpenSpending.scriptRoot + "/widgets/timeseries/css/rickshaw.min.css",
                  OpenSpending.scriptRoot + "/app/bob/bob.js",
-                 OpenSpending.scriptRoot + "/lib/aggregator.js"
+                 OpenSpending.scriptRoot + "/lib/aggregator.js",
+                 OpenSpending.scriptRoot + "/widgets/timeseries/css/timeseries.css"
                  ];
 
   self.context = context;

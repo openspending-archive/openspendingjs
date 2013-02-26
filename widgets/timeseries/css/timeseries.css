@@ -1,0 +1,41 @@
+#y-axis, #graph {
+  float: left;
+  margin-top: 10px;
+}
+
+#y-axis {
+  width: 5%;
+}
+
+#graph {
+  width: 90%;
+}
+
+.rickshaw_legend {
+  width: 90%;
+  margin-left: 5%;
+  background: white;
+  color: #333;
+}
+
+.rickshaw_legend .line {
+  width: 47%;
+  float: left;
+  clear: none;
+}
+
+.rickshaw_legend .line:hover {
+  background: rgba(0, 0, 0, .08);
+}
+
+.rickshaw_legend .action {
+  color: black;
+  opacity: 0.5;
+}
+
+.rickshaw_legend .label {
+  font-size: inherit;
+  color: inherit;
+  font-weight: normal;
+  background-color: transparent;
+}
