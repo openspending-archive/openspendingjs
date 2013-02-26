@@ -182,7 +182,8 @@ OpenSpending.Timeseries = function (elem, context, state) {
     });
 
     var hoverDetail = new Rickshaw.Graph.HoverDetail({
-        graph: self.graph
+        graph: self.graph,
+        yFormatter: function (y) { return OpenSpending.Utils.formatAmountWithCommas(y, 0, self.currency); }
     });
 
     self.graph.render();
