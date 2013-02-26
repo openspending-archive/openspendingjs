@@ -6,6 +6,8 @@ OpenSpending.Timeseries = function (elem, context, state) {
   var self = this;
 
   var resources = [
+                 "//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js",
+                 "//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js",
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/d3.min.js",
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/d3.layout.min.js",
                  OpenSpending.scriptRoot + "/widgets/timeseries/js/rickshaw.min.js",
