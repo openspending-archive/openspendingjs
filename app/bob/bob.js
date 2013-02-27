@@ -8,7 +8,8 @@ var osw = OpenSpending.Widgets;
 osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     var self = this;
 
-    var resources = ["//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js",
+    var resources = ["//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js",
+                     "//ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js",
                      OpenSpending.scriptRoot + "/app/bob/css/query-builder/jquery-ui-1.8.18.custom.css",
                      OpenSpending.scriptRoot + "/lib/vendor/handlebars.js"
                  ];
@@ -17,8 +18,7 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     self.hasFinish = finish instanceof Function;
     self.noFinish = !self.hasFinish;
 
-    self.context = _.extend({
-        }, context);
+    self.context = $.extend({}, context);
 
     self.serialize = function() {
         state = {};
