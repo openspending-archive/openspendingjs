@@ -112,7 +112,7 @@ OpenSpending.Timeseries = function (elem, context, state) {
         color: self.palette.color(),
         data: []
       };
-      var values = _.map(result.children, function (node) {
+      var values = $.map(result.children, function (node) {
         return { x: Date.parse(node.name)/1000, y: node.amount };
       });
 
