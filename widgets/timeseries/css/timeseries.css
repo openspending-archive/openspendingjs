@@ -19,8 +19,9 @@
 
 .rickshaw_legend {
   margin-left: 40px;
-  background: white;
+  background: transparent;
   color: #333;
+  float: left;
 }
 
 .rickshaw_legend .line {
