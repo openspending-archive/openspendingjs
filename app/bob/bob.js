@@ -195,7 +195,13 @@ osw.SelectNode = function(builder, elem, obj, model) {
     var fallback = obj.single ? '' : [''];
     var values = obj['default'] || fallback;
 
-    var options = _.sortBy(_.values(model[obj.options]), function(o) {
+    var unsortedOptions;
+    if (_.isArray(obj.options)) {
+        unsortedOptions = obj.options;
+    } else {
+        unsortedOptions = _.values(model[obj.options]);
+    }
+    var options = _.sortBy(unsortedOptions, function(o) {
         return o.label;
     });
 
