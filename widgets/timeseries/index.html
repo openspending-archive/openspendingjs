@@ -26,13 +26,13 @@
         {
           siteUrl: 'http://openspending.org',
           dataset: 'ukgov-25k-spending',
-          renderer: 'scatterplot',
           order: 'amount:desc',
           numberOfEntities: 10
         },
         {
           drilldowns: ['from'],
-          year: 2012
+          year: 2012,
+          renderer: 'scatterplot'
         });
       timeseries.done(function(widget) { widget.configure(); });
       })(jQuery)

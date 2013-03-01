@@ -21,6 +21,13 @@ OpenSpending.Timeseries = function (elem, context, state) {
 
   self.configure = function(endConfigure) {
     self.$qb.empty();
+    var renderers = [
+                     { label: 'Area Graph', name: 'area' },
+                     { label: 'Bar Graph', name: 'bar' },
+                     { label: 'Line Plot', name: 'line' },
+                     { label: 'Scatter Plot', name: 'scatterplot' },
+                     { label: 'Stack Graph', name: 'stack' }
+                    ];
     var qb = new OpenSpending.Widgets.QueryBuilder(
       self.$qb, self.update, endConfigure, self.context, [
             {
@@ -45,6 +52,14 @@ OpenSpending.Timeseries = function (elem, context, state) {
               type: 'cuts',
               'default': self.state.cuts,
               help: 'Limit the set of data to display.'
+            },
+            {
+              variable: 'renderer',
+              label: 'Graph Type:',
+              type: 'select',
+              single: true,
+              options: renderers,
+              help: 'Change the graph type.'
             }
           ]
     );
@@ -152,7 +167,7 @@ OpenSpending.Timeseries = function (elem, context, state) {
 
     self.graph = new Rickshaw.Graph({
       element: graphElement,
-      renderer: self.context.renderer || 'line',
+      renderer: self.state.renderer,
       series: self.data
     });
 
