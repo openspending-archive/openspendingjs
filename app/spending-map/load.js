@@ -25,7 +25,7 @@ function create_choropleth(element, dataurl, svgopts) {
 				
                 map.addLayer({
                     id: svgopts.id,
-                    key: svgoptskey,
+                    key: svgopts.key,
                     filter: function(d) {
                         return d1.hasOwnProperty(d.iso2);
                     }
@@ -52,8 +52,19 @@ function create_choropleth(element, dataurl, svgopts) {
 }
 
 (function ($) {
-    create_choropleth('#fp-map', '/datasets.json', 
-        {'url':OpenSpending.scriptRoot + '/app/spending-map/world.svg',
-         'id':'regions',
-         'key':'iso2'});
+    $('.spending-map').each(function() {
+        // Get the svg map url
+        var svgmap = $(this).attr('data-svg-map');
+        // If the url doesn't start with http:// we prepend the openspending
+        // script root
+        if (svgmap.substr(0,7) !== 'http://') {
+            svgmap = OpenSpending.scriptRoot + svgmap;
+        }
+
+        create_choropleth(this, $(this).attr('data-url'),
+			  {'url':svgmap,
+			   'id':$(this).attr('data-svg-id'),
+			   'key':$(this).attr('data-svg-key')
+			  });
+    });
 }(jQuery));
