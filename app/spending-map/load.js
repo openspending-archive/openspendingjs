@@ -1,13 +1,13 @@
-function create_choropleth(element, data_url, svg_url, key) {
+function create_choropleth(element, dataurl, svgopts) {
     var map = $K.map(element, 640),
         colscale = new chroma.ColorScale({
                        colors: chroma.brewer.Greens,
                        limits: [-2,-1,0,1,2,3,4,5,6,7]
 	}); 
 		
-    map.loadMap(svg_url, function(map) {
+    map.loadMap(svgopts.url, function(map) {
         $.ajax({
-            url: data_url,
+            url: dataurl,
             success: function(resp) {
                 var d1 = {};
                 $.each(resp.territories, function(i, territory) {
@@ -15,17 +15,17 @@ function create_choropleth(element, data_url, svg_url, key) {
                 });
 
                 map.addLayer({
-                    id: 'regions',
+                    id: svgopts.id,
                     className: 'bg',
-                    key: key,
+                    key: svgopts.key,
                     filter: function(d) {
                         return !d1.hasOwnProperty(d.iso2);
                     }
                 });
 				
                 map.addLayer({
-                    id: 'regions',
-                    key: key,
+                    id: svgopts.id,
+                    key: svgoptskey,
                     filter: function(d) {
                         return d1.hasOwnProperty(d.iso2);
                     }
@@ -53,6 +53,7 @@ function create_choropleth(element, data_url, svg_url, key) {
 
 (function ($) {
     create_choropleth('#fp-map', '/datasets.json', 
-		      OpenSpending.scriptRoot + '/app/spending-map/world.svg',
-		      'iso2');
+        {'url':OpenSpending.scriptRoot + '/app/spending-map/world.svg',
+         'id':'regions',
+         'key':'iso2'});
 }(jQuery));
