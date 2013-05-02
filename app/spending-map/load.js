@@ -50,14 +50,17 @@
 				if (d === null) return '#fff';
 				return colscale.getColor(d);
 			    },
-			    duration: function(d) { return Math.min(900,300*d) },
+			    duration: function(d) {
+				return Math.min(900,300*d)
+			    },
 			    delay: function(d) { 
 				return 100 + 200*(10-d)+Math.random()*300
 			    }
 			});
 			
 			map.onLayerEvent('click', function(d) {
-			    OpenSpending.getGlobal().updateDatasetListing({territories: d.iso2});
+			    OpenSpending.getGlobal()
+				.updateDatasetListing({territories: d[svgkey]});
 			});
 		    }
 		});
