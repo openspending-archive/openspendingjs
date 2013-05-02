@@ -21,6 +21,7 @@
 	    map.loadMap(svgmap, function(map) {
 		$.ajax({
 		    url: dataurl,
+		    dataType: "jsonp",
 		    success: function(resp) {
 			var d1 = {};
 			$.each(resp.territories, function(i, territory) {
