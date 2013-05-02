@@ -32,7 +32,7 @@
 			    className: 'bg',
 			    key: svgkey,
 			    filter: function(d) {
-				return !d1.hasOwnProperty(d.iso2);
+				return !d1.hasOwnProperty(d[svgkey]);
 			    }
 			});
 			
@@ -40,7 +40,7 @@
 			    id: svgid,
 			    key: svgkey,
 			    filter: function(d) {
-				return d1.hasOwnProperty(d.iso2);
+				return d1.hasOwnProperty(d[svgkey]);
 			    }
 			});
 			
