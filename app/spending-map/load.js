@@ -3,8 +3,14 @@
 	this.each(function() {
 	    // Get configuration from either parameter opts 
 	    // or html5 data params
-	    var dataurl = (opts && opts.data) ? 
-                opts.data : $(this).attr('data-url');
+	    var dataurl = (opts && opts.data.url) ? 
+                opts.data.url : $(this).attr('data-url');
+	    var dataobjects = (opts && opts.data.object) ? 
+                opts.data.objects : $(this).attr('data-objects');
+	    var datalabel = (opts && opts.data.url) ? 
+                opts.data.label : $(this).attr('data-label');
+	    var dataimpact = (opts && opts.data.url) ? 
+                opts.data.impact : $(this).attr('data-impact');
             var svgmap = (opts && opts.svg.map) ?
                 opts.svg.map : $(this).attr('data-svg-map');
 	    var svgid = (opts && opts.svg.id) ?
@@ -12,7 +18,7 @@
 	    var svgkey = (opts && opts.svg.key) ?
                 opts.svg.key : $(this).attr('data-svg-key');
 	    
-	    var map = $K.map(this, 640),
+	    var map = $K.map(this, 640, 320),
             colscale = new chroma.ColorScale({
 		colors: chroma.brewer.Greens,
 		limits: [-2,-1,0,1,2,3,4,5,6,7]
@@ -24,8 +30,8 @@
 		    dataType: "jsonp",
 		    success: function(resp) {
 			var d1 = {};
-			$.each(resp.territories, function(i, territory) {
-			    d1[territory.code] = territory.count;
+			$.each(resp[dataobjects], function(i, obj) {
+			    d1[obj[datalabel]] = obj[dataimpact];
 			});
 			
 			map.addLayer({
