@@ -98,6 +98,15 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
   };
   
   this.init = function() {
+    // BubbleTree gets its height from the container so we need to set the
+    // height if there isn't one defined in the stylesheets
+    // First we try to get either height or min-height parsed as integers
+    // (we parse them since they've been appended with 'px' so the string
+    // will be interpreted as true)
+    var $height = parseInt(elem.css('height')) || parseInt(elem.css('min-height'));
+    // If the height hasn't been defined we set a default value
+    if (!$height) elem.css({height:'400px'});
+
     self.$e = elem;
     self.$e.before('<div class="bubbletree-qb"></div>');
     self.$qb = elem.prev();
