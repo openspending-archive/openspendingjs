@@ -319,7 +319,8 @@
     }
 
     DimensionWidget.prototype.linkText = function() {
-      return $("<li><a class='rm_dimension' rm-dim='" + this.name + "'><i class='icon-remove'></i></a> <a href='#" + this.id + "'>" + this.name + "</a> </li>");
+	var typetext = this.data ? " (" + this.data.type + ")" : " (?)";
+      return $("<li><a class='rm_dimension' rm-dim='" + this.name + "'><i class='icon-remove'></i></a> <a href='#" + this.id + "'>" + this.name + typetext +"</a> </li>");
     };
 
     DimensionWidget.prototype.deserialize = function(data) {
@@ -575,7 +576,6 @@
       var w;
       w = new DimensionWidget(name, this.dimsEl, this.dimNamesEl, this.modelEditor);
       this.widgets.push(w);
-      this.refreshNames();
       return w;
     };
 
@@ -635,6 +635,7 @@
         obj = dims[name];
         _results.push(this.addDimension(name).deserialize(data));
       }
+      this.refreshNames();
       return _results;
     };
 
@@ -738,7 +739,6 @@
       this.widgetInfo = {};
       this.namesHook = options != null ? options.namesHook : void 0;
       this.form = $(element).find('.forms form').eq(0);
-      console.log(this.form);
       this.id = this.element.attr('id');
       if (!(this.id != null)) {
         this.id = Math.floor(Math.random() * 0xffffffff).toString(16);
