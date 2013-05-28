@@ -6,6 +6,10 @@ OpenSpendingJS visualisations extend jquery by creating visualisation function c
 
 Choropleth map creator. It draws up an svg map of regions and paints the regions with various intensity to show impact of given data in that region.
 
+### Default application
+
+The choropleth is automatically called on any dom element that have a *choropleth* class defined.
+
 ### Options
 
 * **width**: Width of the choropleth map (*default: 640*)
