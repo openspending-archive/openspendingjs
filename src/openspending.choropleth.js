@@ -133,9 +133,9 @@
 		    function(e) {
 			return e[$(element).attr('data-objects')];
 		    } : undefined,
-		intensity: $(element).attr('data-impact') ? 
+		intensity: $(element).attr('data-intensity') ? 
 		    function(e) { 
-			return e[$(element).attr('data-impact')];
+			return e[$(element).attr('data-intensity')];
 		    } : undefined,
 		id: $(element).attr('data-id') ?
 		    function(e) {
