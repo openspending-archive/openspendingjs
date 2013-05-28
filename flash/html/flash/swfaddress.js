@@ -1,1 +1,0 @@
-../../phase-2/flash/swfaddress.js
