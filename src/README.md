@@ -1,5 +1,7 @@
 # OpenSpending Visualisations
 
+OpenSpendingJS visualisations extend jquery by creating visualisation function callable on elements. For example *openspending.choropleth.js* declares a a choropleth function callable on jquery objects: $(<identifier>).choropleth()
+
 ## openspending.choropleth.js
 
 Choropleth map creator. It draws up an svg map of regions and paints the regions with various intensity to show impact of given data in that region.
