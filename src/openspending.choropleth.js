@@ -17,16 +17,13 @@
  */
 
 !function($) {
-
-    "use strict";
-
+    
     // Choropleth function to create the map for the given dom element with
     // the given options
     $.choropleth = function ( element, options ) {
 	// Get the configuration
 	var config = $.extend(true, {}, $.choropleth.defaults,
 			      $.choropleth.domopts(element), options);
-
 	// Create the map
 	var map = $K.map(element, config.width, config.height);
 
