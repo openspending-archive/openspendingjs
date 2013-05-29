@@ -1,4 +1,4 @@
-/* openspending.choropleth.js - Choropleth map creator
+/*! openspending.choropleth.js - Choropleth map creator
  * ------------------------------------------------------------------------
  *
  * Copyright 2013 Open Knowledge Foundation
@@ -14,6 +14,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/* REQUIREMENTS
+ * Raphael
+ * Kartograph
+ * Chroma
  */
 
 !function($) {
