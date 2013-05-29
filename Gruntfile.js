@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 		src: [
 		    // Add requirements manually so unused can be removed later
 		    'lib/vendor/raphael-min.js',
-		    'lib/vendor/chroma.pack.min.js',
+		    'lib/vendor/chroma.js',
 		    'lib/vendor/kartograph/kartograph.min.js',
 		    // Source files for openspending
 		    'src/*.js'
