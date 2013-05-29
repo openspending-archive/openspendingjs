@@ -12,8 +12,11 @@ module.exports = function(grunt) {
 		    'lib/vendor/raphael-min.js',
 		    'lib/vendor/chroma.js',
 		    'lib/vendor/kartograph/kartograph.min.js',
-		    // Source files for openspending
-		    'src/*.js'
+		    'lib/vendor/accounting.js',
+		    // Source files for openspendingjs' utilisation library
+		    'src/utils/*.js',
+		    // Source files for openspendingjs' jquery widgets
+		    'src/visualisations/*.js'
 		],
 		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
 	    }

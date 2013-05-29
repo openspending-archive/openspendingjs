@@ -8,7 +8,7 @@ Choropleth map creator. It draws up an svg map of regions and paints the regions
 
 ### Default application
 
-The choropleth is automatically called on any dom element that have a *choropleth* class defined.
+The choropleth is automatically called on any dom elements that have a *choropleth* class defined.
 
 ### Options
 
@@ -37,4 +37,3 @@ Defaults of choropleth map can be overwritten in two different ways:
 Hierarchy is that data attributes overwrite default and javascript call options overwrite data-attributes:
 
     defaults < data attributes < options
-
