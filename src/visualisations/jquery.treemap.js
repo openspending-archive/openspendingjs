@@ -306,7 +306,7 @@
 	var $element = $(element);
 	return {
 	    data: {
-		url: $element.attr('data-site'),
+		site: $element.attr('data-site'),
 		dataset: $element.attr('data-dataset'),
 		// If drilldowns are defined we split them on commas
 		drilldowns: $(element).attr('data-drilldowns') ?
