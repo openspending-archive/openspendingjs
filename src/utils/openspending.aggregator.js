@@ -1,28 +1,39 @@
+/*! openspending.aggregator.js - Aggregation API tools
+ * ------------------------------------------------------------------------
+ *
+ * Copyright 2013 Open Knowledge Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* REQUIREMENTS
+ * Underscore
+ */
+
 var OpenSpending = OpenSpending || {};
+OpenSpending.Aggregator = OpenSpending.Aggregator || {};
 
-var defaultConfig = {
-    siteUrl: 'http://openspending.org',
-    dataset: 'uppgjor-rikissjods',
-    drilldowns: ['from', 'to'],
-    cuts: ['year:2012'],
-    breakdown: 'region',
-    rootNodeLabel: 'Total',
-    localApiCache: 'aggregate.json',
-    measure: 'amount',
-    processEntry: function(e) { return e; },
-    callback: function (tree) {}
-};
+// Get the aggregator config based on a query string
+OpenSpending.Aggregator.configFromQueryString = function(queryString) {
+    // Parse the query string into an object
+    var parts = OpenSpending.Common.parseQueryString(queryString);
 
-OpenSpending.aggregatorConfigFromQueryString = function(queryString) {
-    if (queryString) {
-	var parts = parseQueryString(queryString);
-    } else {
-	var parts = parseQueryString();
-    }
+    // Create the object we'll fill in an return
     var out = {};
-    _.each(parts, function(item) {
-	var key = item[0];
-	var value = item[1];
+
+    // Loop over the object with underscore's each which hands in
+    // value and key. Based on key we fill in the output object
+    _.each(parts, function(value, key) {
 	if (key == 'breakdown') {
             out.breakdown = value;
 	} else if (key == 'drilldown') {
@@ -31,14 +42,17 @@ OpenSpending.aggregatorConfigFromQueryString = function(queryString) {
             out.cuts = value.split('|');
 	}
     });
+
+    // Return the output
     return out;
 };
 
-OpenSpending.Aggregator = function (customConfig) {
+// Aggregate the data (get data via the api)
+OpenSpending.Aggregator.get = function (config) {
     var self = this;
-    self.config = customConfig ? customConfig : defaultConfig;
+    self.config = config;
     if (!self.config.processEntry) {
-	self.config.processEntry = defaultConfig.processEntry;
+	self.config.processEntry = function(e) { return e; }
     }
     if (!self.config.measure) {
 	self.config.measure = 'amount';

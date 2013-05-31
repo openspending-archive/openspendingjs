@@ -227,7 +227,7 @@
 	    // using OpenSpending's Aggregator and send the output to the
 	    // makeRoot function (to set the root node)
 	    if (state.drilldowns) {
-		OpenSpending.Aggregator({
+		OpenSpending.Aggregator.get({
 		    siteUrl: config.data.site,
 		    dataset: config.data.dataset,
 		    drilldowns: state.drilldowns,
