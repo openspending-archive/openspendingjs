@@ -3,10 +3,10 @@ module.exports = function(grunt) {
     grunt.initConfig({
 	pkg: grunt.file.readJSON('package.json'),
 	concat: {
-	    options: {
-		separator: ';'
-	    },
 	    js: {
+		options: {
+		    separator: ';'
+		},
 		src: [
 		    // Add requirements manually so unused can be removed later
 		    'lib/vendor/raphael-min.js',
@@ -28,12 +28,18 @@ module.exports = function(grunt) {
 	    }
 	},
 	min: {
+	    options: {
+		report: grunt.option('report') ? 'gzip' : false
+	    },
 	    js: {
 		src: ['<%= concat.js.dest %>'],
 		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.min.js'
 	    }
 	},
 	cssmin : {
+	    options: {
+		report: grunt.option('report') ? 'gzip' : false
+	    },
 	    css: {
 		src: ['<%= concat.css.dest %>'],
 		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.min.css'
