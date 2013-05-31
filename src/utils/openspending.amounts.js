@@ -16,6 +16,10 @@
  * limitations under the License.
  */
 
+/* REQUIREMENTS
+ * accounting.js
+ */
+
 // Define OpenSpending object (if used as a separate module)
 var OpenSpending = OpenSpending || {};
 // Define Amounts property
