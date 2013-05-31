@@ -48,14 +48,20 @@ To make the clean up process simpler, when you add external libraries to the bui
 
 To build openspendingjs we use [Grunt](http://gruntjs.com/) version *>= 0.4* which requires [Node.js](http://nodejs.org) version *>= 0.8*. The build process is simple:
 
-    grunt default
+    grunt
 
-This compiles all source files and their requirements into two files in *dist/*:
+If you want to see the different sizes of the files you can use the *report* option:
+
+    grunt --report
+
+This compiles all source files and their requirements (yes we add all libraries, watch out for conflicts) into two files in *dist/*:
 
 * openspendingjs-<version>.js (where version is openspendingjs version number)
 * openspendingjs-<version>.min.js (minified version of the above file)
 
 The version number in package.json should of course be update for new releases.
+
+The build process does the same for all css stylesheets.
 
 ### Don't Have Such a Recent Node.js Version?
 
