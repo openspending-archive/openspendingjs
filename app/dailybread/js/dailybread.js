@@ -122,7 +122,7 @@ OpenSpending.DailyBread = function (elem) {
 
   this.getTaxVal = function () {
     var rq = $.getJSON(TAXMAN_URL + '/gb?callback=?', {
-      year: 2009,
+      year: 2010,
       indirects: true,
       income: self.salaryVal
     });

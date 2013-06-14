@@ -18,7 +18,8 @@ osw.QueryBuilder = function(elem, callback, finish, context, spec) {
     self.hasFinish = finish instanceof Function;
     self.noFinish = !self.hasFinish;
 
-    self.context = $.extend({}, context);
+    self.context = _.extend({
+        }, context);
 
     self.serialize = function() {
         state = {};
