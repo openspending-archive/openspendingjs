@@ -30,8 +30,15 @@ OpenSpending.Colors.DefaultPalette = ["#CA221D", "#C22769", "#3F93E1",
 				      "#44913D", "#2458A3", "#2458A3",
 				      "#14388C"];
 
-OpenSpending.Colors.DefaultPalette.getColor = function (index) {
+OpenSpending.Colors.DefaultPalette.getColor = function (index, skip) {
     // getColor fetches the color of the index from an wrap around version
     // of the default palette (using modulo)
-    return this[index % (this.length)];
+    var palette = this.slice(0);
+
+    if (skip) {
+	var idx = palette.indexOf(skip.toUpperCase()); // Find the index
+	if(idx !== -1) palette.splice(idx, 1); // Remove it if really found!
+    }
+
+    return palette[index % (palette.length)];
 };

@@ -21,7 +21,7 @@ var OpenSpending = OpenSpending || {};
 OpenSpending.Common = OpenSpending.Common || {};
 
 // Parse a URL query string (?xyz=abc...) into a javascript object.
-OpenSpending.Common.parseQueryString = functin(querystring) {
+OpenSpending.Common.parseQueryString = function(querystring) {
     // Get query string (either provided or we get it from the current window
     var query = querystring || window.location.search.substring(1);
 
