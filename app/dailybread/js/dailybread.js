@@ -158,8 +158,8 @@ OpenSpending.DailyBread = function (elem, opts) {
   }
 
   this.drawTotals = function () {
-    $('#db-salary p').text(formatCurrency(self.salaryVal, 0))
-    $('#db-tax p').text(formatCurrency(self.taxVal, 0))
+      $('#db-salary p').text(formatCurrency(self.salaryVal, 0, self.opts.symbol))
+      $('#db-tax p').text(formatCurrency(self.taxVal, 0, self.opts.symbol))
   }
 
   this.drawTier = function (tierId, sliderUpdate) {
@@ -198,7 +198,7 @@ OpenSpending.DailyBread = function (elem, opts) {
     // Update values
     var valEls = t.find('.db-area-value')
     _.each(data, function (area, idx) {
-      valEls.eq(idx).text(formatCurrency(tax * area[2], 2))
+	valEls.eq(idx).text(formatCurrency(tax * area[2], 2, self.opts.symbol))
     })
 
     t.show()
