@@ -123,11 +123,11 @@ OpenSpending.DailyBread = function (elem, opts) {
   }
 
   this.getTaxVal = function () {
-    var rq = $.getJSON(TAXMAN_URL + '/'+(self.opts.country || 'gb')+'?callback=?', {
-      year: self.opts.year || 2010,
-      indirects: true,
-      income: self.salaryVal
-    });
+      var rq = $.getJSON(TAXMAN_URL + '/'+(self.opts.country || 'gb')+'?callback=?', $.extend({
+	  year: 2010,
+	  indirects: true,
+	  income: self.salaryVal
+      }, self.opts.taxman));
 
     rq.then(function (data) {
       self.taxVal = data.calculation.directs.total + data.calculation.indirects.total;
