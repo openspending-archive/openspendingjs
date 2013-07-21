@@ -10,7 +10,7 @@ OpenSpending.Treemap = function (elem, context, state) {
                  OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];
 
-  if ($.browser.msie) {
+  if (!window.HTMLCanvasElement) {
     resources.push(OpenSpending.scriptRoot + "/widgets/treemap/js/excanvas.js");
   }
 
