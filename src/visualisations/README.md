@@ -78,7 +78,7 @@ Example:
     * **drilldowns**: Dimensions for the levels *(default: [from, to])*
     * **year**: The year to look at *(default: undefined)*
     * **cuts**: Javascript object with key/values for cuts *(default: {})*
-* **click**: Event handler function when a node is clicked. This function returns a false value if the default click event shouldn't be executed.
+* **click**: Event handler function when a tile is clicked. This function returns a false value if the default click event shouldn't be executed. The tile object is passed as argument to the function.
 * **width**: Width of the treemap *(default: 600)*
 * **height**: Height of the treemap *(default: 400)*
 * **embed**: Is the treemap embedded? *(default: false)*

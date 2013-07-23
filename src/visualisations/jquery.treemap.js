@@ -115,7 +115,7 @@
 		    onClick: function(tile) {
 			if(tile) {
 			    // Perform a click from the config
-			    var continue_click = config.click(tile.data.node);
+			    var continue_click = config.click(tile);
 			    // If the configurable click function returns a
 			    // true value we continue with default behaviour
 			    if (continue_click) {
@@ -264,7 +264,7 @@
 	    year: undefined,
 	    cuts: {}
 	},
-	click: function(node) { return true; },
+	click: function(tile) { return true; },
 	// Visualisation defaults, height, width and embed (which is important
 	// when linking to the original data after drilling down far enough)
 	width: 600,
