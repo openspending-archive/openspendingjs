@@ -114,22 +114,28 @@
 		    // User clicks a node (we call it tile to avoid confusion)
 		    onClick: function(tile) {
 			if(tile) {
-			    // If the node has children we set it as primary
-			    // node
-			    if (tile.data.node.children.length) {
-				makeRoot(tile.data.node);
-			    }
-			    // If the node doesn't have children we visit the
-			    // html url for that node on OpenSpending
-			    else {
-				if (tile.data.link) {
-				    var link = this.embed ? tile.data.link + '?embed=true' : tile.data.link;
-				    document.location.href = link
+			    // Perform a click from the config
+			    var continue_click = config.click(tile.data.node);
+			    // If the configurable click function returns a
+			    // true value we continue with default behaviour
+			    if (continue_click) {
+				// If the node has children we set it as primary
+				// node
+				if (tile.data.node.children.length) {
+				    makeRoot(tile.data.node);
 				}
-				// If there isn't an html url we just let the
-				// user know
+				// If the node doesn't have children we visit the
+				// html url for that node on OpenSpending
 				else {
-				    alert("Not able to go any further");
+				    if (tile.data.link) {
+					var link = this.embed ? tile.data.link + '?embed=true' : tile.data.link;
+					document.location.href = link
+				    }
+				    // If there isn't an html url we just let the
+				    // user know
+				    else {
+					alert("Not able to go any further");
+				    }
 				}
 			    }
 			}
@@ -258,6 +264,7 @@
 	    year: undefined,
 	    cuts: {}
 	},
+	click: function(node) { return true; },
 	// Visualisation defaults, height, width and embed (which is important
 	// when linking to the original data after drilling down far enough)
 	width: 600,
