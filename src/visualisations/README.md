@@ -42,9 +42,33 @@ Hierarchy is that data attributes overwrite default and javascript call options 
 
 Treemap creator. It draws up a treemap (lots of differently coloured boxes) to show size of amounts relative to one another. The nodes (the boxes) can be clicked to do a drilldown into the data.
 
-### Default application
+### Application
 
-The treemap is automatically called on any dom elements that have a *treemap* class defined **and** a data-datset attribute.
+There are two ways to call create a treemap function:
+
+(1) It is autmatically called on any dom elements that have a *treemap* class defined **and** a data-datset attribute.
+
+Example: 
+    
+	<div class="treemap" data-dataset="identifierOfYourDataSet"></div>
+
+(2) By calling the *treemap* function with an options parameter on an existing dom element.
+
+Example:
+
+    <div id="treemap"></div>
+
+    <script 'text/javascript'>
+	var data = {
+     dataset: "identifierOfYourDataSet",
+	};
+ 
+	var options = {
+     data: data
+	};
+
+    $('#treemap').treemap(options);
+    </script>
 
 ### Options
 
@@ -70,6 +94,7 @@ The treemap is automatically called on any dom elements that have a *treemap* cl
 Defaults of a treemap can be overwritten in two different ways:
 
 * Via an options parameter when calling the *treemap* function on a dom element.
+*
 * Via dom element *data-* attributes. These can only overwrite:
     * **site** (via data-site)
     * **dataset** (via data-dataset)
@@ -89,6 +114,7 @@ Hierarchy is that data attributes overwrite default and javascript call options 
 If you want users who use Internet Explorer to be supported add a script tag that uses excanvas.js (you need to point it to an excanvas.js file):
 
     <!--[if IE]><script src="excanvas.js"></script><![endif]-->
+>
 
 excanvas.js provides HTML5 canvas to Internet Explorer.
 
