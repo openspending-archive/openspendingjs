@@ -254,7 +254,7 @@
 	    site: 'http://openspending.org',
 	    dataset: undefined,
 	    // We put from and to as default values because they are common
-	    drilldowns: ['from', 'to'],
+	    drilldowns: [],
 	    year: undefined,
 	    cuts: {}
 	},
