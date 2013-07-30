@@ -25,6 +25,11 @@
     // barchart function to create the overview of multiple years in the given dom element with
     // the given options
     $.barchart  = function ( element, options ) {
+
+        //Extend (copy the options object to prevent the function from
+        // changing it (and rendering it unusable for other functions)
+        options = $.extend(true, {}, options);
+
         // Create a jQuery object out of our element
         var $element = $(element);
 
