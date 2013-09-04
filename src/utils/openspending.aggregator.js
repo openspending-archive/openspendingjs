@@ -54,9 +54,13 @@ OpenSpending.Aggregator.get = function (config) {
     if (!self.config.processEntry) {
 	self.config.processEntry = function(e) { return e; }
     }
-    if (!self.config.measure) {
-	self.config.measure = 'amount';
+
+    // We want measure to be an array because we support multiple measures
+    if (self.config.measure === undefined || _.isString(self.config.measure)) {
+	// Default measure value is amount
+	self.config.measure = [self.config.measure || 'amount'];
     }
+
     self.queryData = function () {
         var data = {}, config = self.config;
 	
@@ -70,6 +74,11 @@ OpenSpending.Aggregator.get = function (config) {
         if (config.cuts !== undefined) {
             data.cut = config.cuts.join('|');
         }
+
+	// We don't need to include amount since that's the default measure
+	if (_.isEqual(config.measure,['amount'])) {
+	    data.measure = config.measure.join('|');
+	}
 	
         // add an optional breakdown to drilldowns to query the api
         var drilldowns = config.drilldowns.slice(); //copy
@@ -166,13 +175,22 @@ OpenSpending.Aggregator.get = function (config) {
             id: 'root',
             label: 'Total',
             color: '#555',
-            currency: data.summary.currency[self.config.measure],
             children: [],
             level: 0,
             breakdowns: {}
         };
-	
-        root[self.config.measure] = 0.0;
+
+	// We cheat a bit here. At the moment OpenSpending only stores
+	// currency for the dataset (as a whole) so we know that all of the
+	// measures will have the same currency. This will need to change
+	// when multiple currencies are supported and then we need to update
+	// all of the visualisations as well
+	root.currency = _.values(data.summary.currency)[0]
+
+	// Initial root value for all of the measures
+	_.each(self.config.measure, function(measure) {
+	    root[measure] = 0.0;
+	});
 	
         if (rootNode !== undefined) {
             // extend root with the properties of rootNode
@@ -215,7 +233,10 @@ OpenSpending.Aggregator.get = function (config) {
 		// Initialize a new node and add it to the parent node
 		node = node_template;
 		node.children = [];
-		node[self.config.measure] = 0.0;
+		// Initial value for all of the measures
+		_.each(self.config.measure, function(measure) {
+		    node[measure] = 0.0;
+		});
 		node.color = current ? current.color : undefined;
 		node.level = level;
 		node.breakdowns = {};
@@ -223,13 +244,18 @@ OpenSpending.Aggregator.get = function (config) {
 		parent.children.push(node);
 		nodes[node.id] = node;
             }
-	    
-            node[self.config.measure] = node[self.config.measure] + entry[self.config.measure];
+		
+	    _.each(self.config.measure, function(measure) {
+		node[measure] = node[measure] + entry[measure];
+	    });
 	    
             // Add the current amount and the breakdown to the root node
             // to have a total.
             if (level === 1) {
-		nodes.root[self.config.measure] = nodes.root[self.config.measure] + entry[self.config.measure];
+		// Add all of the measures to the root node
+		_.each(self.config.measure, function(measure) {
+		    nodes.root[measure] = nodes.root[measure] + entry[measure];
+		});
 		self.addBreakdown(nodes.root, entry);
             }
 	    
@@ -268,7 +294,10 @@ OpenSpending.Aggregator.get = function (config) {
             breakdown_node = node_template;
             node.breakdowns[id] = breakdown_node;
         }
-        breakdown_node[self.config.measure] = breakdown_node[self.config.measure] + entry[self.config.measure];
+	// Add all of the measures
+	_.each(self.config.measure, function(measure) {
+            breakdown_node[measure] = breakdown_node[measure] + entry[measure];
+	});
 	
 	
     };
@@ -315,7 +344,9 @@ OpenSpending.Aggregator.get = function (config) {
             throw 'unsupported type: ' + type;
         }
         node.id = prefix + node.id;
-        node[self.config.measure] = 0.0;
+	_.each(self.config.measure, function(measure) {
+            node[measure] = 0.0;
+	});
         return node;
     };
     
