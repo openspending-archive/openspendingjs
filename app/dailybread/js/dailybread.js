@@ -25,8 +25,10 @@ var formatCurrency = function (val, prec, sym, dec, sep) {
   return str
 }
 
-OpenSpending.DailyBread = function (elem) {
+OpenSpending.DailyBread = function (elem, opts) {
   var self = this
+
+  this.opts = opts || {};
 
   this.$e = $(elem)
   this.$e.data('wdmmg.dailybread', this)
@@ -36,13 +38,13 @@ OpenSpending.DailyBread = function (elem) {
   this.iconLookup = function (name) { return undefined; };
 
   this.init = function () {
-    this.setSalary(22000); // default starting salary
+    this.setSalary(self.opts.defaultsalary || 22000); // default starting salary
 
     this.$e.find('.wdmmg-slider').slider({
       value: this.salaryVal,
-      min: 10000,
-      max: 200000,
-      step: 10,
+      min: self.opts.minimumsalary || 10000,
+      max: self.opts.maximumsalary || 200000,
+      step: self.opts.salarystep || 10,
       animate: true,
       slide: function () { self.sliderSlide.apply(self, arguments) },
       change: function () { self.sliderChange.apply(self, arguments) }
@@ -121,11 +123,11 @@ OpenSpending.DailyBread = function (elem) {
   }
 
   this.getTaxVal = function () {
-    var rq = $.getJSON(TAXMAN_URL + '/gb?callback=?', {
-      year: 2010,
-      indirects: true,
-      income: self.salaryVal
-    });
+      var rq = $.getJSON(TAXMAN_URL + '/'+(self.opts.country || 'gb')+'?callback=?', $.extend({
+	  year: 2010,
+	  indirects: true,
+	  income: self.salaryVal
+      }, self.opts.taxman));
 
     rq.then(function (data) {
       self.taxVal = data.calculation.directs.total + data.calculation.indirects.total;
@@ -156,8 +158,8 @@ OpenSpending.DailyBread = function (elem) {
   }
 
   this.drawTotals = function () {
-    $('#db-salary p').text(formatCurrency(self.salaryVal, 0))
-    $('#db-tax p').text(formatCurrency(self.taxVal, 0))
+      $('#db-salary p').text(formatCurrency(self.salaryVal, 0, self.opts.symbol))
+      $('#db-tax p').text(formatCurrency(self.taxVal, 0, self.opts.symbol))
   }
 
   this.drawTier = function (tierId, sliderUpdate) {
@@ -196,7 +198,7 @@ OpenSpending.DailyBread = function (elem) {
     // Update values
     var valEls = t.find('.db-area-value')
     _.each(data, function (area, idx) {
-      valEls.eq(idx).text(formatCurrency(tax * area[2], 2))
+	valEls.eq(idx).text(formatCurrency(tax * area[2], 2, self.opts.symbol))
     })
 
     t.show()

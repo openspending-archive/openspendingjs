@@ -103,7 +103,7 @@ class OpenSpending.DataTable
     out
 
   _sorting: () ->
-    [@columnOrder.indexOf(s[0]), s[1]] for s in @options.sorting
+    [_.indexOf(@columnOrder,s[0]), s[1]] for s in @options.sorting
 
   _serverData: (src, params, callback, conf) ->
     # parse params into a single object

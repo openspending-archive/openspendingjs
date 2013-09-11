@@ -10,7 +10,7 @@ OpenSpending.Treemap = function (elem, context, state) {
                  OpenSpending.scriptRoot + "/widgets/treemap/css/treemap.css"
                  ];
 
-  if ($.browser.msie) {
+  if (!window.HTMLCanvasElement) {
     resources.push(OpenSpending.scriptRoot + "/widgets/treemap/js/excanvas.js");
   }
 
@@ -32,6 +32,9 @@ OpenSpending.Treemap = function (elem, context, state) {
     tooltipMessage: function(widget, node) {
       var percentualValue = (node.data.value * 100)/widget.total;
       return node.name + " (" + OpenSpending.Utils.formatAmountWithCommas(percentualValue, 2) + "%)";
+    },
+    drilldown: function(node) {
+      self.drilldown(node);
     }
   }, context);
   self.state = state;
@@ -198,7 +201,7 @@ OpenSpending.Treemap = function (elem, context, state) {
           enable: true,
           onClick: function(node) {
             if(node) {
-              self.drilldown(node);
+              self.context.drilldown(node);
             }
           },
           onRightClick: function() {
