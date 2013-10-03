@@ -13,7 +13,8 @@ OpenSpending = "OpenSpending" in window ? OpenSpending : {};
                  OpenSpending.scriptRoot + "/lib/vendor/vis4.js",
                  OpenSpending.scriptRoot + "/lib/vendor/Tween.js",
                  OpenSpending.scriptRoot + "/lib/vendor/bubbletree/2.0/bubbletree.js",
-                 OpenSpending.scriptRoot + "/widgets/bubbletree/css/bubbletree.css"
+                 OpenSpending.scriptRoot + "/widgets/bubbletree/css/bubbletree.css",
+                 OpenSpending.scriptRoot + "/lib/aggregator.js"
                  ];
 
   this.context = context;
