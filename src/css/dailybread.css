@@ -1,0 +1,81 @@
+.slice {
+    display: inline-block;
+    text-align: center;
+}
+
+.controls {
+    vertical-align: top;
+}
+
+.salary, .tax {
+    width: 15%;
+    display: inline-block;
+}
+
+.salary {
+    text-align: left;
+}
+
+.tax {
+    text-align: right;
+}
+
+.salary p, .tax p {
+    color: #830242;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.indirects {
+    margin: 15px 0px;
+}
+
+.indirects label {
+    color: #830242;
+    font-size: 1.2em;
+}
+
+.indirects label input[type='checkbox'] {
+    display: inline-block;
+    margin-right: 2px;
+}
+
+/** Slider */
+
+.slider {
+    display: inline-block;
+    text-align: center;
+    width: 70%;
+}
+
+.slider .ui-widget-content {
+    background: none;
+    background-color: #830242;
+    height: 6px;
+}
+
+.slider .ui-slider-horizontal .ui-slider-handle {
+    background: url('../img/currency-slider.png') transparent no-repeat;
+    height: 34px;
+    width: 32px;
+    border: none;
+    cursor: move;
+    margin-top: -0.4em;
+    margin-left: -0.8em;
+}
+
+.slider div#ticks {
+    font-size: 90%;
+    margin-top: 5px;
+}
+
+.slider div.tick-min {
+    float: left;
+    margin-left: -5px;
+}
+
+.slider div.tick-max {
+    float: right;
+    margin-right: -15px;
+}
