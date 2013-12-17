@@ -198,7 +198,8 @@
 			link: item.html_url, // Link to data
 			// Color is either set in the item or we get it using
 			// the configured colorscale (that has getColor)
-			$color: item.color || config.colorscale.getColor(index)
+			$color: item.color || 
+                            config.colorscale.getColor(item, index)
 		    }
 		};
 	    })};
@@ -233,7 +234,8 @@
 	    // using OpenSpending's Aggregator and send the output to the
 	    // makeRoot function (to set the root node)
 	    if (state.drilldowns) {
-		OpenSpending.Aggregator.get({
+                var aggregator = new OpenSpending.Aggregator();
+		aggregator.get({
 		    siteUrl: config.data.site,
 		    dataset: config.data.dataset,
 		    drilldowns: state.drilldowns,

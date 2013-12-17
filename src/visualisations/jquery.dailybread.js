@@ -77,7 +77,7 @@
 						     config.style.icons.path))
 		.radius(radius)
 	        .inner(clickable)
-		.background(config.style.colors.getColor(node.name));
+		.background(config.style.colors.getColor(node));
 
 	    // Draw the bubble
 	    b.call(this, $bubble);
