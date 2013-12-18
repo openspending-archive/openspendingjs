@@ -25,11 +25,11 @@ module.exports = function(grunt) {
 		    // Source files for openspendingjs' jquery widgets
 		    'src/visualisations/*.js'
 		],
-		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.js'
+		dest: 'build/<%= pkg.version %>/<%= pkg.shortname %>.js'
 	    },
 	    css: {
 		src: ['src/css/*.css'],
-		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.css'
+		dest: 'build/<%= pkg.version %>/<%= pkg.shortname %>.css'
 	    }
 	},
 	min: {
@@ -38,7 +38,7 @@ module.exports = function(grunt) {
 	    },
 	    js: {
 		src: ['<%= concat.js.dest %>'],
-		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.min.js'
+		dest: 'build/<%= pkg.version %>/<%= pkg.shortname %>.min.js'
 	    }
 	},
 	cssmin : {
@@ -47,13 +47,47 @@ module.exports = function(grunt) {
 	    },
 	    css: {
 		src: ['<%= concat.css.dest %>'],
-		dest: 'dist/<%= pkg.name %>-<%= pkg.version %>.min.css'
+		dest: 'build/<%= pkg.version %>/<%= pkg.shortname %>.min.css'
 	    }
-	}
+	},
+        copy: {
+            svg: {
+                files: [
+                    { expand: true, src: ['src/svg/**.svg'],
+                      dest: 'build/<%= pkg.version %>/icons/' }
+                ]
+            }
+        },
+        compress: {
+            tarball: {
+                options: {
+                    archive: 'releases/<%= pkg.name %>-<%= pkg.version %>.tgz',
+                },
+                expand: true,
+                src: ['<%= pkg.version %>/**'], 
+                cwd: 'build/',
+                dest: '<%= pkg.name %>'
+            },
+            zipfile: {
+                options: {
+                    archive: 'releases/<%= pkg.name %>-<%= pkg.version %>.zip',
+                },
+                expand: true,
+                src: ['<%= pkg.version %>/**'], 
+                cwd: 'build/',
+                dest: '<%= pkg.name %>'
+            }
+        },
+        clean: ["build/"]
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-yui-compressor');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', ['concat', 'min', 'cssmin']);
+    grunt.registerTask('default', ['concat', 'min', 'cssmin', 'copy']);
+    grunt.registerTask('release', ['concat', 'min', 'cssmin', 
+                                   'copy', 'compress', 'clean']);
 };

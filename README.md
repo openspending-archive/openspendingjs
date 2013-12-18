@@ -56,12 +56,20 @@ If you want to see the different sizes of the files you can use the *report* opt
 
 This compiles all source files and their requirements (yes we add all libraries, watch out for conflicts) into two files in *dist/*:
 
-* openspendingjs-<version>.js (where version is openspendingjs version number)
-* openspendingjs-<version>.min.js (minified version of the above file)
+* <version>/openspending.js (where version is openspendingjs version number)
+* <version>/openspending.min.js (minified version of the above file)
 
 The version number in package.json should of course be update for new releases.
 
-The build process does the same for all css stylesheets.
+The build process does the same for all css stylesheets (creates openspending.css and openspending.min.css) and copies all svg files into a subfolder of <version> called icons.
+
+The files are placed in a build folder.
+
+To build a release you can runt:
+
+    grunt release
+
+This cleans (removes) the build folder after creating both a tgz and a zip file for the version containing the built files.
 
 ### Don't Have Such a Recent Node.js Version?
 
