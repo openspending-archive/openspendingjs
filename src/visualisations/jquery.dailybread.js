@@ -540,7 +540,7 @@
 	// Dataset related information
 	data: {
 	    // Website that holds the dataset (and the OS OLAP api)
-	    site: 'http://openspending.org/',
+	    site: 'https://openspending.org/',
 	    // The dataset
 	    dataset: undefined,
 	    // Drilldowns

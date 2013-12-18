@@ -259,7 +259,7 @@
 	// Define the data, drilldowns, year, cuts (almost no default here 
 	// except the url to the central openspending platform (and drilldowns)
 	data: {
-	    site: 'http://openspending.org',
+	    site: 'https://openspending.org',
 	    dataset: undefined,
 	    // We put from and to as default values because they are common
 	    drilldowns: [],
