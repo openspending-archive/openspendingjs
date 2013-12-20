@@ -345,6 +345,7 @@
                 siteUrl: config.data.site,
                 dataset: config.data.dataset,
                 drilldowns: config.data.drilldowns,
+                inflate: config.data.inflate,
                 cuts: cuts,
                 rootNodeLabel: 'total',
                 callback: create_barchart
@@ -370,6 +371,7 @@
             year: undefined,
 	    // Cuts to make to the dataset
             cuts: {},
+            inflate: undefined,
 	},
 	click: function(node) { return true; },
 	// Visualisation defaults, height, width and embed (which is important
@@ -425,7 +427,8 @@
                 // If cuts are defined they should be defined as a json string
                 // i.e. a key value object
                 cuts: $element.attr('data-cuts') ?
-                    JSON.parse($element.attr('data-cuts')) : undefined		
+                    JSON.parse($element.attr('data-cuts')) : undefined,
+                inflate: $element.attr('data-inflate')
 	    },
             width: $element.attr('data-width'),
             height: $element.attr('data-height'),

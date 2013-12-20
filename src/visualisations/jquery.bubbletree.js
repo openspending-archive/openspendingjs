@@ -104,6 +104,7 @@
 		    dataset: config.data.dataset,
 		    rootNodeLabel: config.root.label,
 		    drilldowns: state.drilldowns,
+                    inflate: config.data.inflate,
 		    cuts: cuts,
 		    breakdown: state.breakdown,
 		    callback: dataLoaded
@@ -140,6 +141,7 @@
             year: undefined,
 	    // Cuts to make to the dataset
             cuts: {},
+            inflate: undefined,
 	},
 	root: {
 	    label: 'Total'
@@ -179,7 +181,8 @@
                 // If cuts are defined they should be defined as a json string
                 // i.e. a key value object
                 cuts: $(element).attr('data-cuts') ?
-                    JSON.parse($element.attr('data-cuts')) : undefined		
+                    JSON.parse($element.attr('data-cuts')) : undefined,
+                inflate: $element.attr('data-inflate')
 	    },
 	    style: {
 		radius: {

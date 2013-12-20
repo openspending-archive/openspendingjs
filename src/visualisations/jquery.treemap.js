@@ -239,6 +239,7 @@
 		    siteUrl: config.data.site,
 		    dataset: config.data.dataset,
 		    drilldowns: state.drilldowns,
+                    inflate: config.data.inflate,
 		    cuts: cuts,
 		    rootNodeLabel: 'Total',
 		    callback: makeRoot
@@ -264,7 +265,8 @@
 	    // We put from and to as default values because they are common
 	    drilldowns: [],
 	    year: undefined,
-	    cuts: {}
+	    cuts: {},
+            inflate: undefined
 	},
 	click: function(tile) { return true; },
 	// Visualisation defaults, height, width and embed (which is important
@@ -324,7 +326,8 @@
 		// If cuts are defined they should be defined as a json string
 		// i.e. a key value object
 		cuts: $(element).attr('data-cuts') ?
-		    JSON.parse($element.attr('data-cuts')) : undefined
+		    JSON.parse($element.attr('data-cuts')) : undefined,
+                inflate: $element.attr('data-inflate')
 	    },
 	    // Height and width of the treemap
 	    width: $element.attr('data-width'),

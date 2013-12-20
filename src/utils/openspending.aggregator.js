@@ -70,6 +70,7 @@ OpenSpending.Aggregator = function( ) {
             data.order = config.order;
             data.page = config.page;
             data.pagesize = config.pagesize;
+            data.inflate = config.inflate;
 	    
             if (config.cuts !== undefined) {
                 data.cut = config.cuts.join('|');
@@ -96,7 +97,7 @@ OpenSpending.Aggregator = function( ) {
                 return config.localApiCache;
             }
             apiUrl = config.apiUrl || config.siteUrl + '/api';
-            return apiUrl + '/2/aggregate';
+            return apiUrl + '/2/aggregate?callback=?';
         };
         
         /**
@@ -120,14 +121,13 @@ OpenSpending.Aggregator = function( ) {
         
         self.getTree = function () {
             var data = self.queryData();
-            var key = window.btoa(jQuery.param(data)).replace(/\=/g, '');
             
             jQuery.ajax({
                 url: self.queryUrl(),
                 cache: true,
                 data: data,
-                jsonpCallback: 'aggregate_' + key,
-                dataType: self.config.localApiCache !== undefined ? 'json' : 'jsonp',
+                dataType: self.config.localApiCache !== undefined ?
+                    'json' : 'jsonp',
                 context: self,
                 success: self.onJSONTreeLoaded
             });
