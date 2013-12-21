@@ -320,7 +320,7 @@
                                 (bbox.y+bbox.height/2));
                         
                         // Scale the icon to be 60% of circle
-                        var iconsize = mark_box.width*0.6;
+                        var iconsize = bubble_box.width*0.6;
                         var scale = iconsize / Math.max(bbox.width,bbox.height);
                         iconpath.scale(scale, scale);
                         callback();
