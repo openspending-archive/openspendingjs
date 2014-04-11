@@ -1,44 +1,70 @@
-var OpenSpending = OpenSpending || {};
+/* jquery.linebars.js - a linebar visualization for OpenSpending
+ * -------------------------------------------------------------
+ *
+ * Copyright 2013 Open Knowledge Foundation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-OpenSpending.linebars = function(config) {
+/* REQUIREMENTS
+ * d3.v3
+ * underscore-1.3.1.js
+ */ 
+
+!function($) { 
     
+
+    $.linebars = function(element, options) {
+        
+    var config = $.extend(true, {}, $.linebars.defaults,
+            $.linebars.domopts(element),  
+            options);
+
     var margin=[20,0,20,50];
     var width=config.width-margin[1]-margin[3];
     var height=config.height-margin[0]-margin[2];
 
     var createrequest= function(config) {   
-        var url= [config.siteUrl,
+        var url= [config.data.siteUrl,
                   "/api/2/aggregate?dataset=",
-                  config.dataset,
+                  config.data.dataset,
                   "&measure=",
-                  config.measure]
+                  config.data.measure]
 
-        if (config.drilldowns) {
+        if (config.data.drilldowns) {
             url.push("&drilldown=")
-            url.push(config.drilldowns.join("|"));
+            url.push(config.data.drilldowns.join("|"));
             }
 
-        if (config.cuts) {
+        if (config.data.cuts) {
             url.push("&cut=")
-            url.push(config.cuts.join("|"));
+            url.push(config.data.cuts.join("|"));
             }
         return url.join("");
         };
     
     
     d3.json(createrequest(config), function(data) {
-        console.log(data);
-        var svg=d3.select(config.element).append("svg")
+        var svg=d3.select(element).append("svg")
             .attr("width",config.width)
             .attr("height",config.height);
 
-        
 
         var headings=_.unique(
             _.pluck(
                 _.pluck(
                     data.drilldown,
-                        _.last(config.drilldowns)),
+                        _.last(config.data.drilldowns)),
                 'label'));
         
         var years=_.map(_.unique(
@@ -51,7 +77,7 @@ OpenSpending.linebars = function(config) {
         //create an array of arrays - first drilldown then years
         var graphdata=_.values(_.reduce(data.drilldown,
             function(x,y) {
-                var h=y[_.last(config.drilldowns)].label;
+                var h=y[_.last(config.data.drilldowns)].label;
                 x[h] = x[h] || [];
                 x[h].push ( y );
                 return x;
@@ -61,18 +87,15 @@ OpenSpending.linebars = function(config) {
         graphdata=_.map(graphdata,function(d) {
             var ys=_.map(_.pluck(_.pluck(d,'time'),'year'),function(x)
             {return parseInt(x); });
-            console.log(ys);
-            console.log(years);
-            console.log(_.difference(years,ys));
             _.each(_.difference(years,ys),function(x){
                 var add={
                     time: { year: x }
                     };
-                add[config.measure]=0;
-                add[_.last(config.drilldowns)]={ label: 
-                    _.first(d)[_.last(config.drilldowns)].label }
+                add[config.data.measure]=0;
+                add[_.last(config.data.drilldowns)]={ label: 
+                    _.first(d)[_.last(config.data.drilldowns)].label }
                 d.push(add);
-                    
+                   
                 })
             return d; });
 
@@ -86,7 +109,6 @@ OpenSpending.linebars = function(config) {
             });
         
 
-        console.log(graphdata);
 
         var bw=(width/headings.length)*0.7;
         var bs=(width/headings.length)*0.3;
@@ -97,7 +119,7 @@ OpenSpending.linebars = function(config) {
         
         var mmamount=function(d,fun) {  
             return fun(_.map(d,function(x) {
-                return fun(_.pluck(x,config.measure));
+                return fun(_.pluck(x,config.data.measure));
                 } ));
             };
 
@@ -107,24 +129,23 @@ OpenSpending.linebars = function(config) {
         
         var path=d3.svg.line()
             .x(function(d) { return xscale(d.time.year) ; })
-            .y(function(d) { return yscale(d[config.measure]) });
+            .y(function(d) { return yscale(d[config.data.measure]) });
 
         var bsdata=_.map(graphdata,function(d) {
                 var ro={time: {year: _.min(years) }};
-                ro[config.measure]=0;
-                ro[_.last(config.drilldowns)] = {label:
-                    _.first(d)[_.last(config.drilldowns)].label };
+                ro[config.data.measure]=0;
+                ro[_.last(config.data.drilldowns)] = {label:
+                    _.first(d)[_.last(config.data.drilldowns)].label };
                 var r=[ro]
                 _.each(d, function(x){
                     r.push(x) });
                 var lo={time: {year: _.max(years) }}
-                lo[config.measure]=0;
-                lo[_.last(config.drilldowns)] = {label:
-                    _.first(d)[_.last(config.drilldowns)].label };
+                lo[config.data.measure]=0;
+                lo[_.last(config.data.drilldowns)] = {label:
+                    _.first(d)[_.last(config.data.drilldowns)].label };
                 r.push(lo); 
                 return r;
                 })
-        console.log(bsdata);
 
         var bars=svg.selectAll("g.bar")
             .data(bsdata)
@@ -148,7 +169,7 @@ OpenSpending.linebars = function(config) {
             .attr("y",height-margin[2]+30)
             .attr("text-anchor","middle")
             .text(function(d) {
-                return _.first(d)[_.last(config.drilldowns)].label });
+                return _.first(d)[_.last(config.data.drilldowns)].label });
         
         bars.selectAll("text.dotlabel")
             .data(function(d) { return _.initial(_.rest(d)) })
@@ -159,9 +180,9 @@ OpenSpending.linebars = function(config) {
                 return xscale(d.time.year);
                 })
             .attr("y",function(d) {
-                return yscale(d[config.measure])-7; })
+                return yscale(d[config.data.measure])-7; })
             .attr("text-anchor","middle")
-            .text(function(d) {return d3.format(".2s")(d[config.measure]) });
+            .text(function(d) {return d3.format(".2s")(d[config.data.measure]) });
 
 
         bars.selectAll("text.yearlabel")
@@ -204,3 +225,38 @@ OpenSpending.linebars = function(config) {
 
         });
     };
+
+    $.linebars.defaults = {
+        data: {siteUrl: "https://openspending.org",
+               measure: "amount",
+               dataset: undefined,
+               drilldowns: [],
+               cuts: []},
+        width: 600,
+        height: 400 }
+    
+    $.linebars.domopts = function(element) {
+        var $element=$(element);
+        return {data: {
+                site: $element.attr('data-site'),
+                dataset: $element.attr('data-dataset'),
+                drilldowns: $element.attr('data-drilldowns') ? 
+                    $element.attr('data-drilldowns').split(',') : undefined,
+                cuts: $element.attr('data-cuts') ?
+                    $element.attr('data-cuts').split(",") : undefined
+                 },
+                width: $element.attr("data-width"),
+                height: $element.attr("data-height") }
+        };
+
+    $.fn.extend({
+        linebars: function(options) {
+            if(options == undefined) options = {};
+            this.each(function() {
+                $.linebars( this, options);
+            });
+        }
+    });
+    
+    $('.linebars[data-dataset]').linebars();
+    }(jQuery);
