@@ -272,3 +272,27 @@ Defaults of choropleth map can be overwritten in two different ways:
 Hierarchy is that data attributes overwrite default and javascript call options overwrite data-attributes:
 
     defaults < data attributes < options
+
+## jquery.linebars.js
+
+A linebars creator for openSpending
+[example](http://mihi-tr.github.io/openspending-linebars/). 
+
+### Default Application
+
+```html
+<div class="linebars" data-dataset="xxx" data-drilldowns="time.year,yyyy",
+data-cuts="xxx" /> 
+```
+
+### Options
+
+* **width**: The width of the graphic
+* **height**: the height of the graphic
+* **data**: A javascript object
+    * **siteUrl**: Defaults to "https://openspending.org"
+    * **dataset**: the dataset
+    * **drilldowns**: The drilldowns as an array
+    * **cuts**: Cuts (filters)
+    * **measure**: which measure to take
+
