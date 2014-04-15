@@ -15,6 +15,7 @@ module.exports = function(grunt) {
 		    'lib/vendor/underscore.js',
 		    'lib/vendor/accounting.js',
 		    'lib/vendor/thejit-2.js',
+            'lib/vendor/d3.v3.js',
                     'lib/vendor/vis4.js',
                     'lib/vendor/jquery.history.js',
                     'lib/vendor/Tween.js',
