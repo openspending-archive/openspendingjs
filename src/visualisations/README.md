@@ -296,3 +296,25 @@ data-cuts="xxx" />
     * **cuts**: Cuts (filters)
     * **measure**: which measure to take
 
+## jquery.stackedbar.js
+
+Animated Stackedbars  for openSpending
+[example](http://mihi-tr.github.io/openspending-stackedbar/). 
+
+### Default Application
+
+```html
+<div class="stackedbar" data-dataset="xxx" data-drilldowns="yyyy",
+data-cuts="xxx" /> 
+```
+
+### Options
+
+* **width**: The width of the graphic
+* **height**: the height of the graphic
+* **data**: A javascript object
+    * **siteUrl**: Defaults to "https://openspending.org"
+    * **dataset**: the dataset
+    * **drilldowns**: The drilldowns as an array
+    * **cuts**: Cuts (filters)
+    * **measure**: which measure to take
