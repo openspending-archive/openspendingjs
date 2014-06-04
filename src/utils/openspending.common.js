@@ -30,8 +30,8 @@ OpenSpending.Common.parseQueryString = function(querystring) {
 
     // Tiny cleanup function
     var clean = function (param) {
-	// We replace all + with whitespace and return in unescaped
-	return unescape(param.replace(/\+/g, " "));
+        // We replace all + with whitespace and return in unescaped
+        return decodeURIComponent(param.replace(/\+/g, " "));
     };
 
     // Parameter regular expression (even though they're not cool with urls
