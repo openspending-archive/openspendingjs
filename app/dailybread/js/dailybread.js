@@ -130,7 +130,7 @@ OpenSpending.DailyBread = function (elem, opts) {
       }, self.opts.taxman));
 
     rq.then(function (data) {
-      self.taxVal = data.calculation.directs.total + data.calculation.indirects.total;
+      self.taxVal = data.calculation.total;
     })
 
     return rq;
