@@ -71,6 +71,12 @@ To build a release you can runt:
 
 This cleans (removes) the build folder after creating both a tgz and a zip file for the version containing the built files.
 
+### Testing
+
+If you want to run the tests use karma with grunt:
+
+    grunt karma
+
 ### Don't Have Such a Recent Node.js Version?
 
 When developing it's good to set up virtual environments to manage dependencies instead of installing them into your system (and therefore possibly breaking other projects you're working on).

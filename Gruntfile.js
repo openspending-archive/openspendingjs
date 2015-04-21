@@ -80,7 +80,14 @@ module.exports = function(grunt) {
                 dest: '<%= pkg.name %>'
             }
         },
-        clean: ["build/"]
+        clean: ["build/"],
+        karma: {
+            options: {
+                configFile: 'karma.conf.js',
+            },
+            unit: {
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -88,6 +95,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-karma');
 
     grunt.registerTask('default', ['concat', 'min', 'cssmin', 'copy']);
     grunt.registerTask('release', ['concat', 'min', 'cssmin', 
