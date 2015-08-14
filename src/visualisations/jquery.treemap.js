@@ -40,6 +40,7 @@
 
 	// Initial state of treemap (based on configuration)
 	var state = {
+	    aggregated_csv_url: config.data.aggregated_csv_url,
 	    drilldowns: config.data.drilldowns,
 	    cuts: config.data.cuts,
 	    year: config.data.year
@@ -229,11 +230,20 @@
 	    if (state.year) {
 		cuts.push('time.year:' + state.year);
 	    }
-
+	    // If an CSV URL is set, then we load and aggregate CSV.  Otherwise
+	    // we are using the old API.
 	    // If there are any drilldowns we fetch the dataset of the config
 	    // using OpenSpending's Aggregator and send the output to the
 	    // makeRoot function (to set the root node)
-	    if (state.drilldowns) {
+	    if (state.aggregated_csv_url) {
+		var csvloader = new OpenSpending.CSVloader();
+		csvloader.get({
+		    amount_col_name: config.data.amount_col_name,
+		    currency: config.data.currency,
+		    aggregated_csv_url: config.data.aggregated_csv_url,
+		    callback: makeRoot
+		});
+	    } else if (state.drilldowns) {
                 var aggregator = new OpenSpending.Aggregator();
 		aggregator.get({
 		    siteUrl: config.data.site,
