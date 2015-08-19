@@ -165,7 +165,7 @@
 	    },
 	    icons: {
 		svg: OpenSpending.Icons.Cofog,
-		path: '/src/svg/'
+		path: 'https://raw.githubusercontent.com/openspending/openspendingjs/master/src/svg/'
 	    },
 	    colors: OpenSpending.Colors.Cofog
 	},
