@@ -1,0 +1,39 @@
+path.bar {
+    fill: #CCCCCC;
+    }
+
+path.topline {
+    fill: none;
+    stroke-width: 1.5px;
+    stroke: #333333;
+    }
+g.bar {
+    opacity: 0.5; 
+    }
+
+g.bar:hover, g.selected {
+    opacity: 1;
+    }
+
+text.dotlabel {
+    opacity: 0;
+    font-size: 60%;
+    }
+
+g.bar:hover text.dotlabel, g.selected text.dotlabel {
+    opacity: 1;
+    }
+
+text.yearlabel {
+    font-size: 70%;
+    }
+
+g.axis path, g.axis line {
+    fill: none;
+    stroke: #AAAAAA;
+    }
+
+g.axis text {
+    font-size: 70%;
+    fill: #AAAAAA;
+    }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WDMMG TreeMap</title>
+    <script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="css/treemap.css" />
+    <style>
+      #widget {
+        width: 70%;
+        margin: 0 auto;
+      }
+    </style>
+</head>
+<body>
+  <div id="widget" style="width:940px; height: 500px;">
+  </div><!-- /#treemap -->
+
+  <script>
+    (function ($) {
+        var db = new OpenSpending.Treemap($('#widget'),
+          {
+            siteUrl: 'http://openspending.org',
+            dataset: 'ukgov-finances-cra',
+            time: 2008
+          },
+          {
+            drilldown: 'cofog1'
+          });
+      })(jQuery)
+  </script>
+</body>
+</html>

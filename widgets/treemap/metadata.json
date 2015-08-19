@@ -1,0 +1,4 @@
+OpenSpending.addWidgetMetadata("treemap", {
+    "title": "TreeMap",
+    "description": "A treemap is useful for comparing proportions among different items of spending. It supports many tiles and gives a good impression of their relative size."
+});

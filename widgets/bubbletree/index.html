@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WDMMG BubbleTree</title>
+    <script type="text/javascript" src="../../lib/vendor/jquery.js"></script>
+    <script type="text/javascript" src="../../lib/vendor/yepnope.min.js"></script>
+    <script src="main.js"></script>
+    <link rel="stylesheet" href="css/bubbletree.css" />
+    <style>
+      #widget {
+        width: 70%;
+        margin: 0 auto;
+      }
+    </style>
+    
+</head>
+<body>
+  <div id="widget" style="width:940px; height: 500px;">
+  </div><!-- /#widget -->
+  <script>
+    (function ($) {
+        OpenSpending.scriptRoot= OpenSpending.scriptRoot || "http://localhost:8000/";
+        var db = new OpenSpending.Bubbletree($('#widget'),
+          {
+            siteUrl: 'http://openspending.org',
+            rootNodeLabel: 'Total',
+            dataset: 'ukgov-finances-cra'
+          },
+          {
+            drilldowns: ['cofog1', 'cofog2', 'cofog3'],
+            cuts: {year:2008},
+            breakdown: 'region',
+            bubbleType: 'donut'
+          });
+      })(jQuery)
+    </script>
+</body>
+</html>
