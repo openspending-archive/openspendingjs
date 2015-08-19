@@ -44,6 +44,7 @@
        
 	// The state of is stored in this context
 	var state = {
+	    aggregated_csv_url: config.data.aggregated_csv_url,
 	    drilldowns: config.data.drilldowns,
 	    breakdown: config.data.breakdown
 	};
@@ -95,8 +96,15 @@
 	    if (config.data.year) {
 		cuts.push('time.year:' + config.data.year);
 	    }
-
-	    if (state.drilldowns) {
+	    if (state.aggregated_csv_url) {
+		var csvloader = new OpenSpending.CSVloader();
+		csvloader.get({
+		    amount_col_name: config.data.amount_col_name,
+		    currency: config.data.currency,
+		    aggregated_csv_url: config.data.aggregated_csv_url,
+		    callback: dataLoaded
+		});
+	    } else if (state.drilldowns) {
 		// call openspending api for data
 		var aggregator = new OpenSpending.Aggregator();
 		aggregator.get({
@@ -157,7 +165,7 @@
 	    },
 	    icons: {
 		svg: OpenSpending.Icons.Cofog,
-		path: '/icons/'
+		path: '/src/svg/'
 	    },
 	    colors: OpenSpending.Colors.Cofog
 	},
