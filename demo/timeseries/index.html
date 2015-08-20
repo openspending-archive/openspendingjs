@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../src/css/linebars.css">
+    <link rel="stylesheet" href="../../src/css/tooltips.css">
+    <title>Bubbletree Visualization Demo</title>
+  </head>
+  <body>
+    <div id="bubbletree"></div>
+    <!-- begin jquery.treemap.js dependencies -->
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jit/2.0.2/jit.min.js"></script>
+    <script src="https://rawgit.com/okfn/csv.js/master/csv.js"></script>
+    <script src="../../src/utils/openspending.amounts.js"></script>
+    <script src="../../src/utils/openspending.colors.js"></script>
+    <script src="../../src/utils/openspending.icons.js"></script>
+    <script src="../../src/utils/openspending.csvloader.js"></script>
+    <script src="../../src/utils/openspending.aggregator.js"></script>
+    <script src="../../lib/vendor/vis4.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.4/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-history/1.9/jquery.history.min.js"></script>
+    <script src="../../lib/vendor/Tween.js"></script>
+    <script src="../../lib/vendor/jquery.qtip.min.js"></script>
+    <script src="../../lib/vendor/bubbletree/2.0/bubbletree.openspending.js"></script>
+    <script src="../../src/visualisations/jquery.barchart.js"></script>
+    <!-- end jquery.treemap.js dependencies -->
+
+
+<div id="barchart"></div>
+
+<script 'text/javascript'>
+  var data = {
+  currency: "GBP",
+  aggregated_csv_url: "./by-year-then-cofog1-then-department.csv",
+  amount_col_name: "value",
+  };
+  
+  var options = {
+  data: data
+  };
+  
+$('#barchart').barchart(options);
+</script>
+    </script>
+  </body>
+</html>
