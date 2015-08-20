@@ -142,6 +142,7 @@
                     // Add icon filename fetched via the config to the bubble
                     bubble.data('icon', 
                                 config.style.icons.svg.getIcon(item.name));
+		    console.log(item.name);
                     // Add a homemade bbox to the bubble since the current one
                     // is the initial position and not the final position 
                     // (after animation)
@@ -340,16 +341,26 @@
 
             //Run the openspending aggregator to get all info from the database
             // and return result to the execute function
-            var aggregator = new OpenSpending.Aggregator();
-            aggregator.get({
-                siteUrl: config.data.site,
-                dataset: config.data.dataset,
-                drilldowns: config.data.drilldowns,
-                inflate: config.data.inflate,
-                cuts: cuts,
-                rootNodeLabel: 'total',
-                callback: create_barchart
+	    if (config.data.aggregated_csv_url) {
+		var csvloader = new OpenSpending.CSVloader();
+		csvloader.get({
+		    amount_col_name: config.data.amount_col_name,
+		    currency: config.data.currency,
+		    aggregated_csv_url: config.data.aggregated_csv_url,
+		    callback: create_barchart
+		});
+	    } else if (config.data.drilldowns) {
+		var aggregator = new OpenSpending.Aggregator();
+		aggregator.get({
+                    siteUrl: config.data.site,
+                    dataset: config.data.dataset,
+                    drilldowns: config.data.drilldowns,
+                    inflate: config.data.inflate,
+                    cuts: cuts,
+                    rootNodeLabel: 'total',
+                    callback: create_barchart
             });
+	    }
         };
 
         //run the initialize function
@@ -404,7 +415,7 @@
             colors: OpenSpending.Colors.Cofog,
             icons: {
 		svg: OpenSpending.Icons.Cofog,
-		path: '/icons/'
+		path: 'https://rawgit.com/openspending/openspendingjs/master/src/svg/'
 	    },
         },
         currency: undefined

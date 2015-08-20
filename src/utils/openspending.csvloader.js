@@ -63,7 +63,7 @@ OpenSpending.CSVloader = function() {
       // attributes in the tree.
       function Node(level,id,name,amount,currency) {
         this.id = typeof(id) == "number" ? ("00" + id).substr(-2,2) : id;
-        this.name = typeof(name) == "number" ? ("00" + name).substr(-2,2) : name;
+        this.name = (typeof(name) == "number" && (name < 11)) ? ("00" + name).substr(-2,2) : String(name);
         this.amount = amount;
         this.label = String(name);
         this.level = level;
