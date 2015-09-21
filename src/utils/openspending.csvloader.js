@@ -40,7 +40,8 @@ OpenSpending.CSVloader = function() {
       var levels = dataset.fields.slice(0,dataset.fields.length - 1),
           amount_col_name = obj.amount_col_name || "amount",
           amount_col = dataset.fields.indexOf(amount_col_name),
-          currency = obj.currency;
+          currency = obj.currency,
+          labels = obj.labels;
 
       function slugify_id(text)  {
         // https://gist.github.com/mathewbyrne/1280286
@@ -65,7 +66,7 @@ OpenSpending.CSVloader = function() {
         this.id = String(id);
         this.name = String(name);
         this.amount = amount;
-        this.label = String(name);
+        this.label = typeof(labels) !== "undefined" ? labels[name] : name;
         this.level = level;
         this.children = [];
         this.currency = currency;

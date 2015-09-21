@@ -101,7 +101,8 @@
 		csvloader.get({
 		    amount_col_name: config.data.amount_col_name,
 		    currency: config.data.currency,
-		    aggregated_csv_url: config.data.aggregated_csv_url,
+     		    aggregated_csv_url: config.data.aggregated_csv_url,
+                    labels: config.data.labels,
 		    callback: dataLoaded
 		});
 	    } else if (state.drilldowns) {
