@@ -98,16 +98,19 @@ OpenSpending.CSVloader = function() {
       // through the levels, left to right. The i+1 column gets
       // added to the children array of the current column node.
       dataset.records.forEach(function(row) {
+        // Plucks value in amount column into its own variable
+        var amount = row.splice(amount_col, 1);
+
         var maker = function(node,ls,i) {
           if (i === (levels.length)) {
             // return 0;
           } else {
-            maker(node.addchild(new Node(i+1,slugify_id(row[i]),row[i],Number(row[amount_col]),currency)),levels,i+1);
+            maker(node.addchild(new Node(i+1,slugify_id(row[i]),row[i],Number(amount),currency)),levels,i+1);
           }
           // Sum on top-level amounts.  This can probably be
           // factored out somehow.
           if (i === 0) {
-            tree.amount += Number(row[amount_col]);
+            tree.amount += Number(amount);
           }
         };
 
