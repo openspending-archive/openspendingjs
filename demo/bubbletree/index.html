@@ -1,20 +1,52 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../../build/0.5.0/openspending.min.css">
+    <link rel="stylesheet" href="../../build/0.5.1/openspending.min.css">
     <title>Bubbletree Visualization Demo</title>
   </head>
   <body>
     <div id="bubbletree"></div>
     <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <script src="../../build/0.5.0/openspending.min.js"></script>
+    <script src="../../build/0.5.1/openspending.min.js"></script>
 
     <script 'text/javascript'>
       var data = {
       currency: "GBP",
-      aggregated_csv_url: "./by-cofog1-then-cofog2.csv",
+      aggregated_csv_url: "by-cofog1-then-cofog2.csv",
       amount_col_name: "amount",
+      labels: {
+      "root": "Total",
+      "01":	"Servicios públicos generales",
+      "02":	"Defensa",
+      "03":	"Orden público y seguridad",
+      "04":	"Asuntos económicos",
+      "05":	"Protección del medio ambiente",
+      "06":	"Vivienda y servicios comunitarios",
+      "07":	"Salud",
+      "08":	"Actividades recreativas, cultura y religión",
+      "09":	"Educación",
+      "10":	"Protección social",
+      "01.1":	"Presidencia",
+      "01.2":	"Relaciones Exteriores",
+      "01.3":	"Secretarias y otras dependencias del Ejecutivo",
+      "01.8":	"Obligaciones del Estado a Cargo del Tesoro",
+      "01.7":	"Deuda Publica",
+      "01.2":	"Procuraduría General de la Nación",
+      "02.1":	"Defensa Nacional",
+      "03.6":	"Gobernación",
+      "04.1":	"Finanzas Publicas",
+      "04.2":	"Economía",
+      "04.3":	"Agricultura Ganadería y Alimentación",
+      "04.4":	"Energía y Minas",
+      "05.1":	"Ambiente y Recursos Naturales",
+      "06.1":	"Comunicaciones Infraestructura y Vivienda",
+      "07.1":	"Salud Publica y Asistencia Social",
+      "08.1":	"Cultura y Deportes",
+      "09.1":	"Educación",
+      "10.1":	"Trabajo y Previsión Social",
+      "10.2":	"Desarrollo Social"
+      }
       };
 
       var options = {
