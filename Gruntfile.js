@@ -21,6 +21,7 @@ module.exports = function(grunt) {
                     'lib/vendor/Tween.js',
                     'lib/vendor/bubbletree/2.0/bubbletree.openspending.js',
                     'lib/vendor/jquery.qtip.min.js',
+                    'lib/vendor/csv.js',
 		    // Source files for openspendingjs' utilisation library
 		    'src/utils/*.js',
 		    // Source files for openspendingjs' jquery widgets

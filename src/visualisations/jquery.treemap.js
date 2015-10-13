@@ -43,7 +43,8 @@
 	    aggregated_csv_url: config.data.aggregated_csv_url,
 	    drilldowns: config.data.drilldowns,
 	    cuts: config.data.cuts,
-	    year: config.data.year
+	    year: config.data.year,
+	    last: []
 	};
 
 	// Draw the treemap from the given data
@@ -113,6 +114,15 @@
 		    // We have to enable event handling
 		    enable: true,
 		    // User clicks a node (we call it tile to avoid confusion)
+		    onRightClick: function(tile) {
+			var current_tile = state.last.pop();
+			if (state.last.length > 0) {
+			    makeRoot(state.last.pop());
+			} else {
+			    state.last.push(current_tile);
+			    alert("Not able to go any further");
+			}
+		    },
 		    onClick: function(tile) {
 			if(tile) {
 			    // Perform a click from the config
@@ -183,6 +193,7 @@
 
 	// Set a node as the root node
 	var makeRoot = function(node) {
+	    state.last.push(node);
 	    // Create the representation (we need information about the node's
 	    // children which we'll draw
 	    var data = {children: _.map(node.children, function(item, index) {
@@ -241,6 +252,7 @@
 		    amount_col_name: config.data.amount_col_name,
 		    currency: config.data.currency,
 		    aggregated_csv_url: config.data.aggregated_csv_url,
+                    labels: config.data.labels,
 		    callback: makeRoot
 		});
 	    } else if (state.drilldowns) {

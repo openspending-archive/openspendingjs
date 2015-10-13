@@ -1,5 +1,0 @@
-OpenSpending.addWidgetMetadata("rickshaw", {
-    "title": "Line Charts",
-    "class_name": "OpenSpending.RickshawLineChart",
-    "description": "Its a fucking line chart."
-});

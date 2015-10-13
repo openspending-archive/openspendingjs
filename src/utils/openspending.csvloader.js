@@ -36,15 +36,16 @@ OpenSpending.CSVloader = function() {
       // the column to be summed on. The variable currency is
       // being pulled in through config object, but could possibly
       // come from datapackage.json in the future.
-      
+
       var levels = dataset.fields.slice(0,dataset.fields.length - 1),
           amount_col_name = obj.amount_col_name || "amount",
           amount_col = dataset.fields.indexOf(amount_col_name),
-          currency = obj.currency;
-      
+          currency = obj.currency,
+          labels = obj.labels;
+
       function slugify_id(text)  {
         // https://gist.github.com/mathewbyrne/1280286
-        
+
         // This takes strings (e.g. department names) and removes
         // spaces, etc. to allow them to serve as a proper ids.
         if (text !== null) {
@@ -58,14 +59,21 @@ OpenSpending.CSVloader = function() {
           return "null_id";
         }
       }
-      
+
       // Constructor for making new nodes with the required
       // attributes in the tree.
       function Node(level,id,name,amount,currency) {
-        this.id = typeof(id) == "number" ? ("00" + id).substr(-2,2) : id;
-        this.name = (typeof(name) == "number" && (name < 11)) ? ("00" + name).substr(-2,2) : String(name);
+        var node_label;
+        if (typeof(labels) !== "undefined" && (typeof(labels[name]) !== "undefined")) {
+          node_label = labels[name];
+        } else {
+          node_label = name;
+        }
+
+        this.id = String(id);
+        this.name = String(name);
         this.amount = amount;
-        this.label = String(name);
+        this.label = node_label;
         this.level = level;
         this.children = [];
         this.currency = currency;
@@ -88,38 +96,40 @@ OpenSpending.CSVloader = function() {
           return node;
         };
       }
-      
+
       // Constructs the main tree that will be populated with data
       // from the CSV.
       var tree = new Node(0,"root","root",0,currency);
-      
+
       // For each row of the CSV, recursively construct the nodes
       // specified by the current row.  We do this by working
       // through the levels, left to right. The i+1 column gets
       // added to the children array of the current column node.
       dataset.records.forEach(function(row) {
+        // Plucks value in amount column into its own variable
+        var amount = row.splice(amount_col, 1);
+
         var maker = function(node,ls,i) {
           if (i === (levels.length)) {
             // return 0;
           } else {
-            maker(node.addchild(new Node(i+1,slugify_id(row[i]),row[i],Number(row[amount_col]),currency)),levels,i+1);
+            maker(node.addchild(new Node(i+1,slugify_id(row[i]),row[i],Number(amount),currency)),levels,i+1);
           }
           // Sum on top-level amounts.  This can probably be
           // factored out somehow.
           if (i === 0) {
-            tree.amount += Number(row[amount_col]);
+            tree.amount += Number(amount);
           }
         };
-        
+
         // Kick off the recursive function.
         maker(tree,levels,0);
       });
-      
+
       // Make the treemap using the generated tree.
       obj.callback(tree);
     });
-    
+
     return {};
   };
 };
-

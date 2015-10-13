@@ -1,7 +1,4 @@
-cofog_level1_code,dept_code,value
-01,DFT004,425530000.0
-03,NIO081,7368105000.0
-03,NIE099,589154000.0
+cofog_level1_code,dept_code,amount
 05,Dept085,24750000.0
 10,Dept032,793712226678.2424
 01,IPS069,6571000.0
