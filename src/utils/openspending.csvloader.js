@@ -63,10 +63,17 @@ OpenSpending.CSVloader = function() {
       // Constructor for making new nodes with the required
       // attributes in the tree.
       function Node(level,id,name,amount,currency) {
+        var node_label;
+        if (typeof(labels) !== "undefined" && (typeof(labels[name]) !== "undefined")) {
+          node_label = labels[name];
+        } else {
+          node_label = name;
+        }
+
         this.id = String(id);
         this.name = String(name);
         this.amount = amount;
-        this.label = typeof(labels) !== "undefined" ? labels[name] : name;
+        this.label = node_label;
         this.level = level;
         this.children = [];
         this.currency = currency;
