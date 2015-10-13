@@ -40,7 +40,8 @@ OpenSpending.CSVloader = function() {
       var levels = dataset.fields.slice(0,dataset.fields.length - 1),
           amount_col_name = obj.amount_col_name || "amount",
           amount_col = dataset.fields.indexOf(amount_col_name),
-          currency = obj.currency;
+          currency = obj.currency,
+          labels = obj.labels;
 
       function slugify_id(text)  {
         // https://gist.github.com/mathewbyrne/1280286
@@ -62,10 +63,17 @@ OpenSpending.CSVloader = function() {
       // Constructor for making new nodes with the required
       // attributes in the tree.
       function Node(level,id,name,amount,currency) {
+        var node_label;
+        if (typeof(labels) !== "undefined" && (typeof(labels[name]) !== "undefined")) {
+          node_label = labels[name];
+        } else {
+          node_label = name;
+        }
+
         this.id = String(id);
         this.name = String(name);
         this.amount = amount;
-        this.label = String(name);
+        this.label = node_label;
         this.level = level;
         this.children = [];
         this.currency = currency;
